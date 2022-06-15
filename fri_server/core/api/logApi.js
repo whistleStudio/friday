@@ -9,7 +9,7 @@ rt.get("/getOpenid", (req, res) => {
   try {
     fetch(`https://api.weixin.qq.com/sns/jscode2session?appid=${APPID}&secret=${APPSECRET}&js_code=${code}&grant_type=authorization_code`)
     .then(rs => rs.json()
-    .then(data => res.json({err:0, ...data})))
+    .then(data => res.json({err:0, ...data}))).catch(e=>console.log(code, "getOpenid error"))
   } catch(e){console.log(e);res.json({err:5, msg: "server error"})}
 })
 

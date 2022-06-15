@@ -2,8 +2,6 @@
 	export default {
 		data () {
 			return {
-				APPID: "wx9aa61faf9cdefdf8",
-				APPSECRET: "3b480d6c25f9acb8152333459b1d072f"
 			}
 		},
 		onLaunch: function() {

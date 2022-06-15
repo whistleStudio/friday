@@ -7,7 +7,7 @@ const store = new Vuex.Store({
 	state: {
 		_userInfo: {
 			nickname: "",
-			avatar: 2,
+			avatar: "00",
 			openid: ""
 		}
 	},
