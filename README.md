@@ -41,3 +41,11 @@ AI里做了一部分布局
 - design
 
 AI里基本完成play页面布局
+
+### [06162300]
+
+- client 
+
+1 微信小程序nickname input PC上测试，拿不到value; 手机上好像可以
+
+2 play页面 用uview遮罩层组件和uniapp 的 swiper组件做，冒险牌选择实现

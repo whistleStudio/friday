@@ -65,7 +65,7 @@
 				} else {this.isShow = false}
 			},
 			confirmClick () {
-				console.log(this.newnickname)
+				console.log("newnickname--",this.newnickname)
 				if (this.newnickname) {
 					this.$reqGet({
 						url: `${this.$baseUrl}/login/setUser`,
@@ -89,7 +89,7 @@
 					})
 				}
 
-			}
+			},
 		},
 		watch: {
 			// nickname (newV) {this.newnickname = newV}

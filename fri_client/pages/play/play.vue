@@ -23,6 +23,21 @@
 				
 			</view>
 		</view>
+		<view class="choose-card">
+			<u-overlay :show="isShowAdv" @click="show = false" class="flex-center">
+				<view class="wrap flex-col-rowcenter">
+					<view class="uni-margin-wrap">
+						<swiper class="swiper" circular indicator-dots>
+							<swiper-item v-for="(v,i) in advCards2" :key="i">
+								<!-- :style="{backgroundImage: `url(@/static/play/friday${v}.png)`}" -->
+								<view class="swiper-item" :style="{backgroundImage: `url(/static/play/friday${v}.png)`}"></view>
+							</swiper-item>
+						</swiper>
+					</view>
+					<button size="mini" type="primary">确定</button>
+				</view>
+			</u-overlay>
+		</view>
 	</view>
 </template>
 
@@ -34,7 +49,9 @@
 					bg: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/playbg-09.png",
 					info: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/info-02.png",
 					combatIcon: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/combat"
-				}
+				},
+				isShowAdv: true,
+				advCards2: [0,1]
 			}
 		},
 		methods: {
@@ -78,14 +95,14 @@
 				float: left;
 				display: flex;
 				align-items: center;
-				height: 90rpx;
+				height: 80rpx;
 				li {
 					display: flex;
 					align-items: center;
 					width: 120rpx;
 					height: 50rpx;
 					// background-color: green;
-					font-size: 40rpx;
+					font-size: 35rpx;
 					image {
 						height: 100%;
 						margin-right: 5rpx;
@@ -100,18 +117,42 @@
 			}
 		}
 	}
+	.choose-card {
+		.wrap {
+			height: 900rpx;
+			background-color: white;
+			view:first-of-type {
+				width: 80%;
+				height: 800rpx;
+				background-color: pink;
+				.swiper {
+					height: 800rpx;
+					// background-color: orange;
+					.swiper-item {
+						width: 100%;
+						// background-color: red;
+						background:  center/contain no-repeat;
+
+					}
+				}
+			}
+		}
+		button {
+			margin-top: 30rpx;
+		};
+	}
 }
 .headbar {
 	width: 100%;
-	height: 90rpx;
-	line-height: 90rpx;
+	height: 80rpx;
+	line-height: 80rpx;
 	background-color: lightpink;
 	margin-bottom: 30rpx;
 	box-sizing: border-box;
 }
 .main {
 	width: 100%;
-	height: calc(100% - 120rpx);
+	height: calc(100% - 110rpx);
 	background-color: orange;
 }
 </style>
