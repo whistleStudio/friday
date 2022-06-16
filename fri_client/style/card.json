@@ -1,0 +1,17 @@
+{
+	"comment": "type: 0-冒险;1-初始战斗;2-衰弱;3-海盗",
+	"card": [
+		{"id":0, "type":0, "name":"", "atk":0, "cost":1, "skill":"copy", "adv":"", "harm":[1, 2, 3], "draw": 2, "des":""},
+		{"id":1, "type":0, "name":"", "atk":1, "cost":1, "skill":"book", "adv":"", "harm":[0, 2, 4], "draw": 3, "des":""},
+		{"id":2, "type":0, "name":"", "atk":1, "cost":1, "skill":"book", "adv":"", "harm":[0, 2, 4], "draw": 3, "des":""},
+		{"id":3, "type":1, "name":"", "atk":0, "cost":1, "skill":"heal1", "des":""},
+		{"id":4, "type":1, "name":"", "atk":-1, "cost":1, "skill":"", "des":""},
+		{"id":5, "type":1, "name":"", "atk":-1, "cost":1, "skill":"", "des":""},
+		{"id":6, "type":2, "name":"", "atk":-1, "cost":2, "skill":"hungry", "des":""},
+		{"id":7, "type":2, "name":"", "atk":-2, "cost":2, "skill":"stop", "des":""},
+		{"id":8, "type":2, "name":"", "atk":-1, "cost":2, "skill":"", "des":""},
+		{"id":9, "type":3, "name":"", "atk":18, "skill":"", "draw":8, "des":""},
+		{"id":10,"type":3, "name":"", "atk":25, "skill":"weak", "draw":9, "des":""},
+		{"id":11,"type":3, "name":"", "atk":19, "skill":"", "draw":8, "des":""}
+	]
+}

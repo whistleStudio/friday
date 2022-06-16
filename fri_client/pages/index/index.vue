@@ -9,14 +9,14 @@
 	  <view class="bg flex-center" >
 			<image :src="imgUrl.title" mode="widthFix"></image>
 			<view class="ip">
-				<button class="mgb-50 start" @click="createRoom">START</button>
+				<button class="mgb-50 start" @click="startGame">START</button>
 			</view>
 	  </view>
 		<u-popup :show="isShow" @close="isShow=false" mode="top">
       <view class="popup flex-center">  
 				<!-- #ifdef MP-WEIXIN -->
 				<text class="mgb-50">昵称</text>
-				<input v-model.trim="nickname" type="nickname" class="weui-input mgb-50" placeholder="取个名字吧"/>
+				<input v-model.trim="newnickname" type="nickname" class="weui-input mgb-50" placeholder="我是弗莱德, 该怎么称呼您呢？"/>
 				<view class="btn-group flex-center">
 					<button size="mini" @click="isShow=false">取消</button>
 					<button size="mini" type="primary" @click="confirmClick">确定</button>
@@ -38,7 +38,8 @@
 					title: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/frt-02.png",
 					bg: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/home.jpg",
 					av: "https://cfunweb.oss-cn-hangzhou.aliyuncs.com/img/cfiot/av",
-				}
+				},
+				newnickname: ""
 			}
 		},
 		computed: {
@@ -50,8 +51,13 @@
 			// console.log(this.$sta._userInfo.avatar)
 		},
 		methods: {
-			createRoom () {
+			startGame () {
 				this.checkIsLog()
+				if (this.isLog) {
+					uni.navigateTo({
+						url: "/pages/level/level"
+					})
+				}
 			},
 			checkIsLog () {
 				if (!this.isLog) {
@@ -59,14 +65,17 @@
 				} else {this.isShow = false}
 			},
 			confirmClick () {
-				if (this.nickname) {
+				console.log(this.newnickname)
+				if (this.newnickname) {
 					this.$reqGet({
 						url: `${this.$baseUrl}/login/setUser`,
 						query: {
-							nickname: this.nickname,
+							nickname: this.newnickname,
 							openid: this.$sta._userInfo.openid
 						},
 						rsv: data => {
+							this.$store.commit("changeObjVal", {k1:"_userInfo", k2:"nickname", v:data.nickname})
+							this.$store.commit("changeObjVal", {k1:"_userInfo", k2:"avatar", v:data.avatar})
 							console.log(data)
 							if (!data.err) {}
 							else uni.showToast({title: data.msg, icon:"error"})
@@ -82,8 +91,11 @@
 
 			}
 		},
+		watch: {
+			// nickname (newV) {this.newnickname = newV}
+		},
 		onLoad () {
-			console.log("index", this.avatar)
+			// console.log("index", this.avatar, "--",this.$sta._userInfo.nickname)
 		}
 	}
 </script>

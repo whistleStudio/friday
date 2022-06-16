@@ -17,15 +17,18 @@ rt.get("/getUserInfo", (req, res) => {
   let {openid} = req.query
   ;(async ()=>{
     try {
-      let {nickname,avatar} = await User.findOne({openid}, "nickname avatar")
-      if (nickname&&avatar) res.json({err:0, nickname, avatar})
-      else res.json({err:1})
+      let doc = await User.findOne({openid}, "nickname avatar lvl")
+      if (doc) {
+        let {nickname, avatar, lvl} = doc
+        res.json({err:0, nickname, avatar, lvl})
+      } else res.json({err:1})
     } catch (e){console.log(e);res.json({err:5, msg: "server error"})}
   })()
 })
 
 rt.get("/setUser", (req, res) => {
   let {nickname, openid} = req.query
+  console.log("--setUser--")
   ;(async ()=>{
     try {
       let avatar = 2+parseInt(Math.random()*23)
@@ -33,7 +36,7 @@ rt.get("/setUser", (req, res) => {
       res.json({err:0, nickname, avatar})
     } catch(e){console.log(e);res.json({err:5, msg: "server error"})}
   })()
-  res.json({err:0})
+  // res.json({err:0})
 })
 
 module.exports = rt
