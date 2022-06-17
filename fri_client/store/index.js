@@ -1,6 +1,6 @@
 import Vue from "vue"
 import Vuex from "vuex"
-import {card} from "@/style/card.json"
+import cards from "@/style/card.json"
 
 Vue.use(Vuex)
 
@@ -10,12 +10,20 @@ const store = new Vuex.Store({
 			nickname: "",
 			avatar: "00",
 			openid: "",
-			lvl: 0
+			lvl: 1
 		},
 		_gameInfo: {
 			isInitOk: false,
-			glvl: 0
-		}
+			glvl: 0,
+			hp: 20,
+			curAdvs: [],
+			disAdv: [],
+			disFt: [],
+			rm: [],
+			isNextPhase: false,
+			isAdvsOk: false
+		},
+		_cards: cards
 	},
 	mutations: {
 		changeVal (state, {k,v}) {
@@ -24,24 +32,64 @@ const store = new Vuex.Store({
 		changeObjVal (state, {k1,k2,v}) {
 			state[k1][k2] = v
 		},
-		//初始牌组
+		/* 初始各牌组 */
 		initDeck (state) {
+			let { _gameInfo, _cards} = state
 			uni.showLoading({
 				title: "初始牌组..."
 			})
-			switch (state._gameInfo.glvl) {
+			switch (_gameInfo.glvl) {
 				case 0:
+					// 普通 - 移除老年痴呆
+					var rmOldCard = _cards.weakDeck.splice(3,1)
+					_gameInfo.rm.push(...rmOldCard)
+					initShuffle(_cards)	
 					break
 				case 1:
+					// 残酷 - 继承上一难度，战斗牌混入1张普通老化
+					_cards.weakDeck.splice(3,1)
+					var rmOldCard = _cards.weakDeck.splice(3,1)
+					_gameInfo.rm.push(...rmOldCard)
+					var rdIdx = parseInt(Math.random()*7)
+					var randWeakCard = _cards.weakDeck.splice(rdIdx,1)
+					_cards.advDeck.push(...randWeakCard)
+					initShuffle(_cards)
 					break
 				case 2:
+					// 残酷 - 继承上一难度，加入老年痴呆, 战斗牌混入1张普通老化
+					var rdIdx = parseInt(Math.random()*8)
+					var randWeakCard = _cards.weakDeck.splice(rdIdx,1)
+					_cards.advDeck.push(...randWeakCard)
+					initShuffle(_cards)
 					break
 				case 3:
-					break
+					// 梦魇 - 继承上一难度，初始HP18
+					_gameInfo.hp = 18
+					var rdIdx = parseInt(Math.random()*8)
+					var randWeakCard = _cards.weakDeck.splice(rdIdx,1)
+					_cards.advDeck.push(...randWeakCard)
+					initShuffle(_cards)
+					break	
 			}
-			state._userInfo.isInitOk = true
-			console.log("loading")
-			setTimeout(()=>{uni.hideLoading()}, 1000)	
+			console.log(_cards)
+			_gameInfo.isInitOk = true
+			// setTimeout(()=>{uni.hideLoading()}, 1000)	
+		},
+		/* 派发2张冒险牌 */
+		chooseAdvCard ({_gameInfo, _cards}) {
+			let {curAdvs} = _gameInfo
+			let {advDeck} = _cards
+			let advL = advDeck.length
+			if (advL) {
+				if (advL !== 1) {
+					var pickCards = advDeck.splice(0,2)
+					curAdvs = [...pickCards]
+				} else {
+					curAdvs = [...advDeck]
+				}
+			} else _gameInfo.isNextPhase = true
+			_gameInfo.isAdvsOk = true
+			uni.hideLoading()
 		}
 	},
 	actions: {
@@ -66,5 +114,28 @@ const store = new Vuex.Store({
 		}
 	}
 })
+
+/* 洗牌 */
+function shuffle (deck) {
+	let oL = deck.length, newDeck = []
+	for(let i = 0; i < oL; i++) {
+		let rdIdx = parseInt(Math.random()*deck.length)
+		let newCard = deck.splice(rdIdx,1)
+		newDeck = [...newDeck, ...newCard]
+	}
+	return newDeck
+}
+
+/* 初始洗牌 */
+function initShuffle (_cards) {
+	let {advDeck,ftDeck,weakDeck,prtDeck} = _cards
+	_cards.advDeck = shuffle(advDeck)
+	_cards.ftDeck = shuffle(ftDeck)
+	_cards.prtDeck = shuffle(prtDeck).splice(0,2)
+	let supWeakDeck = weakDeck.splice(-3)
+	weakDeck = shuffle(weakDeck)
+	supWeakDeck = shuffle(supWeakDeck)
+	_cards.weakDeck = [...weakDeck, ...supWeakDeck]
+}
 
 export default store

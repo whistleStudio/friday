@@ -23,21 +23,25 @@
 				
 			</view>
 		</view>
-		<view class="choose-card">
-			<u-overlay :show="isShowAdv" @click="show = false" class="flex-center">
-				<view class="wrap flex-col-rowcenter">
-					<view class="uni-margin-wrap">
-						<swiper class="swiper" circular indicator-dots>
-							<swiper-item v-for="(v,i) in advCards2" :key="i">
-								<!-- :style="{backgroundImage: `url(@/static/play/friday${v}.png)`}" -->
-								<view class="swiper-item" :style="{backgroundImage: `url(/static/play/friday${v}.png)`}"></view>
-							</swiper-item>
-						</swiper>
+
+			<u-overlay :show="adv2.isShow" :z-index ="999" :opacity="0.6"
+			@click="show = false" class="flex-col-rowcenter">
+				<view v-if="isAdvsOk" class="box">
+					<text>请选择一个冒险</text>
+					<view class="wrap flex-col-rowcenter">
+						<view class="uni-margin-wrap">
+							<swiper :current="adv2.current" class="swiper" circular 
+							indicator-dots indicator-color="rgba(255,255,255,0.2)" indicator-active-color="rgba(255,255,255,0.6)">
+								<swiper-item v-for="(v,i) in curAdvs" :key="i">
+									<view class="swiper-item" :style="{backgroundImage: `url(${imgUrl.adv+v.id}.png)`}"></view>
+								</swiper-item>
+							</swiper>
+						</view>
+						<button @click="chooseAdv" size="mini" type="primary">确 定</button>
 					</view>
-					<button size="mini" type="primary">确定</button>
 				</view>
 			</u-overlay>
-		</view>
+
 	</view>
 </template>
 
@@ -48,18 +52,41 @@
 				imgUrl: {
 					bg: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/playbg-09.png",
 					info: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/info-02.png",
-					combatIcon: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/combat"
+					combatIcon: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/combat",
+					adv: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/test/friday"
 				},
-				isShowAdv: true,
-				advCards2: [0,1]
+				adv2: {
+					list:[0,1],
+					isShow: true,
+					current: 0,
+				},
+				isAdvShowOk: false
 			}
 		},
+		computed: {
+			curAdvs: function () {return this.$sta._gameInfo.curAdvs},
+			isAdvsOk: function () {return this.$sta._gameInfo.isAdvsOk}
+		},
 		methods: {
-			
+			chooseAdv () {
+				this.adv2.isShow = false
+			}
+		},
+		watch: {
+			// isAdvsOk () {
+			// 	this.$store.commit("chooseAdvCard")
+			// 	setTimeout(()=>{
+			// 		this.isAdvShowOk = true
+			// 		console.log("curAdvs--", this.$sta._gameInfo.curAdvs)
+			// 	},2000)
+			// }
 		},
 		onLoad (q) {
-
-		}
+			setTimeout(()=>{
+				this.$store.commit("chooseAdvCard")
+				// this.isAdvShowOk = true
+			},1000)
+		},
 	}
 </script>
 
@@ -69,6 +96,7 @@
 	height: 100vh;
 	background: center/cover no-repeat;
 	box-sizing: border-box;
+	position: relative;
 	.adventure {
 		width: 90%;
 		height: 35%;
@@ -88,7 +116,6 @@
 	.combat {
 		width: 90%;
 		height: 60%;
-		background-color: white;
 		border-radius: 10rpx;
 		.headbar {
 			ul {
@@ -101,7 +128,6 @@
 					align-items: center;
 					width: 120rpx;
 					height: 50rpx;
-					// background-color: green;
 					font-size: 35rpx;
 					image {
 						height: 100%;
@@ -117,30 +143,41 @@
 			}
 		}
 	}
-	.choose-card {
+	.box {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		text {
+			font-size: 35rpx;
+			margin: 0 auto;
+			color: ghostwhite;
+			margin-bottom: 20rpx;
+		}
 		.wrap {
 			height: 900rpx;
-			background-color: white;
 			view:first-of-type {
 				width: 80%;
 				height: 800rpx;
-				background-color: pink;
 				.swiper {
 					height: 800rpx;
-					// background-color: orange;
 					.swiper-item {
 						width: 100%;
-						// background-color: red;
 						background:  center/contain no-repeat;
-
+		
 					}
 				}
 			}
+			button {
+				width: 200rpx;
+				height: 60rpx;
+				margin-top: 30rpx;
+				font: bold 35rpx/60rpx $fontF;
+			};
 		}
-		button {
-			margin-top: 30rpx;
-		};
 	}
+
 }
 .headbar {
 	width: 100%;
