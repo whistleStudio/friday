@@ -77,19 +77,23 @@ const store = new Vuex.Store({
 		},
 		/* 派发2张冒险牌 */
 		chooseAdvCard ({_gameInfo, _cards}) {
-			let {curAdvs} = _gameInfo
+			// let {curAdvs} = _gameInfo
 			let {advDeck} = _cards
 			let advL = advDeck.length
 			if (advL) {
 				if (advL !== 1) {
 					var pickCards = advDeck.splice(0,2)
-					curAdvs = [...pickCards]
+					_gameInfo.curAdvs = [...pickCards]
 				} else {
-					curAdvs = [...advDeck]
+					_gameInfo.curAdvs = [...advDeck]
 				}
 			} else _gameInfo.isNextPhase = true
 			_gameInfo.isAdvsOk = true
 			uni.hideLoading()
+		},
+		/* 弃牌 */
+		discard ({_gameInfo, _cards}, {card, pile}) {
+			_gameInfo[pile].push(card)
 		}
 	},
 	actions: {

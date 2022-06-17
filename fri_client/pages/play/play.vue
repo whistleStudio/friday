@@ -70,22 +70,16 @@
 		methods: {
 			chooseAdv () {
 				this.adv2.isShow = false
+				let disIdx = 1 - this.adv2.current
+				this.$store.commit("discard", {card: this.curAdvs[disIdx], pile: "disAdv"})
 			}
 		},
 		watch: {
-			// isAdvsOk () {
-			// 	this.$store.commit("chooseAdvCard")
-			// 	setTimeout(()=>{
-			// 		this.isAdvShowOk = true
-			// 		console.log("curAdvs--", this.$sta._gameInfo.curAdvs)
-			// 	},2000)
-			// }
 		},
 		onLoad (q) {
 			setTimeout(()=>{
 				this.$store.commit("chooseAdvCard")
-				// this.isAdvShowOk = true
-			},1000)
+			},500)
 		},
 	}
 </script>

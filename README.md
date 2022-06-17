@@ -49,3 +49,15 @@ AI里基本完成play页面布局
 1 微信小程序nickname input PC上测试，拿不到value; 手机上好像可以
 
 2 play页面 用uview遮罩层组件和uniapp 的 swiper组件做，冒险牌选择实现
+
+### [06172221]
+
+- client 
+
+1 修复遮罩层小程序不居中问题
+
+2 状态机添加初始洗牌，洗牌，弃牌等方法
+
+3 card.json 细分为不同牌组
+
+4 play页初始冒险牌2选1调通
