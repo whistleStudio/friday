@@ -3,10 +3,17 @@
 		<view class="adventure mgb-30">
 			<view class="headbar">
 				<text>阶段I 剩余冒险:19</text>
-				<text>弃牌堆:8</text>
+				<text>弃牌堆:{{disAdv.length}}</text>
 			</view>
 			<view class="main">
-				
+				<view class="advImg"></view>
+				<view>
+					<utext>xxxx</utext>
+					<ul class="adv-phase">
+						<li v-for="(v,i) in Array(3)" :key="i"></li>
+					</ul>
+					<view class="drawNum"><text>3</text></view>
+				</view>
 			</view>
 		</view>
 		<view class="combat">
@@ -65,7 +72,8 @@
 		},
 		computed: {
 			curAdvs: function () {return this.$sta._gameInfo.curAdvs},
-			isAdvsOk: function () {return this.$sta._gameInfo.isAdvsOk}
+			isAdvsOk: function () {return this.$sta._gameInfo.isAdvsOk},
+			disAdv: function () {return this.$sta._gameInfo.disAdv}
 		},
 		methods: {
 			chooseAdv () {
