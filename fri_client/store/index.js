@@ -16,6 +16,7 @@ const store = new Vuex.Store({
 			isInitOk: false,
 			glvl: 0,
 			hp: 20,
+			advs: cards.advDeck,
 			curAdvs: [],
 			disAdv: [],
 			disFt: [],

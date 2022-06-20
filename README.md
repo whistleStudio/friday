@@ -61,3 +61,13 @@ AI里基本完成play页面布局
 3 card.json 细分为不同牌组
 
 4 play页初始冒险牌2选1调通
+
+### [06201730]
+
+- client
+
+1 play-adventure相应样式
+
+2 play 增加action组，用做抽牌,挑战
+
+3 修复swiper的current同步问题，前面傻了当作双向绑定, `:current = idx` ,只是idx->current, 双向还需加上change事件调用ev.detail
