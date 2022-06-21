@@ -1,2 +1,3 @@
-let a = "s"
-console.log(a+2)
+let a = ""
+let b = [a]
+console.log(b.length)

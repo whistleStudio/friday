@@ -16,7 +16,8 @@ const store = new Vuex.Store({
 			isInitOk: false,
 			glvl: 0,
 			hp: 20,
-			advs: cards.advDeck,
+			decayLvl: 0,
+			curFts: {na:[], sp:[]},
 			curAdvs: [],
 			disAdv: [],
 			disFt: [],
@@ -25,6 +26,15 @@ const store = new Vuex.Store({
 			isAdvsOk: false
 		},
 		_cards: cards
+	},
+	getters: {
+		cbtCount ({_gameInfo}) {
+			let n = 0
+			let {curFts} = _gameInfo
+			curFts.na.forEach(e=>{n += (e.atk2 || e.atk)})
+			curFts.sp.forEach(e=>{n += (e.atk2 || e.atk)})
+			return n
+		}
 	},
 	mutations: {
 		changeVal (state, {k,v}) {
@@ -94,7 +104,26 @@ const store = new Vuex.Store({
 		},
 		/* 弃牌 */
 		discard ({_gameInfo, _cards}, {card, pile}) {
-			_gameInfo[pile].push(card)
+			_gameInfo[pile].unshift(card)
+		},
+		/* 派发1张战斗牌 */
+		drawFtCard ({_gameInfo, _cards}) {
+			let {ftDeck} = _cards
+			let drawCard = ftDeck.shift()
+			_gameInfo.curFts.na.push(drawCard)
+		},
+		/* 添加衰老牌 */
+		addWeakCard ({_gameInfo, _cards}) {
+			let {weakDeck} = _cards
+			let {disFt} = _gameInfo
+			let weakCard
+			if (weakDeck.length>0) {
+				weakCard = weakDeck.shift()
+			}
+			_cards.ftDeck = weakCard ? [...disFt, weakCard] : [...disFt],
+			shuffle(_cards.ftDeck)
+			_gameInfo.disFt = []
+			
 		}
 	},
 	actions: {
@@ -117,6 +146,10 @@ const store = new Vuex.Store({
 				}
 			})
 		}
+	},
+	ftsRunOut ({commit}) {
+		commit("addWeakCard")
+		commit("drawFtCard")
 	}
 })
 

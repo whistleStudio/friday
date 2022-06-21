@@ -8,18 +8,24 @@
 		"4": "模仿",
 		"5": "经验"
 	},
+	"skill": {
+		"0": "阶段-1",
+		"1": "复制",
+		"2": "抽牌+1",
+		"3": "抽牌+2"
+	},
 	"advDeck": [
-		{"id":"a0", "type":0, "ch":3, "ch2":0, "atk":0, "cost":1, "skill":"pharse", "adv":"", "harm":[1, 2, 3], "draw": 2, "des":""},
-		{"id":"a1", "type":0, "ch":4, "ch2":1, "atk":1, "cost":1, "skill":"copy", "adv":"", "harm":[0, 2, 4], "draw": 3, "des":""},
-		{"id":"a2", "type":0, "ch":5, "ch2":2, "atk":1, "cost":1, "skill":"draw", "adv":"", "harm":[0, 2, 4], "draw": 3, "des":""},
-		{"id":"a0", "type":0, "ch":3, "ch2":0, "atk":0, "cost":1, "skill":"pharse", "adv":"", "harm":[1, 2, 3], "draw": 2, "des":""},
-		{"id":"a1", "type":0, "ch":4, "ch2":1, "atk":1, "cost":1, "skill":"copy", "adv":"", "harm":[0, 2, 4], "draw": 3, "des":""},
-		{"id":"a2", "type":0, "ch":5, "ch2":2, "atk":1, "cost":1, "skill":"draw", "adv":"", "harm":[0, 2, 4], "draw": 3, "des":""}
+		{"id":"a0", "type":0, "ch":3, "ch2":0, "atk":0, "atk2": "","cost":1, "skill":0, "skill2":"", "adv":"", "harm":[1, 2, 3], "draw": 2, "des":""},
+		{"id":"a1", "type":0, "ch":4, "ch2":1, "atk":1, "atk2": "","cost":1, "skill":1, "skill2":"", "adv":"", "harm":[0, 2, 4], "draw": 3, "des":""},
+		{"id":"a2", "type":0, "ch":5, "ch2":2, "atk":1, "atk2": "","cost":1, "skill":2, "skill2":"", "adv":"", "harm":[0, 2, 4], "draw": 3, "des":""},
+		{"id":"a0", "type":0, "ch":3, "ch2":0, "atk":0, "atk2": "","cost":1, "skill":0, "skill2":"", "adv":"", "harm":[1, 2, 3], "draw": 2, "des":""},
+		{"id":"a1", "type":0, "ch":4, "ch2":1, "atk":1, "atk2": "","cost":1, "skill":1, "skill2":"", "adv":"", "harm":[0, 2, 4], "draw": 3, "des":""},
+		{"id":"a2", "type":0, "ch":5, "ch2":2, "atk":1, "atk2": "","cost":1, "skill":2, "skill2":"", "adv":"", "harm":[0, 2, 4], "draw": 3, "des":""}
 	],
 	"ftDeck": [
-		{"id":"f0", "type":1, "ch":0, "atk":0, "cost":1, "skill":"heal1", "des":""},
-		{"id":"f1", "type":1, "ch":0, "atk":-1, "cost":1, "skill":"", "des":""},
-		{"id":"f2", "type":1, "ch":0, "atk":-1, "cost":1, "skill":"", "des":""}
+		{"id":"f0", "type":1, "ch":3, "atk":0, "atk2":"", "cost":1, "skill":0, "skill2":"", "des":""},
+		{"id":"f1", "type":1, "ch":4, "atk":1, "atk2":"", "cost":1, "skill":1, "skill2":"", "des":""},
+		{"id":"f2", "type":1, "ch":5, "atk":1, "atk2":"", "cost":1, "skill":2, "skill2":"", "des":""}
 	],
 	"weakDeck": [
 		{"id":"w0", "type":2, "ch":0, "atk":-1, "cost":2, "skill":"", "des":""},

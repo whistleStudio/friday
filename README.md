@@ -71,3 +71,15 @@ AI里基本完成play页面布局
 2 play 增加action组，用做抽牌,挑战
 
 3 修复swiper的current同步问题，前面傻了当作双向绑定, `:current = idx` ,只是idx->current, 双向还需加上change事件调用ev.detail
+
+### [06211734]
+
+- client
+
+1 play页面战斗区布局
+
+2 封装战斗卡牌组件cbt-card
+
+3 store增加抽取的战斗卡字段
+
+4 play页抽牌对应方法

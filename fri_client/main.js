@@ -13,6 +13,7 @@ var baseUrl = "http://localhost:3000"
 // #endif
 Vue.prototype.$baseUrl = baseUrl
 Vue.prototype.$sta = store.state
+Vue.prototype.$gts = store.getters
 
 Vue.prototype.$reqPost = function ({url,body,rsv=()=>{},rej=()=>{}}) {
   uni.request({
