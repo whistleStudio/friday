@@ -83,3 +83,17 @@ AI里基本完成play页面布局
 3 store增加抽取的战斗卡字段
 
 4 play页抽牌对应方法
+
+### [06221733]
+
+- client 
+
+1 抽离choose-adv overlay
+
+2 rm-box overlay 组件绘制
+
+3 状态机 战斗清算 移除游戏 方法
+
+4 【待解决】移除方法，新添到disAdv的卡牌为undefined
+
+5 还要再抽离，状态机有些乱 

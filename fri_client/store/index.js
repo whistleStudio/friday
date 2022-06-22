@@ -17,6 +17,7 @@ const store = new Vuex.Store({
 			glvl: 0,
 			hp: 20,
 			decayLvl: 0,
+			curPhase: 0,
 			curFts: {na:[], sp:[]},
 			curAdvs: [],
 			disAdv: [],
@@ -88,6 +89,7 @@ const store = new Vuex.Store({
 		},
 		/* 派发2张冒险牌 */
 		chooseAdvCard ({_gameInfo, _cards}) {
+			_gameInfo.curAdvs = [];_gameInfo.curFts.na = [];_gameInfo.curFts.sp = [];
 			// let {curAdvs} = _gameInfo
 			let {advDeck} = _cards
 			let advL = advDeck.length
@@ -123,7 +125,28 @@ const store = new Vuex.Store({
 			_cards.ftDeck = weakCard ? [...disFt, weakCard] : [...disFt],
 			shuffle(_cards.ftDeck)
 			_gameInfo.disFt = []
-			
+		},
+		/* 战斗清算 */
+		fightCheck ({_gameInfo}, {res, card}) {
+			let {curFts, disFt, disAdv} = _gameInfo
+			curFts.na.forEach(e => disFt.unshift(e))
+			curFts.sp.forEach(e => disFt.unshift(e))
+			if (res) disFt.unshift(card)
+			else disAdv.unshift(card)
+		},
+		/* 一组卡牌移除游戏 */
+		removeCard ({_gameInfo}, rmCardList) {
+			let {curFts} = _gameInfo
+			rmCardList.na.forEach(e => {
+				_gameInfo.rm.unshift(e)
+				let idx = curFts.na.indexOf(e)
+				curFts.na.splice(idx,1)
+			})
+			rmCardList.sp.forEach(e => {
+				_gameInfo.rm.unshift(e)
+				let idx = curFts.sp.indexOf(e)
+				curFts.sp.splice(idx,1)
+			})
 		}
 	},
 	actions: {

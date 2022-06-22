@@ -1,6 +1,6 @@
 <template>
 	<view class="">
-		<view class="cbt-content flex-col-rowcenter" :class="{free:isFree, notFree:!isFree}">
+		<view class="cbt-content flex-col-rowcenter" :class="{free:isFree==1, notFree:isFree==2}">
 			<view class="cbt-top">
 				<text>{{cardInfo.atk2||cardInfo.atk}}</text>
 				<text>{{chs[cardInfo.ch]}}</text>
@@ -40,8 +40,8 @@
 		props: {
 			cardInfo: Object,
 			isFree: {
-				type: Boolean,
-				default: true
+				type: Number,
+				default: 0
 			}
 		}
 	}

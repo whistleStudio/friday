@@ -24,7 +24,7 @@
 	],
 	"ftDeck": [
 		{"id":"f0", "type":1, "ch":3, "atk":0, "atk2":"", "cost":1, "skill":0, "skill2":"", "des":""},
-		{"id":"f1", "type":1, "ch":4, "atk":1, "atk2":"", "cost":1, "skill":1, "skill2":"", "des":""},
+		{"id":"f1", "type":1, "ch":4, "atk":-1, "atk2":"", "cost":1, "skill":1, "skill2":"", "des":""},
 		{"id":"f2", "type":1, "ch":5, "atk":1, "atk2":"", "cost":1, "skill":2, "skill2":"", "des":""}
 	],
 	"weakDeck": [

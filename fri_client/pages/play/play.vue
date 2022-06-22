@@ -37,12 +37,12 @@
 			<view class="main">
 				<ul class="mgb-30">
 					<li v-for="(v,i) in naFts" :key="i">
-						<cbt-card :cardInfo="naFts[i]"></cbt-card>
+						<cbt-card :cardInfo="naFts[i]" :isFree="1"></cbt-card>
 					</li>
 				</ul>
 				<ul>
 					<li v-for="(v,i) in spFts" :key="i">
-						<cbt-card :cardInfo="spFts[i]" :isFree="false"></cbt-card>
+						<cbt-card :cardInfo="spFts[i]" :isFree="2"></cbt-card>
 					</li>
 				</ul>
 			</view>
@@ -50,20 +50,10 @@
 
 		<u-overlay :show="isOverlayShow" :z-index ="999" :opacity="0.6"
 		@click="show = false" class="flex-col-rowcenter">
-			<view v-if="isAdvsOk&&adv2.isShow" class="box">
-				<text>请选择一个冒险</text>
-				<view class="wrap flex-col-rowcenter">
-					<view class="uni-margin-wrap">
-						<swiper class="swiper" circular @change="swiperChange"
-						indicator-dots indicator-color="rgba(255,255,255,0.2)" indicator-active-color="rgba(255,255,255,0.6)">
-							<swiper-item v-for="(v,i) in curAdvs" :key="i">
-								<view class="swiper-item" :style="{backgroundImage: `url(${imgUrl.adv+v.id}.png)`}"></view>
-							</swiper-item>
-						</swiper>
-					</view>
-					<button @click="chooseAdv" size="mini" type="primary">确 定</button>
-				</view>
-			</view>
+			<choose-adv v-if="isAdv2Show" @closeOverlay="isOverlayShow=false"
+			@changeAdvCur="changeAdvCurrent" 
+			></choose-adv>
+			<rm-box v-else :disCount="advDim" @closeRm="closeRmBox"></rm-box>
 		</u-overlay>
 
 	</view>
@@ -81,15 +71,11 @@
 					bg: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/playbg-09.png",
 					info: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/info-02.png",
 					combatIcon: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/combat",
-					adv: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/test/friday",
 					advScene: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/test/scene"
 				},
 				isOverlayShow: true,
-				adv2: {
-					isShow: true,
-					current: 0,
-				},
-				isAdvShowOk: false,
+				adv2Current: 0,
+				isAdv2Show: true,
 				advTouch: {
 					tim: "",
 					isFlap: false,
@@ -99,28 +85,26 @@
 		},
 		computed: {
 			curAdvs: function () {return this.$sta._gameInfo.curAdvs},
-			isAdvsOk: function () {return this.$sta._gameInfo.isAdvsOk},
-			disAdv: function () {return this.$sta._gameInfo.disAdv},
-			curAdvCard: function () {return this.curAdvs[this.adv2.current]},
-			advs: function () {return this.$sta._cards.advDeck},
-			fts: function () {return this.$sta._cards.ftDeck},
-			naFts: function () {return this.$sta._gameInfo.curFts.na},
-			spFts: function () {return this.$sta._gameInfo.curFts.sp},
-			disFt: function () {return this.$sta._gameInfo.disFt},
-			cbtBar: function () {return [
+			disAdv () {return this.$sta._gameInfo.disAdv},
+			curAdvCard () {return this.curAdvs[this.adv2Current]},
+			advs () {return this.$sta._cards.advDeck},
+			fts () {return this.$sta._cards.ftDeck},
+			naFts () {return this.$sta._gameInfo.curFts.na},
+			spFts () {return this.$sta._gameInfo.curFts.sp},
+			disFt () {return this.$sta._gameInfo.disFt},
+			cbtBar () {return [
 				this.$sta._gameInfo.hp,
 				this.$gts.cbtCount,
 				this.$sta._gameInfo.decayLvl
 			]},
+			advDim () {
+				let ph = this.$sta._gameInfo.curPhase
+				let advHarm = this.curAdvCard.harm[ph]
+				return advHarm - this.$gts.cbtCount
+			}
 		},
 		methods: {
-			chooseAdv () {
-				this.isOverlayShow = false
-				this.adv2.isShow = false
-				let disIdx = 1 - this.adv2.current
-				this.$store.commit("discard", {card: this.curAdvs[disIdx], pile: "disAdv"})
-			},
-			swiperChange (ev) {this.adv2.current = ev.detail.current},
+			changeAdvCurrent (i) {this.adv2Current=i},
 			/* 冒险区长按事件（待完善） */
 			advTouchStart () {
 				let start = 0
@@ -135,10 +119,23 @@
 				clearInterval(this.advTouch.tim)
 				this.advTouch.isFlap = false
 			},
+			/* 挑战 */	
 			fight () {
-				console.log(this.curAdvCard)
-				console.log(this.adv2.current)
+				if (this.advDim<=0) {
+					this.$store.commit("fightCheck", {res:1, card:this.curAdvCard})
+					uni.showToast({title:"挑战成功!", icon:"none"})
+					this.openAdvBox()
+				} else {
+					let curHp = this.$sta._gameInfo.hp - this.advDim
+					this.$store.commit("changeObjVal", {k1:"_gameInfo", k2:"hp", v: curHp})
+					uni.showToast({title:`挑战失败!\n生命-${this.advDim}`}) 
+					setTimeout(()=>{
+						this.isOverlayShow = true
+						this.isAdv2Show = false
+					},500)
+				}
 			},
+			/* 抽牌 */
 			draw () {
 				this.drawCount++
 				if (this.fts.length>0) {
@@ -148,6 +145,20 @@
 					uni.showLoading({content: "岁月不饶人，你似乎又衰老了些"})
 					setTimeout(()=>{uni.hideLoading()},2000)
 				}
+			},
+			/* 打开冒险选择窗口 */
+			openAdvBox () {
+				setTimeout(()=>{
+					this.$store.commit("chooseAdvCard")
+					this.isOverlayShow = true
+					this.isAdv2Show = true
+				},500)
+			},
+			/* 关闭移除卡牌窗口 */
+			closeRmBox (disCardNum) {
+				if (disCardNum) uni.showToast({title:`共移除${disCardNum}张卡牌`,icon:"none"})
+				this.$store.commit("fightCheck", {res:0, card:this.curAdvCard})
+				this.openAdvBox()
 			}
 		},
 		watch: {
