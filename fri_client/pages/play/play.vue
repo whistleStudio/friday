@@ -6,23 +6,12 @@
 				<text>弃牌堆:{{disAdv.length}}</text>
 			</view>
 			<view class="main" @touchstart="advTouchStart" @touchend="advTouchEnd">
-				<view class="advImg" :style="{backgroundImage: `url(${imgUrl.advScene+curAdvCard.ch2}.png)`}">
-					<image src="@/static/play/info.png" mode="widthFix"></image>
-				</view>
-				<view class="advInfo">
-					<text>{{chs[curAdvCard.ch2]}}</text>
-					<view class="advbox">
-						<ul class="adv-phase">
-							<li v-for="(v,i) in Array(3)" :key="i" :style="{backgroundColor:imgUrl.phColor[i]}">{{curAdvCard.harm[i]}}</li>
-						</ul>
-						<view class="drawNum"><text>{{curAdvCard.draw-drawCount}}</text></view>
-					</view>
-				</view>
+				<adv-card :drawCount="drawCount"></adv-card>
 			</view>
 		</view>
 		<view class="action flex-center" v-if="curAdvCard">
 			<button size="mini" @click="fight">挑战</button>
-			<button size="mini" :disabled="drawCount>=curAdvCard.draw" @click="draw">抽牌</button>
+			<button size="mini" :class="{bleed: drawCount>=curAdvCard.draw}" @click="draw">抽牌</button>
 		</view>	
 		<view class="combat">
 			<view class="headbar">
@@ -50,9 +39,7 @@
 
 		<u-overlay :show="isOverlayShow" :z-index ="999" :opacity="0.6"
 		@click="show = false" class="flex-col-rowcenter">
-			<choose-adv v-if="isAdv2Show" @closeOverlay="isOverlayShow=false"
-			@changeAdvCur="changeAdvCurrent" 
-			></choose-adv>
+			<choose-adv v-if="isAdv2Show" @closeOverlay="isOverlayShow=false"></choose-adv>
 			<rm-box v-else :disCount="advDim" @closeRm="closeRmBox"></rm-box>
 		</u-overlay>
 
@@ -60,33 +47,25 @@
 </template>
 
 <script>
-	import {chs} from "@/style/card.json"
-	
 	export default {
 		data() {
 			return {
-				chs,
+				drawCount: 0,
+				isOverlayShow: true, isAdv2Show: true, bleedHint: true,
 				imgUrl: {
-					phColor:['rgb(98, 204, 141)','rgb(237, 223, 93)','rgb(247, 92, 110)'],
 					bg: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/playbg-09.png",
-					info: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/info-02.png",
 					combatIcon: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/combat",
-					advScene: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/test/scene"
 				},
-				isOverlayShow: true,
-				adv2Current: 0,
-				isAdv2Show: true,
 				advTouch: {
 					tim: "",
-					isFlap: false,
+					isFlap: false
 				},
-				drawCount: 0,
 			}
 		},
 		computed: {
 			curAdvs: function () {return this.$sta._gameInfo.curAdvs},
 			disAdv () {return this.$sta._gameInfo.disAdv},
-			curAdvCard () {return this.curAdvs[this.adv2Current]},
+			curAdvCard () {return this.$gts.curAdvCard},
 			advs () {return this.$sta._cards.advDeck},
 			fts () {return this.$sta._cards.ftDeck},
 			naFts () {return this.$sta._gameInfo.curFts.na},
@@ -104,7 +83,6 @@
 			}
 		},
 		methods: {
-			changeAdvCurrent (i) {this.adv2Current=i},
 			/* 冒险区长按事件（待完善） */
 			advTouchStart () {
 				let start = 0
@@ -128,7 +106,7 @@
 				} else {
 					let curHp = this.$sta._gameInfo.hp - this.advDim
 					this.$store.commit("changeObjVal", {k1:"_gameInfo", k2:"hp", v: curHp})
-					uni.showToast({title:`挑战失败!\n生命-${this.advDim}`}) 
+					uni.showToast({title:`挑战失败!\n生命-${this.advDim}`, icon:"none"}) 
 					setTimeout(()=>{
 						this.isOverlayShow = true
 						this.isAdv2Show = false
@@ -137,22 +115,56 @@
 			},
 			/* 抽牌 */
 			draw () {
-				this.drawCount++
+				if (this.drawCount>=this.curAdvCard.draw) {
+					uni.showModal({
+						content: "继续抽牌将消耗1生命值\n是否进行?",
+						success: res => {
+							if (res.confirm) {
+								let curHp = this.$sta._gameInfo.hp
+								this.$store.commit("changeObjVal", {k1:"_gameInfo", k2:"hp", v:curHp-1})
+								this.draw1Card()
+							}
+						}
+					})
+				}	else {if(this.fts.length>0||this.disFt.length>0) this.drawCount++; this.draw1Card();}			
+			},
+			draw1Card () {
 				if (this.fts.length>0) {
 					this.$store.commit("drawFtCard")
 				} else {
-					this.$store.dispatch("ftsRunOut")
-					uni.showLoading({content: "岁月不饶人，你似乎又衰老了些"})
-					setTimeout(()=>{uni.hideLoading()},2000)
+					if (this.disFt.length>0) {
+						this.$store.dispatch("ftsRunOut")
+						uni.showLoading({content: "岁月不饶人,\n你似乎又衰老了些"})
+						setTimeout(()=>{uni.hideLoading()},1500)
+					} else {uni.showToast({title:"牌库已空", icon:"none"})}
 				}
 			},
 			/* 打开冒险选择窗口 */
 			openAdvBox () {
 				setTimeout(()=>{
-					this.$store.commit("chooseAdvCard")
-					this.isOverlayShow = true
-					this.isAdv2Show = true
-				},500)
+					if (this.advs.length===1) {
+						uni.showModal({
+							content: "还剩一张冒险牌, 可放弃挑战进入下一阶段",
+							cancelText: "放弃",
+							confirmText: "继续",
+							success: res => {
+								if (res.confirm) this.giveAdvCard()
+								else if (res.cancel) {
+									this.$store.commit("changeObjVal", {k1:"_gameInfo", k2:"isNextPhase", v:true})
+									this.giveAdvCard(true)
+								}
+							}
+						})
+					} else {
+						this.giveAdvCard()
+					}
+				},500) 
+			},
+			/* 请求派发冒险牌 */
+			giveAdvCard (isNext=false) {
+				this.$store.commit("chooseAdvCard")
+				this.isOverlayShow = true
+				this.isAdv2Show = true
 			},
 			/* 关闭移除卡牌窗口 */
 			closeRmBox (disCardNum) {

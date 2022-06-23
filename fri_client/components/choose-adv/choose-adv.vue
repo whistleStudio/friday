@@ -33,11 +33,12 @@
 		methods: {
 			swiperChange (ev) {
 				this.adv2Current = ev.detail.current
-				this.$emit("changeAdvCur", this.adv2Current)
+				// this.$emit("changeAdvCur", this.adv2Current)
+				this.$store.commit("changeObjVal", {k1:"_gameInfo", k2:"curAdvIdx", v:this.adv2Current})
 			},
 			chooseAdv () {
 				this.$emit("closeOverlay")
-				let disIdx = 1 - this.adv2Ccurrent
+				let disIdx = 1 - this.adv2Current
 				this.$store.commit("discard", {card: this.curAdvs[disIdx], pile: "disAdv"})
 			},
 		}

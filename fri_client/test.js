@@ -1,6 +1,5 @@
-let a = {n:"w"}
-let b = {n:"s"}
-let c = {n:"b"}
+let a = []
+let b =[1]
 
-let arr = [a,b,c]
-console.log(arr.indexOf(c))
+let c = [...a, ...b]
+console.log(c.length)

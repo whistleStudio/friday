@@ -7,35 +7,25 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
 	state: {
 		_userInfo: {
-			nickname: "",
-			avatar: "00",
-			openid: "",
-			lvl: 1
+			nickname: "", avatar: "00", openid: "", lvl: 1
 		},
 		_gameInfo: {
-			isInitOk: false,
-			glvl: 0,
-			hp: 20,
-			decayLvl: 0,
-			curPhase: 0,
-			curFts: {na:[], sp:[]},
-			curAdvs: [],
-			disAdv: [],
-			disFt: [],
-			rm: [],
-			isNextPhase: false,
-			isAdvsOk: false
+			glvl: 0, hp: 20, decayLvl: 0, curPhase: 0, curAdvIdx: 0,
+			curFts: {na:[], sp:[]}, curAdvs: [], disAdv: [], disFt: [], rm: [],
+			isInitOk: false, isBoss: false, isAdvsOk: false	
 		},
 		_cards: cards
 	},
 	getters: {
 		cbtCount ({_gameInfo}) {
-			let n = 0
 			let {curFts} = _gameInfo
+			if (!(curFts.na.length||curFts.sp.length)) return 0;
+			let n = 0
 			curFts.na.forEach(e=>{n += (e.atk2 || e.atk)})
 			curFts.sp.forEach(e=>{n += (e.atk2 || e.atk)})
 			return n
-		}
+		},
+		curAdvCard ({_gameInfo}) {return _gameInfo.curAdvs[_gameInfo.curAdvIdx]}
 	},
 	mutations: {
 		changeVal (state, {k,v}) {
@@ -85,24 +75,28 @@ const store = new Vuex.Store({
 			}
 			console.log(_cards)
 			_gameInfo.isInitOk = true
-			// setTimeout(()=>{uni.hideLoading()}, 1000)	
+			setTimeout(()=>{uni.hideLoading()}, 1000)	
 		},
 		/* 派发2张冒险牌 */
-		chooseAdvCard ({_gameInfo, _cards}) {
+		chooseAdvCard ({_gameInfo, _cards}, isNext=false) {
 			_gameInfo.curAdvs = [];_gameInfo.curFts.na = [];_gameInfo.curFts.sp = [];
-			// let {curAdvs} = _gameInfo
-			let {advDeck} = _cards
-			let advL = advDeck.length
-			if (advL) {
-				if (advL !== 1) {
-					var pickCards = advDeck.splice(0,2)
-					_gameInfo.curAdvs = [...pickCards]
-				} else {
-					_gameInfo.curAdvs = [...advDeck]
-				}
-			} else _gameInfo.isNextPhase = true
-			_gameInfo.isAdvsOk = true
-			uni.hideLoading()
+			_gameInfo.curAdvIdx = 0;
+			let advL = _cards.advDeck.length
+			let pickNum = 2
+			switch (advL) {
+				case 0:
+				  nextPhase(_gameInfo, _cards)
+					break
+				case 1:
+					if (isNext) {
+						nextPhase(_gameInfo, _cards)
+					}
+					else pickNum = 1
+					break
+			}	
+			_gameInfo.curAdvs = _cards.advDeck.splice(0, pickNum)
+		  _gameInfo.isAdvsOk = true
+		  // uni.hideLoading()
 		},
 		/* 弃牌 */
 		discard ({_gameInfo, _cards}, {card, pile}) {
@@ -197,6 +191,19 @@ function initShuffle (_cards) {
 	weakDeck = shuffle(weakDeck)
 	supWeakDeck = shuffle(supWeakDeck)
 	_cards.weakDeck = [...weakDeck, ...supWeakDeck]
+}
+
+/* 提示进入阶段x */
+function nextPhase (_gameInfo,_cards) {
+	if (_gameInfo.curPhase < 2) {
+		_gameInfo.curPhase++
+		uni.showToast({title:`形势又严峻了些...`, icon:"none"})
+	} else {
+		this._gameInfo.isBoss = true
+		uni.showToast({title:`击败这些海盗, 就能回家了`, icon:"none"})
+	}
+	_cards.advDeck = shuffle([..._cards.advDeck, ..._gameInfo.disAdv]) 
+	_gameInfo.disAdv = []
 }
 
 export default store
