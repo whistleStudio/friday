@@ -3,7 +3,7 @@
 		<view class="adventure mgb-30" v-if="curAdvCard">
 			<view class="headbar">
 				<text>阶段I 剩余冒险:{{advs.length}}</text>
-				<text>弃牌堆:{{disAdv.length}}</text>
+				<text>冒险牌库:{{advs.length}}</text>
 			</view>
 			<view class="main" @touchstart="advTouchStart" @touchend="advTouchEnd">
 				<adv-card :drawCount="drawCount"></adv-card>
@@ -21,7 +21,7 @@
 						<text>{{cbtBar[i]}}</text>
 					</li>
 				</ul>
-				<text>弃牌堆:{{disFt.length}}</text>
+				<text>战斗牌库:{{fts.length}}</text>
 			</view>
 			<view class="main">
 				<ul class="mgb-30">
@@ -34,24 +34,31 @@
 						<cbt-card :cardInfo="spFts[i]" :isFree="2"></cbt-card>
 					</li>
 				</ul>
+				<view class="dis-btn" @click="isPopShow=true"></view>
 			</view>
 		</view>
 
-		<u-overlay :show="isOverlayShow" :z-index ="999" :opacity="0.6"
+		<u-overlay :show="isOverlayShow&&!isBoss" :z-index ="999" :opacity="0.6"
 		@click="show = false" class="flex-col-rowcenter">
 			<choose-adv v-if="isAdv2Show" @closeOverlay="isOverlayShow=false"></choose-adv>
 			<rm-box v-else :disCount="advDim" @closeRm="closeRmBox"></rm-box>
 		</u-overlay>
 
+		<u-popup :show="isPopShow" mode="left">
+		  <view class="pop-box">
+		      <dis-box @closePopup="isPopShow=false"></dis-box>
+		  </view>
+		</u-popup>
 	</view>
 </template>
 
 <script>
+	import {mapGetters} from 'vuex'
 	export default {
 		data() {
 			return {
 				drawCount: 0,
-				isOverlayShow: true, isAdv2Show: true, bleedHint: true,
+				isOverlayShow: true, isAdv2Show: true, bleedHint: true, isPopShow: false,
 				imgUrl: {
 					bg: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/playbg-09.png",
 					combatIcon: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/combat",
@@ -80,7 +87,8 @@
 				let ph = this.$sta._gameInfo.curPhase
 				let advHarm = this.curAdvCard.harm[ph]
 				return advHarm - this.$gts.cbtCount
-			}
+			},
+			isBoss () {return this.$sta._gameInfo.isBoss}
 		},
 		methods: {
 			/* 冒险区长按事件（待完善） */
@@ -172,8 +180,6 @@
 				this.$store.commit("fightCheck", {res:0, card:this.curAdvCard})
 				this.openAdvBox()
 			}
-		},
-		watch: {
 		},
 		onLoad (q) {
 			setTimeout(()=>{

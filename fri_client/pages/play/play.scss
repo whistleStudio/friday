@@ -75,12 +75,10 @@
 			padding: 20rpx;
 			ul {
 				display: flex;
-				// justify-content: space-between;
 				flex-wrap: wrap;
 				li {
-					margin-top: 20rpx;
+					margin-bottom: 20rpx;
 					flex: none;
-					// margin-right: 20rpx;
 					width: 200rpx;
 					height: 300rpx;
 					background-color: rgb(255, 250, 232);
@@ -90,6 +88,15 @@
 						margin-right: 16rpx;
 					}
 				}	
+			}
+			.dis-btn {
+				opacity: 0.7;
+				width: 80rpx;
+				height: 80rpx;
+				margin: 0 auto;
+				background: white url("@/static/play/dispile.png") center/contain no-repeat;
+				border-radius: 50%;
+				box-shadow: 1px 1px 1px 1px gainsboro;
 			}
 		}
 	}
@@ -111,4 +118,9 @@
 	border-radius: 10rpx;
 	box-sizing: border-box;
 	box-shadow: 1px 1px 1px 1px darkgreen;
+}
+.pop-box {
+	width: 600rpx;
+	height: 100%;
+	background-color: #fff6db;
 }

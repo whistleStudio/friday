@@ -43,7 +43,7 @@
 	],
 	"prtDeck": [
 		{"id":"p0", "type":3, "ch":0, "atk":18, "skill":"", "draw":8, "des":""},
-		{"id":"p1", "type":3, "ch":0, "atk":25, "skill":"weak", "draw":9, "des":""},
-		{"id":"p2", "type":3, "ch":0, "atk":19, "skill":"", "draw":8, "des":""}
+		{"id":"p1", "type":3, "ch":1, "atk":25, "skill":"weak", "draw":9, "des":""},
+		{"id":"p2", "type":3, "ch":2, "atk":19, "skill":"", "draw":8, "des":""}
 	]
 }

@@ -1,5 +1,3 @@
-let a = []
-let b =[1]
+let a = "0"
 
-let c = [...a, ...b]
-console.log(c.length)
+console.log(undefined+"")

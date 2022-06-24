@@ -10,7 +10,7 @@ const store = new Vuex.Store({
 			nickname: "", avatar: "00", openid: "", lvl: 1
 		},
 		_gameInfo: {
-			glvl: 0, hp: 20, decayLvl: 0, curPhase: 0, curAdvIdx: 0,
+			glvl: 0, hp: 20, decayLvl: 0, curPhase: 0, curAdvIdx: 0, 
 			curFts: {na:[], sp:[]}, curAdvs: [], disAdv: [], disFt: [], rm: [],
 			isInitOk: false, isBoss: false, isAdvsOk: false	
 		},
@@ -25,7 +25,11 @@ const store = new Vuex.Store({
 			curFts.sp.forEach(e=>{n += (e.atk2 || e.atk)})
 			return n
 		},
-		curAdvCard ({_gameInfo}) {return _gameInfo.curAdvs[_gameInfo.curAdvIdx]}
+		curAdvCard ({_gameInfo,_cards}) {
+			let c = _gameInfo.isBoss ? _cards.prtDeck[0] : _gameInfo.curAdvs[_gameInfo.curAdvIdx]
+			return c
+		},
+		curPrt ({_cards}) {return _cards.prtDeck[0]}
 	},
 	mutations: {
 		changeVal (state, {k,v}) {
@@ -93,9 +97,10 @@ const store = new Vuex.Store({
 					}
 					else pickNum = 1
 					break
-			}	
+			}
+			if (_gameInfo.isBoss) pickNum=0
 			_gameInfo.curAdvs = _cards.advDeck.splice(0, pickNum)
-		  _gameInfo.isAdvsOk = true
+		  _gameInfo.isAdvsOk = _gameInfo.isBoss ? false : true
 		  // uni.hideLoading()
 		},
 		/* 弃牌 */
@@ -172,6 +177,7 @@ const store = new Vuex.Store({
 
 /* 洗牌 */
 function shuffle (deck) {
+	resetCard(deck) 
 	let oL = deck.length, newDeck = []
 	for(let i = 0; i < oL; i++) {
 		let rdIdx = parseInt(Math.random()*deck.length)
@@ -199,11 +205,24 @@ function nextPhase (_gameInfo,_cards) {
 		_gameInfo.curPhase++
 		uni.showToast({title:`形势又严峻了些...`, icon:"none"})
 	} else {
-		this._gameInfo.isBoss = true
+		_gameInfo.isBoss = true
 		uni.showToast({title:`击败这些海盗, 就能回家了`, icon:"none"})
 	}
 	_cards.advDeck = shuffle([..._cards.advDeck, ..._gameInfo.disAdv]) 
 	_gameInfo.disAdv = []
+}
+
+/* 重置卡牌  1-牌组;0-单张*/
+function resetCard(card,mode=1) {
+	if (mode) {
+		card.forEach(e=>{
+			if(e.atk2+"") e.atk2=""
+			if(e.skill2+"") e.skill2=""
+		})
+	} else {
+		if(card.atk2+"") card.atk2=""
+		if(card.skill2+"") card.skill2=""
+	}
 }
 
 export default store

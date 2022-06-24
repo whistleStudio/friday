@@ -1,6 +1,6 @@
 <template>
-	<view class="adv-card">
-		<view class="advImg" :style="{backgroundImage: `url(${imgUrl.advScene+curAdvCard.ch2}.png)`}">
+	<view v-if="!isBoss" class="adv-card">
+		<view v-if="curAdvCard" class="advImg" :style="{backgroundImage: `url(${imgUrl.advScene+curAdvCard.ch2}.png)`}">
 			<image src="@/static/play/info.png" mode="widthFix"></image>
 		</view>
 		<view class="advInfo">
@@ -12,6 +12,9 @@
 				<view class="drawNum"><text>{{curAdvCard.draw-drawCount}}</text></view>
 			</view>
 		</view>
+	</view>
+	<view v-else class="adv-card-boss" :style="{backgroundImage: `url(${imgUrl.pirate+curAdvCard.ch}.png)`}">
+		<view class="drawNum"><text>{{curAdvCard.draw-drawCount}}</text></view>
 	</view>
 </template>
 
@@ -25,15 +28,21 @@
 				chs,
 				imgUrl: {
 					phColor:['rgb(98, 204, 141)','rgb(237, 223, 93)','rgb(247, 92, 110)'],
-					advScene: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/test/scene"
+					advScene: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/test/scene",
+					pirate: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/test/pirate"
 				},
 			};
 		},
 		computed: {
 			curAdvCard () {return this.$gts.curAdvCard},
+			isBoss () {return this.$sta._gameInfo.isBoss},
+			// curPrt () {return this.$gts.curPrt}
 		},
 		props: {
 			drawCount: Number,
+		},
+		mounted () {
+			console.log(this.curAdvCard)
 		}
 	}
 </script>
@@ -61,7 +70,6 @@
 	}
 	.advInfo {
 		margin-left: 40rpx;
-		// background-color: green;
 		height: 250rpx;
 		display: flex;
 		flex-direction: column;
@@ -89,16 +97,36 @@
 				margin-left: 50rpx;
 				width: 74rpx;
 				height: 100rpx;
-				// background-color: white;
 				background: url("@/static/play/drawcard.png") center/contain no-repeat;
 				position: relative;
 				text {
 					font: 60rpx $fontF;
-					position: relative;
+					position: absolute;
 					left: 11rpx;
 					top: 14rpx;	
 				}
 			}
+		}
+	}
+}
+.adv-card-boss {
+	width: 100%;
+	height: 100%;
+	border-radius: 10rpx;
+	background: #FFF6DB center/contain no-repeat;
+	position: relative;
+	.drawNum {
+		width: 50rpx;
+		height: 60rpx;
+		position: absolute;
+		background-color: #FFF6DB;
+		left: 83rpx;
+		top: 26rpx;
+		border-radius: 15rpx;
+		text-align: center;
+		text {
+			font: bold 45rpx/60rpx $fontF;
+			color: $gray100;
 		}
 	}
 }
