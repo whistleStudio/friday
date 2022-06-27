@@ -1,5 +1,5 @@
 <template>
-	<view class="content pdt-30 flex-col-rowcenter" :style="{backgroundImage: `url(${imgUrl.bg})`}">
+	<view v-if="isInitOk" class="content pdt-30 flex-col-rowcenter" :style="{backgroundImage: `url(${imgUrl.bg})`}">
 		<view class="adventure mgb-30" v-if="curAdvCard">
 			<view class="headbar">
 				<text>阶段I 剩余冒险:{{advs.length}}</text>
@@ -85,10 +85,12 @@
 			]},
 			advDim () {
 				let ph = this.$sta._gameInfo.curPhase
-				let advHarm = this.curAdvCard.harm[ph]
+				// console.log("curAdv", this.curAdvCard)
+				let advHarm = this.curAdvCard ? this.curAdvCard.harm[ph] : 99
 				return advHarm - this.$gts.cbtCount
 			},
-			isBoss () {return this.$sta._gameInfo.isBoss}
+			isBoss () {return this.$sta._gameInfo.isBoss},
+			isInitOk () {return this.$sta._gameInfo.isInitOk}
 		},
 		methods: {
 			/* 冒险区长按事件（待完善） */
@@ -113,7 +115,7 @@
 					this.openAdvBox()
 				} else {
 					let curHp = this.$sta._gameInfo.hp - this.advDim
-					this.$store.commit("changeObjVal", {k1:"_gameInfo", k2:"hp", v: curHp})
+					this.$store.commit("changeHp", this.advDim)
 					uni.showToast({title:`挑战失败!\n生命-${this.advDim}`, icon:"none"}) 
 					setTimeout(()=>{
 						this.isOverlayShow = true
@@ -123,18 +125,20 @@
 			},
 			/* 抽牌 */
 			draw () {
-				if (this.drawCount>=this.curAdvCard.draw) {
-					uni.showModal({
-						content: "继续抽牌将消耗1生命值\n是否进行?",
-						success: res => {
-							if (res.confirm) {
-								let curHp = this.$sta._gameInfo.hp
-								this.$store.commit("changeObjVal", {k1:"_gameInfo", k2:"hp", v:curHp-1})
-								this.draw1Card()
+				// 有牌可抽
+				if (this.fts.length>0||this.disFt.length>0) {
+					if (this.drawCount>=this.curAdvCard.draw) {
+						uni.showModal({
+							content: "继续抽牌将消耗1生命值\n是否进行?",
+							success: res => {
+								if (res.confirm) {
+									this.$store.commit("changeHp", 1)
+									this.draw1Card()
+								}
 							}
-						}
-					})
-				}	else {if(this.fts.length>0||this.disFt.length>0) this.drawCount++; this.draw1Card();}			
+						})
+					}	else {this.drawCount++; this.draw1Card();}
+				} else uni.showToast({title:"牌库已空!", icon:"none"})
 			},
 			draw1Card () {
 				if (this.fts.length>0) {
@@ -144,7 +148,7 @@
 						this.$store.dispatch("ftsRunOut")
 						uni.showLoading({content: "岁月不饶人,\n你似乎又衰老了些"})
 						setTimeout(()=>{uni.hideLoading()},1500)
-					} else {uni.showToast({title:"牌库已空", icon:"none"})}
+					} else {uni.showToast({title:"牌库已空!", icon:"none"})}
 				}
 			},
 			/* 打开冒险选择窗口 */

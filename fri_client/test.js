@@ -1,3 +1,2 @@
-let a = "0"
-
-console.log(undefined+"")
+let a = Math.ceil(undefined)
+console.log(a)

@@ -1,7 +1,6 @@
 <template>
 	<view class="content flex-center" :style="{backgroundImage: `url(${imgUrl.bg})`}">
 		<view class="profile flex-center">
-			<!-- :style="{backgroundImage: `url(${avUrl})`}" -->
 			<view v-if="avatar" class="avatar" :style="{backgroundImage: `url(${imgUrl.av+avatar}.jpg)`}">
 			</view>
 			<text>{{nickname}}</text>

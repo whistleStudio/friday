@@ -7,7 +7,8 @@
 			<text>{{chs[curAdvCard.ch2]}}</text>
 			<view class="advbox">
 				<ul class="adv-phase">
-					<li v-for="(v,i) in Array(3)" :key="i" :style="{backgroundColor:imgUrl.phColor[i]}">{{curAdvCard.harm[i]}}</li>
+					<li v-for="(v,i) in Array(3)" :key="i" :class="{act: curPh==i}"
+					:style="{backgroundColor:imgUrl.phColor[i]}">{{curAdvCard.harm[i]}}</li>
 				</ul>
 				<view class="drawNum"><text>{{curAdvCard.draw-drawCount}}</text></view>
 			</view>
@@ -36,6 +37,7 @@
 		computed: {
 			curAdvCard () {return this.$gts.curAdvCard},
 			isBoss () {return this.$sta._gameInfo.isBoss},
+			curPh () {return this.$sta._gameInfo.curPhase}
 			// curPrt () {return this.$gts.curPrt}
 		},
 		props: {
@@ -87,10 +89,16 @@
 				li {
 					width: 70rpx;
 					height: 70rpx;
-					background-color: cadetblue;
+					// background-color: cadetblue;
 					font: 45rpx/70rpx $fontF;
 					color: white;
 					text-align: center;
+					box-sizing: border-box
+				}
+				.act {
+					font-weight: bold;
+					line-height: 58rpx;
+					border: 6rpx solid rgb(33, 150, 243);
 				}
 			}
 			.drawNum {

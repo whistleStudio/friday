@@ -8,9 +8,13 @@
 				  <u-tabs @change="changeTag" 
 					:list="tagList" lineWidth="100rpx" lineHeight="8rpx" lineColor="rgb(167, 87, 49)" :itemStyle="tagStyle.item"></u-tabs>
 				</u-sticky>
-				<ul class="dis-show">
-					<li v-for="(v,i) in Array(10)" :key="i"></li>
-				</ul>
+				<scroll-view scroll-y="true" class="dis-show" :style="{height: scrollH[curIdx]}">
+					<ul class="flex-col-rowcenter">
+						<li v-for="(v,i) in disList[curIdx]" :key="i">
+							<dis-card :tag="curIdx" :cardInfo="v"></dis-card>
+						</li>
+					</ul>
+				</scroll-view>
 			</view>
 
 	</view>
@@ -32,6 +36,16 @@
 				},
 				curIdx: 0,
 			};
+		},
+	  computed: {
+			disList () {return [this.$sta._gameInfo.disAdv,this.$sta._gameInfo.disFt,this.$sta._gameInfo.rm]},
+			scrollH () {
+				return [
+					this.$sta._gameInfo.disAdv.length*140+"rpx" ,
+					this.$sta._gameInfo.disFt.length*140+"rpx" ,
+					this.$sta._gameInfo.rm.length*140+"rpx" ,
+				]
+			},
 		},
 		methods: {
 			closePopup () {
@@ -59,21 +73,20 @@
 	}
 	.main {
 		box-sizing: border-box;
+		width: 100%;
 		height: 100%;
 		.dis-show {
-			height: calc(100% - 160rpx);
-			background-color: lightcyan;
-			box-sizing: border-box;
-			overflow-y: auto;
-			display: flex;
-			flex-wrap: wrap;
-			li {
-				flex: none;
-				margin-bottom: 20rpx;
-				margin-right: 20rpx;
-				width: 200rpx;
-				height: 300rpx;
-				background-color: #fff;
+			ul {
+			  box-sizing: border-box;
+				padding: 20rpx;
+				width: 100%;
+				li {
+					width: 100%;
+					height: 100rpx;
+					background-color: $cardC;
+					border-radius: 5rpx;
+					margin-bottom: 10rpx;
+				}
 			}
 		}
 	}

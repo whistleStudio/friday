@@ -1,18 +1,19 @@
 import Vue from "vue"
 import Vuex from "vuex"
 import cards from "@/style/card.json"
+import {shuffle, initShuffle, nextPhase, resetCard, isGameOver} from "./pubMethod"
 
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
 	state: {
 		_userInfo: {
-			nickname: "", avatar: "00", openid: "", lvl: 1
+			nickname: "temp", avatar: "00", openid: "", lvl: 1
 		},
 		_gameInfo: {
-			glvl: 0, hp: 20, decayLvl: 0, curPhase: 0, curAdvIdx: 0, 
+			glvl: 0, hp: 5, decayLvl: 0, curPhase: 0, curAdvIdx: 0, 
 			curFts: {na:[], sp:[]}, curAdvs: [], disAdv: [], disFt: [], rm: [],
-			isInitOk: false, isBoss: false, isAdvsOk: false	
+			isInitOk: true, isBoss: false, isAdvsOk: false	
 		},
 		_cards: cards
 	},
@@ -37,6 +38,10 @@ const store = new Vuex.Store({
 		},
 		changeObjVal (state, {k1,k2,v}) {
 			state[k1][k2] = v
+		},
+		changeHp ({_gameInfo}, v) {
+			_gameInfo.hp -= v
+			isGameOver(_gameInfo.hp)
 		},
 		/* 初始各牌组 */
 		initDeck (state) {
@@ -77,9 +82,8 @@ const store = new Vuex.Store({
 					initShuffle(_cards)
 					break	
 			}
-			console.log(_cards)
-			_gameInfo.isInitOk = true
-			setTimeout(()=>{uni.hideLoading()}, 1000)	
+			console.log("cards shuffled!",_cards)
+			setTimeout(()=>{uni.hideLoading();_gameInfo.isInitOk = true;}, 1000)	
 		},
 		/* 派发2张冒险牌 */
 		chooseAdvCard ({_gameInfo, _cards}, isNext=false) {
@@ -131,7 +135,10 @@ const store = new Vuex.Store({
 			curFts.na.forEach(e => disFt.unshift(e))
 			curFts.sp.forEach(e => disFt.unshift(e))
 			if (res) disFt.unshift(card)
-			else disAdv.unshift(card)
+			else {
+				isGameOver(_gameInfo.hp)
+				disAdv.unshift(card)
+			}
 		},
 		/* 一组卡牌移除游戏 */
 		removeCard ({_gameInfo}, rmCardList) {
@@ -167,62 +174,14 @@ const store = new Vuex.Store({
 					uni.showToast({title:"网络出错啦",icon:"error"})
 				}
 			})
+		},
+		ftsRunOut ({commit}) {
+			console.log("runout")
+			commit("addWeakCard")
+			commit("drawFtCard")
 		}
-	},
-	ftsRunOut ({commit}) {
-		commit("addWeakCard")
-		commit("drawFtCard")
 	}
 })
 
-/* 洗牌 */
-function shuffle (deck) {
-	resetCard(deck) 
-	let oL = deck.length, newDeck = []
-	for(let i = 0; i < oL; i++) {
-		let rdIdx = parseInt(Math.random()*deck.length)
-		let newCard = deck.splice(rdIdx,1)
-		newDeck = [...newDeck, ...newCard]
-	}
-	return newDeck
-}
-
-/* 初始洗牌 */
-function initShuffle (_cards) {
-	let {advDeck,ftDeck,weakDeck,prtDeck} = _cards
-	_cards.advDeck = shuffle(advDeck)
-	_cards.ftDeck = shuffle(ftDeck)
-	_cards.prtDeck = shuffle(prtDeck).splice(0,2)
-	let supWeakDeck = weakDeck.splice(-3)
-	weakDeck = shuffle(weakDeck)
-	supWeakDeck = shuffle(supWeakDeck)
-	_cards.weakDeck = [...weakDeck, ...supWeakDeck]
-}
-
-/* 提示进入阶段x */
-function nextPhase (_gameInfo,_cards) {
-	if (_gameInfo.curPhase < 2) {
-		_gameInfo.curPhase++
-		uni.showToast({title:`形势又严峻了些...`, icon:"none"})
-	} else {
-		_gameInfo.isBoss = true
-		uni.showToast({title:`击败这些海盗, 就能回家了`, icon:"none"})
-	}
-	_cards.advDeck = shuffle([..._cards.advDeck, ..._gameInfo.disAdv]) 
-	_gameInfo.disAdv = []
-}
-
-/* 重置卡牌  1-牌组;0-单张*/
-function resetCard(card,mode=1) {
-	if (mode) {
-		card.forEach(e=>{
-			if(e.atk2+"") e.atk2=""
-			if(e.skill2+"") e.skill2=""
-		})
-	} else {
-		if(card.atk2+"") card.atk2=""
-		if(card.skill2+"") card.skill2=""
-	}
-}
 
 export default store

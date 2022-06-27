@@ -81,7 +81,7 @@
 					flex: none;
 					width: 200rpx;
 					height: 300rpx;
-					background-color: rgb(255, 250, 232);
+					background-color: $cardC;
 					border-radius: 10rpx;
 					position: relative;
 					&:not(:nth-of-type(3n)) {
@@ -122,5 +122,5 @@
 .pop-box {
 	width: 600rpx;
 	height: 100%;
-	background-color: #fff6db;
+	background-color: #f7eee3;
 }
