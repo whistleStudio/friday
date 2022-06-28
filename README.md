@@ -131,3 +131,9 @@ AI里基本完成play页面布局
 3 修复其中一部分抽牌bug
 
 4 【待解决】fts抽空后，抽牌atk2 undefined
+
+### [06281728]
+
+- client 
+
+card.json录入中
