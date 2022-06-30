@@ -34,7 +34,7 @@
 			return {
 				isShow: false,
 				imgUrl: {
-					title: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/frt-02.png",
+					title: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/frtTitle.png",
 					bg: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/home.jpg",
 					av: "https://cfunweb.oss-cn-hangzhou.aliyuncs.com/img/cfiot/av",
 				},

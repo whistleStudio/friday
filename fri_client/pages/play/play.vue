@@ -11,7 +11,7 @@
 		</view>
 		<view class="action flex-center" v-if="curAdvCard">
 			<button size="mini" @click="fight">挑战</button>
-			<button size="mini" :class="{bleed: drawCount>=curAdvCard.draw}" @click="draw">抽牌</button>
+			<button size="mini" :class="{bleed: drawCount>=curDraw}" @click="draw">抽牌</button>
 		</view>	
 		<view class="combat">
 			<view class="headbar">
@@ -53,15 +53,16 @@
 </template>
 
 <script>
-	import {mapGetters} from 'vuex'
+	import {harm} from "@/style/card.json"
 	export default {
 		data() {
 			return {
+				harm,
 				drawCount: 0,
 				isOverlayShow: true, isAdv2Show: true, bleedHint: true, isPopShow: false,
 				imgUrl: {
-					bg: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/playbg-09.png",
-					combatIcon: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/combat",
+					bg: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/playBg.png",
+					combatIcon: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/icon/combat",
 				},
 				advTouch: {
 					tim: "",
@@ -73,6 +74,7 @@
 			curAdvs: function () {return this.$sta._gameInfo.curAdvs},
 			disAdv () {return this.$sta._gameInfo.disAdv},
 			curAdvCard () {return this.$gts.curAdvCard},
+			curDraw () {return this.$sta.isBoss ? this.curDraw : this.curAdvCard.ch2+1},
 			advs () {return this.$sta._cards.advDeck},
 			fts () {return this.$sta._cards.ftDeck},
 			naFts () {return this.$sta._gameInfo.curFts.na},
@@ -86,7 +88,9 @@
 			advDim () {
 				let ph = this.$sta._gameInfo.curPhase
 				// console.log("curAdv", this.curAdvCard)
-				let advHarm = this.curAdvCard ? this.curAdvCard.harm[ph] : 99
+				let advHarm
+				if (this.isBoss) advHarm = this.curAdvCard ? this.curAdvCard.atk : 99
+				else advHarm = this.curAdvCard ? harm[this.curAdvCard.ch2][ph] : 99
 				return advHarm - this.$gts.cbtCount
 			},
 			isBoss () {return this.$sta._gameInfo.isBoss},
@@ -127,7 +131,7 @@
 			draw () {
 				// 有牌可抽
 				if (this.fts.length>0||this.disFt.length>0) {
-					if (this.drawCount>=this.curAdvCard.draw) {
+					if (this.drawCount>=this.curDraw) {
 						uni.showModal({
 							content: "继续抽牌将消耗1生命值\n是否进行?",
 							success: res => {

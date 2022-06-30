@@ -8,36 +8,37 @@
 			<view class="advbox">
 				<ul class="adv-phase">
 					<li v-for="(v,i) in Array(3)" :key="i" :class="{act: curPh==i}"
-					:style="{backgroundColor:imgUrl.phColor[i]}">{{curAdvCard.harm[i]}}</li>
+					:style="{backgroundColor:imgUrl.phColor[i]}">{{harm[curAdvCard.ch2][i]}}</li>
 				</ul>
-				<view class="drawNum"><text>{{curAdvCard.draw-drawCount}}</text></view>
+				<view class="drawNum"><text>{{curDraw-drawCount}}</text></view>
 			</view>
 		</view>
 	</view>
-	<view v-else class="adv-card-boss" :style="{backgroundImage: `url(${imgUrl.pirate+curAdvCard.ch}.png)`}">
-		<view class="drawNum"><text>{{curAdvCard.draw-drawCount}}</text></view>
+	<view v-else class="adv-card-boss" :style="{backgroundImage: `url(${imgUrl.pirate+curAdvCard.id}.png)`}">
+		<view class="drawNum"><text>{{curDraw-drawCount}}</text></view>
 	</view>
 </template>
 
 <script>
-	import {chs} from "@/style/card.json"
+	import {chs,harm} from "@/style/card.json"
 	
 	export default {
 		name:"adv-card",
 		data() {
 			return {
-				chs,
+				chs, harm,
 				imgUrl: {
 					phColor:['rgb(98, 204, 141)','rgb(237, 223, 93)','rgb(247, 92, 110)'],
-					advScene: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/test/scene",
-					pirate: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/test/pirate"
+					advScene: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/scene/scene",
+					pirate: "	https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/prt/prt"
 				},
 			};
 		},
 		computed: {
 			curAdvCard () {return this.$gts.curAdvCard},
 			isBoss () {return this.$sta._gameInfo.isBoss},
-			curPh () {return this.$sta._gameInfo.curPhase}
+			curPh () {return this.$sta._gameInfo.curPhase},
+			curDraw () {return this.$sta.isBoss ? this.curDraw : this.curAdvCard.ch2+1},
 			// curPrt () {return this.$gts.curPrt}
 		},
 		props: {

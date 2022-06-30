@@ -19,8 +19,8 @@
 		data() {
 			return {
 				imgUrl: {
-					bg: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/cardback-05.png",
-					lock: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/lock-04.png",
+					bg: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/cardback.png",
+					lock: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/icon/lock.png",
 				},
 				mainInfo: [
 					{txt: "普通"},

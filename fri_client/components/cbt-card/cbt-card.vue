@@ -34,7 +34,7 @@
 				chs,skill,
 				isMaskShow: false,
 				isAct: false,
-				imgUrl: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/test/scene"
+				imgUrl: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/scene/scene"
 			};
 		},
 		props: {

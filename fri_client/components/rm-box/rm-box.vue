@@ -37,10 +37,11 @@
 			swapSta (g, i) {
 				let arr = g ? this.curFtLis.sp : this.curFtLis.na
 				let cardArr = g ? this.spFts : this.naFts
-				console.log(arr[i])
-				if (arr[i]||this.disNum<this.disCount) {
-					if (arr[i]) {this.disNum -= cardArr[i].cost; this.disCardNum--;}
-					else {this.disNum += cardArr[i].cost; this.disCardNum++;}
+				let cost = cardArr[i].type===2 ? 2 : 1
+				// console.log(arr[i])
+				if (arr[i]||this.disNum<=this.disCount-cost) {
+					if (arr[i]) {this.disNum -= cost; this.disCardNum--;}
+					else {this.disNum += cost; this.disCardNum++;}
 					this.$set(arr, i, !arr[i])
 				} else uni.showToast({title: "无法移除更多的卡牌",icon:"none"})
 			},

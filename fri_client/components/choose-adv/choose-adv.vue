@@ -22,7 +22,7 @@
 			return {
 				adv2Current: 0,
 				imgUrl:{
-					adv: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/test/friday",
+					adv: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/adv/adv",
 				}
 			};
 		},

@@ -3,12 +3,12 @@
 		<view v-if="!tag" class="card-scene" :style="{backgroundImage: `url(${imgUrl+cardInfo.ch2}.png)`}"></view>
 		<view v-else class="card-scene" :style="{backgroundImage: `url(${imgUrl+cardInfo.ch}.png)`}"></view>
 		<ul v-if="!tag" class="card-data">
-			<li> <image :src="advIcon[0]" mode="heightFix"></image><text>{{cardInfo.draw}}</text></li>
+			<li> <image :src="advIcon[0]" mode="heightFix"></image><text>{{cardInfo.ch2+1}}</text></li>
 			<li> 
 				<image :src="advIcon[1]" mode="heightFix"></image>
 				<ul>
-					<li v-for="(v,i) in cardInfo.harm" :key="i" 
-					class="harm-num" :style="{color: phColor[i]}">1</li>
+					<li v-for="(v,i) in harm[cardInfo.ch2]" :key="i" 
+					class="harm-num" :style="{color: phColor[i]}">{{v}}</li>
 				</ul>
 			</li>
 		</ul>
@@ -21,19 +21,19 @@
 </template>
 
 <script>
-	import {skill} from "@/style/card.json"
+	import {skill,harm} from "@/style/card.json"
 	
 	export default {
 		name:"dis-card",
 		data() {
 			return {
-				skill,
-				imgUrl: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/test/scene",
+				skill,harm,
+				imgUrl: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/scene/scene",
 				advIcon: [
 					"../../static/play/drawcard.png","../../static/play/harm.png"
 				],
 				cbtIcon: [
-					"../../static/play/combat.png","../../static/play/skill.png","../../static/play/cost1.png","../../static/play/cost2.png"
+					"../../static/play/combat.png","../../static/play/skill.png"
 				],
 				phColor:['rgb(98, 204, 141)','rgb(237, 223, 93)','rgb(247, 92, 110)']
 			};
