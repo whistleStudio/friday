@@ -4,10 +4,9 @@
 			<view class="cbt-top">
 				<text>{{cardInfo.atk2||cardInfo.atk}}</text>
 				<text>{{chs[cardInfo.ch]}}</text>
-				<image :src="`../../static/play/cost${cardInfo.cost}.png`" mode="heightFix"></image>
+				<image :src="`../../static/play/cost${cost}.png`" mode="heightFix"></image>
 			</view>
-			<view class="cbt-mid" :style="{backgroundImage: `url(${imgUrl+cardInfo.ch}.png)`}">
-				
+			<view class="cbt-mid" :style="{backgroundImage: `url(${imgUrl+cardInfo.ch}.png)`}">	
 			</view>
 			<view class="cbt-bot" v-if="!cardInfo.skill2">
 				{{skill[cardInfo.skill]}}
@@ -36,6 +35,9 @@
 				isAct: false,
 				imgUrl: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/scene/scene"
 			};
+		},
+		computed: {
+			cost () {return this.cardInfo.type<2? 1 : 2}
 		},
 		props: {
 			cardInfo: Object,

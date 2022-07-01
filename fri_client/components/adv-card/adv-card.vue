@@ -38,7 +38,7 @@
 			curAdvCard () {return this.$gts.curAdvCard},
 			isBoss () {return this.$sta._gameInfo.isBoss},
 			curPh () {return this.$sta._gameInfo.curPhase},
-			curDraw () {return this.$sta.isBoss ? this.curDraw : this.curAdvCard.ch2+1},
+			curDraw () {return this.$sta.isBoss ? this.curAdvCard.draw : this.curAdvCard.ch2+1},
 			// curPrt () {return this.$gts.curPrt}
 		},
 		props: {

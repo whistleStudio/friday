@@ -144,5 +144,14 @@ card.json录入中
 
 卡牌数据均录入card.json(修改了部分字段), 对象存储存入图片
 
+### [07011732]
 
+- client
 
+1 修复curDraw
+
+2 修复popup无法滚动问题
+
+3 修复战斗牌抽空，洗牌BUG
+
+4 decayLvl变化

@@ -8,7 +8,7 @@
 				  <u-tabs @change="changeTag" 
 					:list="tagList" lineWidth="100rpx" lineHeight="8rpx" lineColor="rgb(167, 87, 49)" :itemStyle="tagStyle.item"></u-tabs>
 				</u-sticky>
-				<scroll-view scroll-y="true" class="dis-show" :style="{height: scrollH[curIdx]}">
+				<scroll-view scroll-y="true" class="dis-show" :style="{height: scrollH+'rpx'}">
 					<ul class="flex-col-rowcenter">
 						<li v-for="(v,i) in disList[curIdx]" :key="i">
 							<dis-card :tag="curIdx" :cardInfo="v"></dis-card>
@@ -35,30 +35,28 @@
 					item: {fontWeight:"bold", width:"200rpx", height:'100rpx', boxSizing:"border-box", textAlign:"center", backgroundColor:"rgba(251, 255, 240, 1.0)"}
 				},
 				curIdx: 0,
+				scrollH: 700,
 			};
 		},
 	  computed: {
 			disList () {return [this.$sta._gameInfo.disAdv,this.$sta._gameInfo.disFt,this.$sta._gameInfo.rm]},
-			scrollH () {
-				return [
-					this.$sta._gameInfo.disAdv.length*140+"rpx" ,
-					this.$sta._gameInfo.disFt.length*140+"rpx" ,
-					this.$sta._gameInfo.rm.length*140+"rpx" ,
-				]
-			},
 		},
 		methods: {
 			closePopup () {
 				this.$emit("closePopup")
 			},
 			changeTag (ev) {this.curIdx = ev.index}
+		},
+		created() {
+			let {windowHeight, screenWidth,statusBarHeight} = uni.getWindowInfo()
+			console.log(windowHeight,statusBarHeight)
+			this.scrollH = 750 / screenWidth * windowHeight -230
 		}
 	}
 </script>
 
 <style lang="scss">
 .dis-box {
-	width: 100%;
 	.head {
 		width: 100%;
 		height: 120rpx;
@@ -76,6 +74,7 @@
 		width: 100%;
 		height: 100%;
 		.dis-show {
+			background-color: red;
 			ul {
 			  box-sizing: border-box;
 				padding: 20rpx;

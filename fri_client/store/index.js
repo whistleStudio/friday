@@ -11,7 +11,7 @@ const store = new Vuex.Store({
 			nickname: "temp", avatar: "00", openid: "", lvl: 1
 		},
 		_gameInfo: {
-			glvl: 0, hp: 5, decayLvl: 0, curPhase: 0, curAdvIdx: 0, 
+			glvl: 0, hp: 20, decayLvl: 0, curPhase: 0, curAdvIdx: 0, 
 			curFts: {na:[], sp:[]}, curAdvs: [], disAdv: [], disFt: [], rm: [],
 			isInitOk: true, isBoss: false, isAdvsOk: false	
 		},
@@ -113,6 +113,7 @@ const store = new Vuex.Store({
 		},
 		/* 派发1张战斗牌 */
 		drawFtCard ({_gameInfo, _cards}) {
+			console.log("2step")
 			let {ftDeck} = _cards
 			let drawCard = ftDeck.shift()
 			_gameInfo.curFts.na.push(drawCard)
@@ -125,9 +126,12 @@ const store = new Vuex.Store({
 			if (weakDeck.length>0) {
 				weakCard = weakDeck.shift()
 			}
+			console.log(weakCard)
 			_cards.ftDeck = weakCard ? [...disFt, weakCard] : [...disFt],
-			shuffle(_cards.ftDeck)
+			console.log(_cards.ftDeck)
+			_cards.ftDeck  = shuffle(_cards.ftDeck)
 			_gameInfo.disFt = []
+			console.log("1step")
 		},
 		/* 战斗清算 */
 		fightCheck ({_gameInfo}, {res, card}) {
@@ -143,16 +147,20 @@ const store = new Vuex.Store({
 		/* 一组卡牌移除游戏 */
 		removeCard ({_gameInfo}, rmCardList) {
 			let {curFts} = _gameInfo
+			let decayCount = 0
 			rmCardList.na.forEach(e => {
 				_gameInfo.rm.unshift(e)
 				let idx = curFts.na.indexOf(e)
 				curFts.na.splice(idx,1)
+				if(e.type===2) decayCount++
 			})
 			rmCardList.sp.forEach(e => {
 				_gameInfo.rm.unshift(e)
 				let idx = curFts.sp.indexOf(e)
 				curFts.sp.splice(idx,1)
+				if(e.type===2) decayCount++
 			})
+			_gameInfo.decayLvl -= decayCount
 		}
 	},
 	actions: {

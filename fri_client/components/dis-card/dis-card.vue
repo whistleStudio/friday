@@ -14,7 +14,7 @@
 		</ul>
 		<ul v-else class="card-data">
 			<li v-for="(v,i) in Array(2)" :key="i"><image :src="cbtIcon[i]" mode="heightFix"></image>
-			<text v-if="!i">1</text> <text v-else>{{skill[cardInfo.skill]}}</text>
+			<text v-if="!i">{{cardInfo.atk}}</text> <text v-else>{{skill[cardInfo.skill]}}</text>
 			</li>
 		</ul>
 	</view>

@@ -74,7 +74,7 @@
 			curAdvs: function () {return this.$sta._gameInfo.curAdvs},
 			disAdv () {return this.$sta._gameInfo.disAdv},
 			curAdvCard () {return this.$gts.curAdvCard},
-			curDraw () {return this.$sta.isBoss ? this.curDraw : this.curAdvCard.ch2+1},
+			curDraw () {return this.$sta.isBoss ? this.curAdvCard.draw : this.curAdvCard.ch2+1},
 			advs () {return this.$sta._cards.advDeck},
 			fts () {return this.$sta._cards.ftDeck},
 			naFts () {return this.$sta._gameInfo.curFts.na},
@@ -126,34 +126,32 @@
 						this.isAdv2Show = false
 					},500)
 				}
+				this.drawCount = 0
 			},
 			/* 抽牌 */
 			draw () {
-				// 有牌可抽
-				if (this.fts.length>0||this.disFt.length>0) {
-					if (this.drawCount>=this.curDraw) {
-						uni.showModal({
-							content: "继续抽牌将消耗1生命值\n是否进行?",
-							success: res => {
-								if (res.confirm) {
-									this.$store.commit("changeHp", 1)
-									this.draw1Card()
-								}
-							}
-						})
-					}	else {this.drawCount++; this.draw1Card();}
+				if (this.fts.length) {
+					this.draw1Card()
+					this.$store.commit("drawFtCard")
+				} else if (this.disFt.length) {
+					this.draw1Card()
+					uni.showLoading({title: "岁月不饶人, 你似乎又衰老了些"})
+					this.$store.commit("changeObjVal", {k1:"_gameInfo", k2:"decayLvl", v:this.$sta._gameInfo.decayLvl+1})
+					this.$store.dispatch("ftsRunOut")
+					setTimeout(()=>{uni.hideLoading()},1500)
 				} else uni.showToast({title:"牌库已空!", icon:"none"})
 			},
 			draw1Card () {
-				if (this.fts.length>0) {
-					this.$store.commit("drawFtCard")
-				} else {
-					if (this.disFt.length>0) {
-						this.$store.dispatch("ftsRunOut")
-						uni.showLoading({content: "岁月不饶人,\n你似乎又衰老了些"})
-						setTimeout(()=>{uni.hideLoading()},1500)
-					} else {uni.showToast({title:"牌库已空!", icon:"none"})}
-				}
+				if (this.drawCount>=this.curDraw) {
+					uni.showModal({
+						content: "继续抽牌将消耗1生命值\n是否进行?",
+						success: res => {
+							if (res.confirm) {
+								this.$store.commit("changeHp", 1)
+							}
+						}
+					})
+				}	else {this.drawCount++}
 			},
 			/* 打开冒险选择窗口 */
 			openAdvBox () {
