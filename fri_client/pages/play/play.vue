@@ -24,26 +24,28 @@
 				<text>战斗牌库:{{fts.length}}</text>
 			</view>
 			<view class="main">
-				<ul class="mgb-30">
-					<li v-for="(v,i) in naFts" :key="i">
-						<cbt-card :cardInfo="naFts[i]" :isFree="1"></cbt-card>
-					</li>
-				</ul>
-				<ul>
-					<li v-for="(v,i) in spFts" :key="i">
-						<cbt-card :cardInfo="spFts[i]" :isFree="2"></cbt-card>
+				<ul class="mgb-30" v-for="(v,k,i) in curFts" :key="i">
+					<li v-for="(cv,ci) in v" :key="ci" @click="tapCbtCard(100*i+ci)">
+						<cbt-card :cardInfo="v[ci]" :isFree="!i" 
+						@showSkill="showSkill" @resetSkillUsed="resetSkillUsed"
+						:cardIdx="100*i+ci" :actCardIdx="actCardIdx" :isSkillUsed="isSkillUsed"></cbt-card>
 					</li>
 				</ul>
 				<view class="dis-btn" @click="isPopShow=true"></view>
 			</view>
 		</view>
-
-		<u-overlay :show="isOverlayShow&&!isBoss" :z-index ="999" :opacity="0.6"
+    <!-- 冒险牌选择 -->
+		<u-overlay :show="isOverlayShow&&!isBoss" :z-index ="999" opacity="0.6"
 		@click="show = false" class="flex-col-rowcenter">
 			<choose-adv v-if="isAdv2Show" @closeOverlay="isOverlayShow=false"></choose-adv>
 			<rm-box v-else :disCount="advDim" @closeRm="closeRmBox"></rm-box>
 		</u-overlay>
-
+		<!-- 卡牌效果页 -->
+		<u-overlay :show="isSkillShow" opacity="0.6">
+			<skill-box :skillNum="actSkillNum"
+			@closeSkill="resetSkillUsed" @useSkill="isSkillUsed=true"></skill-box>
+		</u-overlay>
+		<!-- 弃牌区 -->
 		<u-popup :show="isPopShow" mode="left">
 		  <view class="pop-box">
 		      <dis-box @closePopup="isPopShow=false"></dis-box>
@@ -58,8 +60,8 @@
 		data() {
 			return {
 				harm,
-				drawCount: 0,
-				isOverlayShow: true, isAdv2Show: true, bleedHint: true, isPopShow: false,
+				drawCount: 0, actCardIdx: -1, actSkillNum: -1,
+				isOverlayShow: true, isAdv2Show: true, bleedHint: true, isPopShow: false, isSkillShow: false, isSkillUsed: false,
 				imgUrl: {
 					bg: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/playBg.png",
 					combatIcon: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/icon/combat",
@@ -77,6 +79,7 @@
 			curDraw () {return this.$sta.isBoss ? this.curAdvCard.draw : this.curAdvCard.ch2+1},
 			advs () {return this.$sta._cards.advDeck},
 			fts () {return this.$sta._cards.ftDeck},
+			curFts () {return this.$sta._gameInfo.curFts},
 			naFts () {return this.$sta._gameInfo.curFts.na},
 			spFts () {return this.$sta._gameInfo.curFts.sp},
 			disFt () {return this.$sta._gameInfo.disFt},
@@ -87,7 +90,6 @@
 			]},
 			advDim () {
 				let ph = this.$sta._gameInfo.curPhase
-				// console.log("curAdv", this.curAdvCard)
 				let advHarm
 				if (this.isBoss) advHarm = this.curAdvCard ? this.curAdvCard.atk : 99
 				else advHarm = this.curAdvCard ? harm[this.curAdvCard.ch2][ph] : 99
@@ -97,7 +99,7 @@
 			isInitOk () {return this.$sta._gameInfo.isInitOk}
 		},
 		methods: {
-			/* 冒险区长按事件（待完善） */
+		  /* 冒险区长按事件（待完善） */
 			advTouchStart () {
 				let start = 0
 				this.advTouch.tim = setInterval(()=>{
@@ -130,15 +132,8 @@
 			},
 			/* 抽牌 */
 			draw () {
-				if (this.fts.length) {
+				if (this.fts.length || this.disFt.length) {
 					this.draw1Card()
-					this.$store.commit("drawFtCard")
-				} else if (this.disFt.length) {
-					this.draw1Card()
-					uni.showLoading({title: "岁月不饶人, 你似乎又衰老了些"})
-					this.$store.commit("changeObjVal", {k1:"_gameInfo", k2:"decayLvl", v:this.$sta._gameInfo.decayLvl+1})
-					this.$store.dispatch("ftsRunOut")
-					setTimeout(()=>{uni.hideLoading()},1500)
 				} else uni.showToast({title:"牌库已空!", icon:"none"})
 			},
 			draw1Card () {
@@ -148,10 +143,16 @@
 						success: res => {
 							if (res.confirm) {
 								this.$store.commit("changeHp", 1)
+								if (this.fts.length) this.$store.commit("drawFtCard", 0)
+								else {
+									this.$store.dispatch("ftsRunOut")
+									uni.showLoading({title: "岁月不饶人, 你似乎又衰老了些"})
+									setTimeout(()=>{uni.hideLoading()},1500)
+								}
 							}
 						}
 					})
-				}	else {this.drawCount++}
+				}	else {this.$store.commit("drawFtCard"); this.drawCount++}
 			},
 			/* 打开冒险选择窗口 */
 			openAdvBox () {
@@ -185,6 +186,24 @@
 				if (disCardNum) uni.showToast({title:`共移除${disCardNum}张卡牌`,icon:"none"})
 				this.$store.commit("fightCheck", {res:0, card:this.curAdvCard})
 				this.openAdvBox()
+			},
+			/* 激活技能 */
+			tapCbtCard (idx) {
+				console.log(this.actCardIdx, idx)
+				if (this.actCardIdx === idx)
+					this.actCardIdx = -1
+				else this.actCardIdx = idx
+			},
+			/* skill遮罩显示 */
+			showSkill (n) {
+				this.isSkillShow = true
+				this.actSkillNum = n
+			},
+			/* 重置技能使用情况 skill-box触发isSkillUsed=true, cbt-card监控isSkillUsed, 再触发reset -> 遮罩关闭,技能使用重置,激活索引置-1(发动效果图标小时)*/
+			resetSkillUsed () {
+				this.isSkillShow = false
+				this.isSkillUsed = false
+				this.actCardIdx = -1
 			}
 		},
 		onLoad (q) {

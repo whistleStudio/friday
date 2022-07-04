@@ -11,7 +11,7 @@ const store = new Vuex.Store({
 			nickname: "temp", avatar: "00", openid: "", lvl: 1
 		},
 		_gameInfo: {
-			glvl: 0, hp: 20, decayLvl: 0, curPhase: 0, curAdvIdx: 0, 
+			glvl: 0, hp: 40, decayLvl: 0, curPhase: 0, curAdvIdx: 0, 
 			curFts: {na:[], sp:[]}, curAdvs: [], disAdv: [], disFt: [], rm: [],
 			isInitOk: true, isBoss: false, isAdvsOk: false	
 		},
@@ -112,11 +112,13 @@ const store = new Vuex.Store({
 			_gameInfo[pile].unshift(card)
 		},
 		/* 派发1张战斗牌 */
-		drawFtCard ({_gameInfo, _cards}) {
+		drawFtCard ({_gameInfo, _cards}, isFree=1) {
 			console.log("2step")
 			let {ftDeck} = _cards
 			let drawCard = ftDeck.shift()
-			_gameInfo.curFts.na.push(drawCard)
+			if (isFree) {
+				_gameInfo.curFts.na.push(drawCard)
+			} else _gameInfo.curFts.sp.push(drawCard)
 		},
 		/* 添加衰老牌 */
 		addWeakCard ({_gameInfo, _cards}) {
@@ -125,10 +127,9 @@ const store = new Vuex.Store({
 			let weakCard
 			if (weakDeck.length>0) {
 				weakCard = weakDeck.shift()
+				_gameInfo.decayLvl ++
 			}
-			console.log(weakCard)
 			_cards.ftDeck = weakCard ? [...disFt, weakCard] : [...disFt],
-			console.log(_cards.ftDeck)
 			_cards.ftDeck  = shuffle(_cards.ftDeck)
 			_gameInfo.disFt = []
 			console.log("1step")
@@ -160,6 +161,7 @@ const store = new Vuex.Store({
 				curFts.sp.splice(idx,1)
 				if(e.type===2) decayCount++
 			})
+			console.log(decayCount)
 			_gameInfo.decayLvl -= decayCount
 		}
 	},
@@ -186,7 +188,7 @@ const store = new Vuex.Store({
 		ftsRunOut ({commit}) {
 			console.log("runout")
 			commit("addWeakCard")
-			commit("drawFtCard")
+			commit("drawFtCard", 0)
 		}
 	}
 })

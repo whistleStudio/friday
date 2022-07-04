@@ -155,3 +155,30 @@ card.json录入中
 3 修复战斗牌抽空，洗牌BUG
 
 4 decayLvl变化
+
+### [07041732]
+
+- client 
+
+1 修正免费抽牌机制
+
+2 play战斗区代码优化, naFt, spFt的template改对象迭代
+
+3 卡牌效果触发联动
+
+3.1 确保play战斗区发动效果时，只存在一张卡牌处于激活状态，
+
+actCardIdx === cardIdx, 索引用idx和100+idx区分na与sp保证唯一性
+
+3.2 能发动效果的卡牌 skill字段!=99 && 索引匹配 && 未发动过效果
+
+3.3 cbt-card点击发动效果，play中skill遮罩激活
+
+3.4 skill遮罩
+
+3.4.1 取消- 关闭,actCardIdx置-1（以隐藏发动效果按钮样式）
+
+3.4.2 确定 - $emit "useSkill" -> [play]isSkillUsed=true -> [cbt-card]watch props isSkillUsed, 索引匹配时, $emit "resetSkillUsed" -> [play] 关闭遮罩，actCardIdx置-1, isSkillUsed=false
+
+4 重新整理了card.json的skill编号，以方便后续调用
+

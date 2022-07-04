@@ -1,6 +1,6 @@
 <template>
 	<view class="">
-		<view class="cbt-content flex-col-rowcenter" :class="{free:isFree==1, notFree:isFree==2}">
+		<view class="cbt-content flex-col-rowcenter" :class="{notFree: !isFree}">
 			<view class="cbt-top">
 				<text>{{cardInfo.atk2||cardInfo.atk}}</text>
 				<text>{{chs[cardInfo.ch]}}</text>
@@ -8,18 +8,13 @@
 			</view>
 			<view class="cbt-mid" :style="{backgroundImage: `url(${imgUrl+cardInfo.ch}.png)`}">	
 			</view>
-			<view class="cbt-bot" v-if="!cardInfo.skill2">
-				{{skill[cardInfo.skill]}}
-			</view>
-			<view class="cbt-bot sk2" v-else>
-				{{skill[cardInfo.skill2]}}
+			<view class="cbt-bot" :class="{sk2: cardInfo.skill2, notWork: !isWork}">
+				<!-- {{"阶段-1"}} -->
+				{{skill[cardInfo.skill2] || skill[cardInfo.skill]}}
 			</view>
 		</view>
-		<view class="mask" v-if="0">
-			<view class="">
-				<button size="mini">效果说明</button>
-				<button size="mini">触发效果</button>
-			</view>
+		<view class="skill-mask flex-center" v-if="isShowSkM">
+			<button size="mini" @click.stop="showSkill">发动效果</button>
 		</view>
 	</view>
 </template>
@@ -32,18 +27,35 @@
 			return {
 				chs,skill,
 				isMaskShow: false,
-				isAct: false,
-				imgUrl: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/scene/scene"
+				imgUrl: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/scene/scene",
+				isWork: true,
 			};
 		},
 		computed: {
-			cost () {return this.cardInfo.type<2? 1 : 2}
+			cost () {return this.cardInfo.type<2? 1 : 2},
+			isShowSkM () {return this.cardIdx==this.actCardIdx&&this.cardInfo.skill==99&&this.isWork}
 		},
 		props: {
 			cardInfo: Object,
-			isFree: {
-				type: Number,
-				default: 0
+			isFree: Boolean,
+			cardIdx: Number,
+			actCardIdx: {type: Number, default: -1},
+			isSkillUsed: {type: Boolean, default: false}
+		},
+		methods: {
+			showSkill () {this.$emit("showSkill", this.cardInfo.skill2||this.cardInfo.skill)},
+		},
+		watch: {
+			isSkillUsed (newV) {
+				if (newV) {
+					console.log(this.cardIdx, this.actCardIdx)
+					// 校验发动效果卡牌 是否为 当前卡牌
+					if (this.cardIdx === this.actCardIdx) {
+						this.isWork = false
+						// 父isSkillUsed重置为false
+						this.$emit("resetSkillUsed")
+					}
+				}
 			}
 		}
 	}
@@ -56,19 +68,21 @@
 	box-sizing: border-box;
 	border-radius: 10rpx;
 	padding: 10rpx;
+	background-color: $cardC;
+	border: 1rpx solid rgb(200,200,200);
 	.cbt-top {
 		width: 100%;
 		display: flex;
 		justify-content: space-between;
 		align-items: flex-end;
 		text:first-of-type {
-			font: bold 45rpx $fontF;
+			font: bold 40rpx $fontF;
 		}
 		text:last-of-type {
 			font-size: 30rpx;
 		}
 		image {
-			height: 50rpx;
+			height: 45rpx;
 		}
 	}
 	.cbt-mid {
@@ -81,18 +95,31 @@
 	.cbt-bot {
 		font-size: 40rpx;
 	}
+	.notWork {
+		text-decoration: line-through;
+	}
 }
-.mask {
-	top:0;
+.skill-mask {
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,0.6);
+	border-radius: 10rpx;
+	top: 0;
 	position: absolute;
+	button {
+		height: 60rpx;
+		font: 27rpx/60rpx $fontF;
+		color: white;
+		background-image: linear-gradient(to bottom right, rgb(220, 201, 115), rgb(157, 109, 54));
+	}
 }
 .sk2 {
 	color: rgb(52, 140, 154);
 }
-.free {
-	border: 1rpx solid rgb(200,200,200);
-}
 .notFree {
-	border: 1rpx solid rgb(55, 154, 113);
+	border: 1rpx solid rgb(55, 154, 113) !important;
+}
+.text-mini {
+	font-size: 25rpx !important;
 }
 </style>
