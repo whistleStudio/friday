@@ -182,3 +182,18 @@ actCardIdx === cardIdx, 索引用idx和100+idx区分na与sp保证唯一性
 
 4 重新整理了card.json的skill编号，以方便后续调用
 
+### [07061732]
+
+- client
+
+1 重排card.json的skill序号
+
+2 整理了skillbox逻辑，用skill和mode区分
+
+skill>5|| (!mode&&skill==5) 显示具体技能操作布局
+
+skill<=5 && !mode [需要修改]
+
+3 hp+1+2 draw+1+2
+
+ 

@@ -9,7 +9,6 @@
 			<view class="cbt-mid" :style="{backgroundImage: `url(${imgUrl+cardInfo.ch}.png)`}">	
 			</view>
 			<view class="cbt-bot" :class="{sk2: cardInfo.skill2, notWork: !isWork}">
-				<!-- {{"阶段-1"}} -->
 				{{skill[cardInfo.skill2] || skill[cardInfo.skill]}}
 			</view>
 		</view>
@@ -33,7 +32,8 @@
 		},
 		computed: {
 			cost () {return this.cardInfo.type<2? 1 : 2},
-			isShowSkM () {return this.cardIdx==this.actCardIdx&&this.cardInfo.skill==99&&this.isWork}
+			isShowSkM () {return this.cardIdx==this.actCardIdx&&this.cardInfo.skill!=99&&this.isWork},
+			skNum () {return this.cardInfo.skill2 || this.cardInfo.skill}
 		},
 		props: {
 			cardInfo: Object,
@@ -43,12 +43,12 @@
 			isSkillUsed: {type: Boolean, default: false}
 		},
 		methods: {
-			showSkill () {this.$emit("showSkill", this.cardInfo.skill2||this.cardInfo.skill)},
+			showSkill () {this.$emit("showSkill", {num:this.skNum, mode:0})},
 		},
 		watch: {
 			isSkillUsed (newV) {
 				if (newV) {
-					console.log(this.cardIdx, this.actCardIdx)
+					console.log("watch isSkillUsed", this.cardIdx, this.actCardIdx)
 					// 校验发动效果卡牌 是否为 当前卡牌
 					if (this.cardIdx === this.actCardIdx) {
 						this.isWork = false

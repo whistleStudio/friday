@@ -10,12 +10,12 @@
 					<li v-for="(v,i) in Array(3)" :key="i" :class="{act: curPh==i}"
 					:style="{backgroundColor:imgUrl.phColor[i]}">{{harm[curAdvCard.ch2][i]}}</li>
 				</ul>
-				<view class="drawNum"><text>{{curDraw-drawCount}}</text></view>
+				<view class="drawNum"><text>{{curDraw+temp.draw-drawCount}}</text></view>
 			</view>
 		</view>
 	</view>
 	<view v-else class="adv-card-boss" :style="{backgroundImage: `url(${imgUrl.pirate+curAdvCard.id}.png)`}">
-		<view class="drawNum"><text>{{curDraw-drawCount}}</text></view>
+		<view class="drawNum"><text>{{curDraw+temp.draw-drawCount}}</text></view>
 	</view>
 </template>
 
@@ -43,6 +43,7 @@
 		},
 		props: {
 			drawCount: Number,
+			temp: Object,
 		},
 		mounted () {
 			console.log(this.curAdvCard)

@@ -6,7 +6,7 @@
 				<text>冒险牌库:{{advs.length}}</text>
 			</view>
 			<view class="main" @touchstart="advTouchStart" @touchend="advTouchEnd">
-				<adv-card :drawCount="drawCount"></adv-card>
+				<adv-card :drawCount="drawCount" :temp="temp"></adv-card>
 			</view>
 		</view>
 		<view class="action flex-center" v-if="curAdvCard">
@@ -42,8 +42,8 @@
 		</u-overlay>
 		<!-- 卡牌效果页 -->
 		<u-overlay :show="isSkillShow" opacity="0.6">
-			<skill-box :skillNum="actSkillNum"
-			@closeSkill="resetSkillUsed" @useSkill="isSkillUsed=true"></skill-box>
+			<skill-box :actSk="actSk"
+			@closeSkill="resetSkillUsed" @useSkill="useSkill" @modifyDraw="modifyDraw"></skill-box>
 		</u-overlay>
 		<!-- 弃牌区 -->
 		<u-popup :show="isPopShow" mode="left">
@@ -60,7 +60,7 @@
 		data() {
 			return {
 				harm,
-				drawCount: 0, actCardIdx: -1, actSkillNum: -1,
+				drawCount: 0, actCardIdx: -1, 
 				isOverlayShow: true, isAdv2Show: true, bleedHint: true, isPopShow: false, isSkillShow: false, isSkillUsed: false,
 				imgUrl: {
 					bg: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/playBg.png",
@@ -70,13 +70,20 @@
 					tim: "",
 					isFlap: false
 				},
+				actSk: {
+					num: -1,
+					mode: -1
+				},
+				temp: {
+					draw: 0
+				}
 			}
 		},
 		computed: {
 			curAdvs: function () {return this.$sta._gameInfo.curAdvs},
 			disAdv () {return this.$sta._gameInfo.disAdv},
 			curAdvCard () {return this.$gts.curAdvCard},
-			curDraw () {return this.$sta.isBoss ? this.curAdvCard.draw : this.curAdvCard.ch2+1},
+			curDraw () {return this.$sta.isBoss ? this.curAdvCard.draw+this.temp.draw : this.curAdvCard.ch2+1+this.temp.draw},
 			advs () {return this.$sta._cards.advDeck},
 			fts () {return this.$sta._cards.ftDeck},
 			curFts () {return this.$sta._gameInfo.curFts},
@@ -129,6 +136,7 @@
 					},500)
 				}
 				this.drawCount = 0
+				this.resetTemp()
 			},
 			/* 抽牌 */
 			draw () {
@@ -189,21 +197,33 @@
 			},
 			/* 激活技能 */
 			tapCbtCard (idx) {
-				console.log(this.actCardIdx, idx)
 				if (this.actCardIdx === idx)
 					this.actCardIdx = -1
 				else this.actCardIdx = idx
+				console.log("tap",this.actCardIdx, idx)
 			},
 			/* skill遮罩显示 */
-			showSkill (n) {
+			showSkill (actSk) {
 				this.isSkillShow = true
-				this.actSkillNum = n
+				this.actSk = actSk
+			},
+			/* 技能使用情况改变 */
+			useSkill (mode) {
+				if (mode) {
+					this.isSkillUsed=true
+				} else this.isSkillShow = false
 			},
 			/* 重置技能使用情况 skill-box触发isSkillUsed=true, cbt-card监控isSkillUsed, 再触发reset -> 遮罩关闭,技能使用重置,激活索引置-1(发动效果图标小时)*/
 			resetSkillUsed () {
 				this.isSkillShow = false
 				this.isSkillUsed = false
 				this.actCardIdx = -1
+			},
+			/* 调整免费抽牌上限 */
+			modifyDraw (n) {this.temp.draw += n},
+			/* 重置temp */
+			resetTemp () {
+				this.temp.draw = 0
 			}
 		},
 		onLoad (q) {

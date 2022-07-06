@@ -1,6 +1,6 @@
 <template>
 	<view class="skill-box">
-		<view v-if="skillNum>4">
+		<view v-if="actSk.num>5 || (actSk.num==5&&actSk.mode)">
 			<text></text>
 			<view class="main">
 				
@@ -26,31 +26,46 @@
 			};
 		},
 		props: {
-			skillNum: Number
+			actSk: Object
 		},
 		methods: {
 			closeSkill () {this.$emit("closeSkill")},
-			useSkill () {this.$emit("useSkill")},
+			useSkill (mode=0) {this.$emit("useSkill",mode)},
 		},
 		mounted () {
-			if (this.skillNum<=4) {
+			let {num,mode} = this.actSk
+			if (num <= 5) {
 				uni.showLoading({
-					title: this.skillMsg[this.skillNum]
+					title: this.skillMsg[num]
 				})
-				switch (skillNum) {
+				switch (num) {
+					// 阶段-1
 					case 0:
 						break
+					// hp+1
 					case 1:
-					case 2:
+						this.$store.commit("changeHp", -1)
 						break
+					// hp+2
+					case 2:
+						this.$store.commit("changeHp", -2)
+						break
+					// draw+1
 					case 3:
+						this.$emit("modifyDraw", 1)
+						break
+					// draw+2
 					case 4:
+						this.$emit("modifyDraw", 2)
 					  break
+					case 5:
+						break
 				}
+				if (num&&num<=4) mode=1 
 				setTimeout(()=>{
 					uni.hideLoading()
-					this.useSkill()
-				},1000)
+					this.useSkill(mode)
+				},1500)
 			}
 		}
 	}
