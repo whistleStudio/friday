@@ -1,7 +1,7 @@
 <template>
-	<view class="skill-box">
-		<view v-if="actSk.num>5 || (actSk.num==5&&actSk.mode)">
-			<text></text>
+	<view class="skill-box flex-center">
+		<view v-if="actSk.num>5 || (actSk.num==5&&actSk.mode)" class="skill-content flex-col-rowcenter">
+			<text>{{skillMsg[actSk.num]}}</text>
 			<view class="main">
 				
 			</view>
@@ -75,6 +75,15 @@
 	.skill-box {
 		width: 100%;
 		height: 100%;
+		.skill-content {
+			background-color: red;
+			height: 900rpx;
+			width: 100%;
+			padding: 20rpx;
+			text {
+				color: whitesmoke;
+			}
+		}
 		.btn-group {
 		}
 	}
