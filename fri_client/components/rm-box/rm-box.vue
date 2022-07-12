@@ -4,11 +4,11 @@
 		<ul class="mgb-50">
 			<li v-for="(v,i) in naFts" :key="'na'+i" @click="swapSta(0,i)">
 				<cbt-card :cardInfo="naFts[i]"></cbt-card>
-				<image v-show="curFtLis.na[i]" src="@/static/play/discard.png" mode="widthFix"></image>
+				<image v-show="curFtLis.na[i]" src="@/static/play/sk6.png" mode="widthFix"></image>
 			</li>
 			<li v-for="(v,i) in spFts" :key="'sp'+i"  @click="swapSta(1, i)">
 				<cbt-card :cardInfo="spFts[i]"></cbt-card>
-				<image v-show="curFtLis.sp[i]" src="@/static/play/discard.png" mode="widthFix"></image>
+				<image v-show="curFtLis.sp[i]" src="@/static/play/sk6.png" mode="widthFix"></image>
 			</li>
 		</ul>
 		<button @click="rmCard" size="mini" class="btn200x60" >确定</button>

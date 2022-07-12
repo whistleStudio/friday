@@ -42,7 +42,7 @@
 		</u-overlay>
 		<!-- 卡牌效果页 -->
 		<u-overlay :show="isSkillShow" opacity="0.6">
-			<skill-box :actSk="actSk"
+			<skill-box :actSk="actSk" :actCardIdx="actCardIdx"
 			@closeSkill="resetSkillUsed" @useSkill="useSkill" @modifyDraw="modifyDraw"></skill-box>
 		</u-overlay>
 		<!-- 弃牌区 -->

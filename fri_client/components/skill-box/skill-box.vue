@@ -3,7 +3,7 @@
 		<view v-if="actSk.num>5 || (actSk.num==5&&actSk.mode)" class="skill-content flex-col-rowcenter">
 			<text>{{skillMsg[actSk.num]}}</text>
 			<view class="main">
-				
+				<skill-card-list :actCardIdx="actCardIdx" :actSk="actSk"></skill-card-list>
 			</view>
 			<view class="btn-group">
 				<button class="btn200x60" @click="closeSkill" 
@@ -26,7 +26,8 @@
 			};
 		},
 		props: {
-			actSk: Object
+			actSk: Object,
+			actCardIdx: Number,
 		},
 		methods: {
 			closeSkill () {this.$emit("closeSkill")},
@@ -82,6 +83,9 @@
 			padding: 20rpx;
 			text {
 				color: whitesmoke;
+			}
+			.main {
+				height: 700rpx;
 			}
 		}
 		.btn-group {

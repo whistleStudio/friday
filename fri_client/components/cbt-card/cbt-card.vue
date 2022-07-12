@@ -12,7 +12,7 @@
 				{{skill[cardInfo.skill2] || skill[cardInfo.skill]}}
 			</view>
 		</view>
-		<view class="skill-mask flex-center" v-if="isShowSkM">
+		<view class="skill-mask flex-center" v-if="isShowSkM && !cbtCardMode">
 			<button size="mini" @click.stop="showSkill">发动效果</button>
 		</view>
 	</view>
@@ -40,7 +40,8 @@
 			isFree: Boolean,
 			cardIdx: Number,
 			actCardIdx: {type: Number, default: -1},
-			isSkillUsed: {type: Boolean, default: false}
+			isSkillUsed: {type: Boolean, default: false},
+			cbtCardMode: {type: Number, default: 0}
 		},
 		methods: {
 			showSkill () {this.$emit("showSkill", {num:this.skNum, mode:0})},
@@ -48,7 +49,7 @@
 		watch: {
 			isSkillUsed (newV) {
 				if (newV) {
-					console.log("watch isSkillUsed", this.cardIdx, this.actCardIdx)
+					// console.log("watch isSkillUsed", this.cardIdx, this.actCardIdx)
 					// 校验发动效果卡牌 是否为 当前卡牌
 					if (this.cardIdx === this.actCardIdx) {
 						this.isWork = false
