@@ -27,8 +27,8 @@
 				<ul class="mgb-30" v-for="(v,k,i) in curFts" :key="i">
 					<li v-for="(cv,ci) in v" :key="ci" @click="tapCbtCard(100*i+ci)">
 						<cbt-card :cardInfo="v[ci]" :isFree="!i" 
-						@showSkill="showSkill" @resetSkillUsed="resetSkillUsed"
-						:cardIdx="100*i+ci" :actCardIdx="actCardIdx" :isSkillUsed="isSkillUsed"></cbt-card>
+						@showSkill="showSkill" 
+						:cardIdx="100*i+ci" :actCardIdx="actCardIdx" ></cbt-card>
 					</li>
 				</ul>
 				<view class="dis-btn" @click="isPopShow=true"></view>
@@ -42,7 +42,7 @@
 		</u-overlay>
 		<!-- 卡牌效果页 -->
 		<u-overlay :show="isSkillShow" opacity="0.6">
-			<skill-box :actSk="actSk" :actCardIdx="actCardIdx"
+			<skill-box :actSk="actSk" :actCardIdx="actCardIdx" @resetSkillUsed="resetSkillUsed"
 			@closeSkill="resetSkillUsed" @useSkill="useSkill" @modifyDraw="modifyDraw"></skill-box>
 		</u-overlay>
 		<!-- 弃牌区 -->
@@ -61,7 +61,7 @@
 			return {
 				harm,
 				drawCount: 0, actCardIdx: -1, 
-				isOverlayShow: true, isAdv2Show: true, bleedHint: true, isPopShow: false, isSkillShow: false, isSkillUsed: false,
+				isOverlayShow: true, isAdv2Show: true, bleedHint: true, isPopShow: false, isSkillShow: false, 
 				imgUrl: {
 					bg: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/playBg.png",
 					combatIcon: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/icon/combat",
@@ -210,13 +210,13 @@
 			/* 技能使用情况改变 */
 			useSkill (mode) {
 				if (mode) {
-					this.isSkillUsed=true
+					// this.isSkillUsed=true
+					this.$store.commit("useSkill", {actIdx: this.actCardIdx, state: 1})
 				} else this.isSkillShow = false
 			},
 			/* 重置技能使用情况 skill-box触发isSkillUsed=true, cbt-card监控isSkillUsed, 再触发reset -> 遮罩关闭,技能使用重置,激活索引置-1(发动效果图标小时)*/
 			resetSkillUsed () {
 				this.isSkillShow = false
-				this.isSkillUsed = false
 				this.actCardIdx = -1
 			},
 			/* 调整免费抽牌上限 */

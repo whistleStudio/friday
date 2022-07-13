@@ -2,8 +2,7 @@
 	<view class="skill-card-list">
 	  <ul class="mgb-30" v-for="(v,k,i) in curFts" :key="i">
 	  	<li v-for="(cv,ci) in v" :key="ci" @click="pickCard(100*i+ci)"
-			v-show="(100*i+ci)!==actCardIdx"
-			>
+			v-show="(100*i+ci)!==actCardIdx">
 	  		<cbt-card :cardInfo="v[ci]" :isFree="!i" :cbtCardMode="1"  		
 	  		:cardIdx="100*i+ci" ></cbt-card>
 				<image v-if="pickIdx==(100*i+ci)" :src="`../../static/play/sk${actSk.num}.png`" 
@@ -35,6 +34,7 @@
 		methods: {
 			pickCard (idx) {
 				this.pickIdx = idx
+				this.$emit("pickCard", idx)
 			} 
 		},
 		created () {

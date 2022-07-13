@@ -163,7 +163,34 @@ const store = new Vuex.Store({
 			})
 			console.log(decayCount)
 			_gameInfo.decayLvl -= decayCount
-		}
+		},
+		/* 技能使用情况 */
+		useSkill ({_gameInfo}, {actIdx, state}) {
+			let {na, sp} = _gameInfo.curFts
+			let ft = actIdx<100 ? na : sp, idx = actIdx<100 ? actIdx : actIdx-100
+			ft[idx].work = state
+		},
+		/* 效果生效 */
+		actEffect ({_gameInfo, _cards}, {skIdx, pickIdx, actIdx}) {
+			let {na, sp} = _gameInfo.curFts
+			let ft = pickIdx<100 ? na : sp, idx = pickIdx<100 ? pickIdx : pickIdx-100
+			console.log("actEffect")
+			switch (skIdx) {
+				case 5:
+					break
+				case 6: //摧毁
+					let discard = ft.splice(idx,1)
+					_gameInfo.rm.push(...discard)
+					break
+				case 7: //复制
+					let ft2 = actIdx<100 ? na : sp, idx2 = actIdx<100 ? actIdx : actIdx-100
+					console.log(ft[idx].skill)
+					ft2[idx2].skill2 = ft[idx].skill
+					break
+				case 8:
+					break
+			}
+		},
 	},
 	actions: {
 		getUserInfo (context, openid) {

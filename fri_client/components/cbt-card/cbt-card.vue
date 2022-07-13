@@ -8,7 +8,7 @@
 			</view>
 			<view class="cbt-mid" :style="{backgroundImage: `url(${imgUrl+cardInfo.ch}.png)`}">	
 			</view>
-			<view class="cbt-bot" :class="{sk2: cardInfo.skill2, notWork: !isWork}">
+			<view class="cbt-bot" :class="{sk2: cardInfo.skill2, notWork: cardInfo.work}">
 				{{skill[cardInfo.skill2] || skill[cardInfo.skill]}}
 			</view>
 		</view>
@@ -27,12 +27,12 @@
 				chs,skill,
 				isMaskShow: false,
 				imgUrl: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/scene/scene",
-				isWork: true,
+				// isWork: true,
 			};
 		},
 		computed: {
 			cost () {return this.cardInfo.type<2? 1 : 2},
-			isShowSkM () {return this.cardIdx==this.actCardIdx&&this.cardInfo.skill!=99&&this.isWork},
+			isShowSkM () {return this.cardIdx==this.actCardIdx&&this.cardInfo.skill!=99&&!this.cardInfo.work},
 			skNum () {return this.cardInfo.skill2 || this.cardInfo.skill}
 		},
 		props: {
@@ -40,24 +40,24 @@
 			isFree: Boolean,
 			cardIdx: Number,
 			actCardIdx: {type: Number, default: -1},
-			isSkillUsed: {type: Boolean, default: false},
+			// isSkillUsed: {type: Boolean, default: false},
 			cbtCardMode: {type: Number, default: 0}
 		},
 		methods: {
 			showSkill () {this.$emit("showSkill", {num:this.skNum, mode:0})},
 		},
 		watch: {
-			isSkillUsed (newV) {
-				if (newV) {
-					// console.log("watch isSkillUsed", this.cardIdx, this.actCardIdx)
-					// 校验发动效果卡牌 是否为 当前卡牌
-					if (this.cardIdx === this.actCardIdx) {
-						this.isWork = false
-						// 父isSkillUsed重置为false
-						this.$emit("resetSkillUsed")
-					}
-				}
-			}
+			// isSkillUsed (newV) {
+			// 	if (newV) {
+			// 		// console.log("watch isSkillUsed", this.cardIdx, this.actCardIdx)
+			// 		// 校验发动效果卡牌 是否为 当前卡牌
+			// 		if (this.cardIdx === this.actCardIdx) {
+			// 			this.isWork = false
+			// 			// 父isSkillUsed重置为false
+			// 			this.$emit("resetSkillUsed")
+			// 		}
+			// 	}
+			// }
 		}
 	}
 </script>

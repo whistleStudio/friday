@@ -3,7 +3,8 @@
 		<view v-if="actSk.num>5 || (actSk.num==5&&actSk.mode)" class="skill-content flex-col-rowcenter">
 			<text>{{skillMsg[actSk.num]}}</text>
 			<view class="main">
-				<skill-card-list :actCardIdx="actCardIdx" :actSk="actSk"></skill-card-list>
+				<skill-card-list :actCardIdx="actCardIdx" :actSk="actSk"
+				@pickCard="pickCard"></skill-card-list>
 			</view>
 			<view class="btn-group">
 				<button class="btn200x60" @click="closeSkill" 
@@ -22,7 +23,8 @@
 		name:"skill-box",
 		data() {
 			return {
-				skillMsg
+				skillMsg,
+				pickCardIdx: -1,
 			};
 		},
 		props: {
@@ -31,7 +33,14 @@
 		},
 		methods: {
 			closeSkill () {this.$emit("closeSkill")},
-			useSkill (mode=0) {this.$emit("useSkill",mode)},
+			useSkill (mode=0) {
+				let {num} = this.actSk
+				if (this.pickCardIdx>=0) 
+					this.$store.commit("actEffect", {skIdx: num, pickIdx: this.pickCardIdx, actIdx: this.actCardIdx})
+				if (num!=7)	this.$emit("useSkill",mode)
+				this.$emit("resetSkillUsed")
+			},
+			pickCard (idx) {this.pickCardIdx=idx},
 		},
 		mounted () {
 			let {num,mode} = this.actSk
@@ -65,7 +74,7 @@
 				if (num&&num<=4) mode=1 
 				setTimeout(()=>{
 					uni.hideLoading()
-					this.useSkill(mode)
+					this.$emit("useSkill",mode)
 				},1500)
 			}
 		}
