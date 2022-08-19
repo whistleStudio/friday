@@ -25,8 +25,8 @@
 			</view>
 			<view class="main">
 				<ul class="mgb-30" v-for="(v,k,i) in curFts" :key="i">
-					<li v-for="(cv,ci) in v" :key="ci" @click="tapCbtCard(100*i+ci)">
-						<cbt-card :cardInfo="v[ci]" :isFree="!i" 
+					<li v-for="(cv,ci) in v" :key="ci" @click="tapCbtCard(100*i+ci)">               
+						<cbt-card :cardInfo="cv" :isFree="!i" 
 						@showSkill="showSkill" 
 						:cardIdx="100*i+ci" :actCardIdx="actCardIdx" ></cbt-card>
 					</li>
@@ -56,6 +56,7 @@
 
 <script>
 	import {harm} from "@/style/card.json"
+	import {mapState} from "vuex"
 	export default {
 		data() {
 			return {
@@ -80,16 +81,20 @@
 			}
 		},
 		computed: {
-			curAdvs: function () {return this.$sta._gameInfo.curAdvs},
-			disAdv () {return this.$sta._gameInfo.disAdv},
+			...mapState({
+				curAdvs: state => state._gameInfo.curAdvs,
+				disAdv: state => state._gameInfo.disAdv,
+				curFts: state => state._gameInfo.curFts,
+				naFts: state => state._gameInfo.curFts.na,
+				spFts: state => state._gameInfo.curFts.sp,
+				disFt: state => state._gameInfo.disFt,
+				isBoss: state => state._gameInfo.isBoss,
+				isInitOk: state => state._gameInfo.isInitOk,
+				advs: state => state._cards.advDeck,
+				fts: state => state._cards.ftDeck,
+			}),
 			curAdvCard () {return this.$gts.curAdvCard},
 			curDraw () {return this.$sta.isBoss ? this.curAdvCard.draw+this.temp.draw : this.curAdvCard.ch2+1+this.temp.draw},
-			advs () {return this.$sta._cards.advDeck},
-			fts () {return this.$sta._cards.ftDeck},
-			curFts () {return this.$sta._gameInfo.curFts},
-			naFts () {return this.$sta._gameInfo.curFts.na},
-			spFts () {return this.$sta._gameInfo.curFts.sp},
-			disFt () {return this.$sta._gameInfo.disFt},
 			cbtBar () {return [
 				this.$sta._gameInfo.hp,
 				this.$gts.cbtCount,
@@ -102,8 +107,6 @@
 				else advHarm = this.curAdvCard ? harm[this.curAdvCard.ch2][ph] : 99
 				return advHarm - this.$gts.cbtCount
 			},
-			isBoss () {return this.$sta._gameInfo.isBoss},
-			isInitOk () {return this.$sta._gameInfo.isInitOk}
 		},
 		methods: {
 		  /* 冒险区长按事件（待完善） */

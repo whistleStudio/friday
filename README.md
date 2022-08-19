@@ -196,4 +196,6 @@ skill<=5 && !mode [需要修改]
 
 3 hp+1+2 draw+1+2
 
- 
+ ### [08191108]
+
+- client - 改了下mapState, 考虑用function call 封装script里的逻辑
