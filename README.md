@@ -199,3 +199,17 @@ skill<=5 && !mode [需要修改]
  ### [08191108]
 
 - client - 改了下mapState, 考虑用function call 封装script里的逻辑
+
+### [08202113]
+
+- client 
+
+1 置底逻辑
+
+2  优化play的methods, 抽离不同区域
+
+3 play 页 resetUsedSkill与closeSkill , 调整仅保留closeSkill
+
+4 play页 useSkill无用, 现直接让skill-box触发useSkill -> commit store改变技能使用状态, 之前useSkill参数mode取消, 调用后emit closeSkill 关闭skill-box遮罩重置actCardIdx
+
+5 store - actEffect方法 置底,交换x1逻辑

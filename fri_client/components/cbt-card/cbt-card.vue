@@ -8,7 +8,7 @@
 			</view>
 			<view class="cbt-mid" :style="{backgroundImage: `url(${imgUrl+cardInfo.ch}.png)`}">	
 			</view>
-			<view class="cbt-bot" :class="{sk2: cardInfo.skill2, notWork: cardInfo.work}">
+			<view class="cbt-bot" :class="{sk2: cardInfo.skill2, work: cardInfo.work}">
 				{{skill[cardInfo.skill2] || skill[cardInfo.skill]}}
 			</view>
 		</view>
@@ -96,7 +96,7 @@
 	.cbt-bot {
 		font-size: 40rpx;
 	}
-	.notWork {
+	.work {
 		text-decoration: line-through;
 	}
 }

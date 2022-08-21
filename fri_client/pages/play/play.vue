@@ -42,8 +42,8 @@
 		</u-overlay>
 		<!-- 卡牌效果页 -->
 		<u-overlay :show="isSkillShow" opacity="0.6">
-			<skill-box :actSk="actSk" :actCardIdx="actCardIdx" @resetSkillUsed="resetSkillUsed"
-			@closeSkill="resetSkillUsed" @useSkill="useSkill" @modifyDraw="modifyDraw"></skill-box>
+			<skill-box :actSk="actSk" :actCardIdx="actCardIdx" 
+			@closeSkill="closeSkill" @modifyDraw="modifyDraw"></skill-box>
 		</u-overlay>
 		<!-- 弃牌区 -->
 		<u-popup :show="isPopShow" mode="left">
@@ -55,8 +55,12 @@
 </template>
 
 <script>
-	import {harm} from "@/style/card.json"
 	import {mapState} from "vuex"
+	import {harm} from "@/style/card.json"
+	import advMethods from "./advMethods.js"
+	import actionMethods from "./actionMethods.js"
+	import combatMethods from "./combatMethods.js"
+	
 	export default {
 		data() {
 			return {
@@ -109,122 +113,32 @@
 			},
 		},
 		methods: {
-		  /* 冒险区长按事件（待完善） */
-			advTouchStart () {
-				let start = 0
-				this.advTouch.tim = setInterval(()=>{
-					start++
-					if (start>20) {
-						this.advTouch.isFlap = true
-					}
-				},100)
-			},
-			advTouchEnd () {
-				clearInterval(this.advTouch.tim)
-				this.advTouch.isFlap = false
-			},
-			/* 挑战 */	
-			fight () {
-				if (this.advDim<=0) {
-					this.$store.commit("fightCheck", {res:1, card:this.curAdvCard})
-					uni.showToast({title:"挑战成功!", icon:"none"})
-					this.openAdvBox()
-				} else {
-					let curHp = this.$sta._gameInfo.hp - this.advDim
-					this.$store.commit("changeHp", this.advDim)
-					uni.showToast({title:`挑战失败!\n生命-${this.advDim}`, icon:"none"}) 
-					setTimeout(()=>{
-						this.isOverlayShow = true
-						this.isAdv2Show = false
-					},500)
-				}
-				this.drawCount = 0
-				this.resetTemp()
-			},
-			/* 抽牌 */
-			draw () {
-				if (this.fts.length || this.disFt.length) {
-					this.draw1Card()
-				} else uni.showToast({title:"牌库已空!", icon:"none"})
-			},
-			draw1Card () {
-				if (this.drawCount>=this.curDraw) {
-					uni.showModal({
-						content: "继续抽牌将消耗1生命值\n是否进行?",
-						success: res => {
-							if (res.confirm) {
-								this.$store.commit("changeHp", 1)
-								if (this.fts.length) this.$store.commit("drawFtCard", 0)
-								else {
-									this.$store.dispatch("ftsRunOut")
-									uni.showLoading({title: "岁月不饶人, 你似乎又衰老了些"})
-									setTimeout(()=>{uni.hideLoading()},1500)
-								}
-							}
-						}
-					})
-				}	else {this.$store.commit("drawFtCard"); this.drawCount++}
-			},
-			/* 打开冒险选择窗口 */
-			openAdvBox () {
-				setTimeout(()=>{
-					if (this.advs.length===1) {
-						uni.showModal({
-							content: "还剩一张冒险牌, 可放弃挑战进入下一阶段",
-							cancelText: "放弃",
-							confirmText: "继续",
-							success: res => {
-								if (res.confirm) this.giveAdvCard()
-								else if (res.cancel) {
-									this.$store.commit("changeObjVal", {k1:"_gameInfo", k2:"isNextPhase", v:true})
-									this.giveAdvCard(true)
-								}
-							}
-						})
-					} else {
-						this.giveAdvCard()
-					}
-				},500) 
-			},
-			/* 请求派发冒险牌 */
-			giveAdvCard (isNext=false) {
-				this.$store.commit("chooseAdvCard")
-				this.isOverlayShow = true
-				this.isAdv2Show = true
-			},
-			/* 关闭移除卡牌窗口 */
+		  /* -------------冒险区(待完善)-------------- */
+			advTouchStart () {advMethods.call(this).advTouchStart()},
+			advTouchEnd () {advMethods.call(this).advTouchEnd()},
+			
+			/* -----------行动区--------------- */
+			fight () {actionMethods.call(this).fight()}, //挑战按钮
+			openAdvBox () {actionMethods.call(this).openAdvBox()}, //挑战成功, 打开冒险选择窗口
+			giveAdvCard () {actionMethods.call(this).giveAdvCard()}, //冒险窗口, 派牌
+			draw () {actionMethods.call(this).draw()}, //抽牌按钮
+			draw1Card () {actionMethods.call(this).draw1Card()},
+			
+			/* -----------战斗区------------------- */ 
+			tapCbtCard (idx) {combatMethods.call(this).tapCbtCard(idx)}, //点击战斗牌,显示发动效果遮罩
+			showSkill (actSk) {combatMethods.call(this).showSkill(actSk)}, //点击发动效果, skill-box遮罩显示
+			closeSkill () {combatMethods.call(this).closeSkill()}, // 取消/确定, 关闭skill-box遮罩
+			
+			/* ------------其他---------------------- */
+			// 关闭移除卡牌窗口
 			closeRmBox (disCardNum) {
 				if (disCardNum) uni.showToast({title:`共移除${disCardNum}张卡牌`,icon:"none"})
 				this.$store.commit("fightCheck", {res:0, card:this.curAdvCard})
 				this.openAdvBox()
 			},
-			/* 激活技能 */
-			tapCbtCard (idx) {
-				if (this.actCardIdx === idx)
-					this.actCardIdx = -1
-				else this.actCardIdx = idx
-				console.log("tap",this.actCardIdx, idx)
-			},
-			/* skill遮罩显示 */
-			showSkill (actSk) {
-				this.isSkillShow = true
-				this.actSk = actSk
-			},
-			/* 技能使用情况改变 */
-			useSkill (mode) {
-				if (mode) {
-					// this.isSkillUsed=true
-					this.$store.commit("useSkill", {actIdx: this.actCardIdx, state: 1})
-				} else this.isSkillShow = false
-			},
-			/* 重置技能使用情况 skill-box触发isSkillUsed=true, cbt-card监控isSkillUsed, 再触发reset -> 遮罩关闭,技能使用重置,激活索引置-1(发动效果图标小时)*/
-			resetSkillUsed () {
-				this.isSkillShow = false
-				this.actCardIdx = -1
-			},
-			/* 调整免费抽牌上限 */
+			// 调整免费抽牌上限
 			modifyDraw (n) {this.temp.draw += n},
-			/* 重置temp */
+			// 重置temp
 			resetTemp () {
 				this.temp.draw = 0
 			}

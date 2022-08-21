@@ -33,12 +33,18 @@
 		},
 		methods: {
 			closeSkill () {this.$emit("closeSkill")},
-			useSkill (mode=0) {
+			useSkill () {
 				let {num} = this.actSk
-				if (this.pickCardIdx>=0) 
+				// 除复制以外, 置为已使用状态
+				if (num!=7)	this.$store.commit("useSkill", {actIdx: this.actCardIdx, state: 1})
+				if (this.pickCardIdx>=0) {
 					this.$store.commit("actEffect", {skIdx: num, pickIdx: this.pickCardIdx, actIdx: this.actCardIdx})
-				if (num!=7)	this.$emit("useSkill",mode)
-				this.$emit("resetSkillUsed")
+					// 置底的若为免费抽取牌, 可免费抽牌数+1
+					if (num===8&&this.pickCardIdx<100) {
+						this.$emit("modifyDraw", 1)
+					}
+				}
+				this.$emit("closeSkill")
 			},
 			pickCard (idx) {this.pickCardIdx=idx},
 		},
@@ -71,11 +77,13 @@
 					case 5:
 						break
 				}
-				if (num&&num<=4) mode=1 
-				setTimeout(()=>{
-					uni.hideLoading()
-					this.$emit("useSkill",mode)
-				},1500)
+				if (num&&num<=4) {
+					setTimeout(()=>{
+						this.$store.commit("useSkill", {actIdx: this.actCardIdx, state: 1})
+						uni.hideLoading()
+						this.$emit("closeSkill")
+					},1200)
+				}
 			}
 		}
 	}

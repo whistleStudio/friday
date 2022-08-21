@@ -48,7 +48,7 @@
 		{"id":"a29", "type":0, "ch":12, "ch2":4, "atk":5, "atk2": "", "skill":99, "skill2":"", "work":0}
 	],
 	"ftDeck": [
-		{"id":"f0", "type":1, "ch":16, "atk":2, "atk2":"",  "skill":6, "skill2":""   , "work":0},
+		{"id":"f0", "type":1, "ch":16, "atk":2, "atk2":"",  "skill":9, "skill2":""   , "work":0},
 		{"id":"f1", "type":1, "ch":17, "atk":1, "atk2":"",  "skill":7, "skill2":""   , "work":0},
 		{"id":"f2", "type":1, "ch":17, "atk":1, "atk2":"",  "skill":8, "skill2":""   , "work":0},
 		{"id":"f3", "type":1, "ch":17, "atk":1, "atk2":"",  "skill":9, "skill2":""   , "work":0},

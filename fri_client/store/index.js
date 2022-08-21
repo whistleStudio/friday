@@ -179,15 +179,23 @@ const store = new Vuex.Store({
 				case 5:
 					break
 				case 6: //摧毁
-					let discard = ft.splice(idx,1)
-					_gameInfo.rm.push(...discard)
+					var discard = ft.splice(idx,1)[0]
+					_gameInfo.rm.push(discard)
 					break
 				case 7: //复制
 					let ft2 = actIdx<100 ? na : sp, idx2 = actIdx<100 ? actIdx : actIdx-100
 					console.log(ft[idx].skill)
 					ft2[idx2].skill2 = ft[idx].skill
 					break
-				case 8:
+				case 8: //置底
+					var botCard = ft.splice(idx,1)[0]
+					botCard.skill2 = ""
+					_cards.ftDeck.push(botCard)
+					break
+				case 9: //交换x1
+					_gameInfo.disFt.unshift(ft.splice(idx,1)[0])
+					// *********bug可能抽空************
+					this.commit("drawFtCard", 0)
 					break
 			}
 		},
