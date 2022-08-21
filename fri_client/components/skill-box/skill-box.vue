@@ -34,17 +34,24 @@
 		methods: {
 			closeSkill () {this.$emit("closeSkill")},
 			useSkill () {
-				let {num} = this.actSk
+				let {num,mode} = this.actSk, actIdx = this.actCardIdx, pickIdx = this.pickCardIdx
+				let payload
 				// 除复制以外, 置为已使用状态
-				if (num!=7)	this.$store.commit("useSkill", {actIdx: this.actCardIdx, state: 1})
-				if (this.pickCardIdx>=0) {
-					this.$store.commit("actEffect", {skIdx: num, pickIdx: this.pickCardIdx, actIdx: this.actCardIdx})
+				if (num!=7)	this.$store.commit("useSkill", {actIdx, state: 1})
+				if (pickIdx>=0) {
 					// 置底的若为免费抽取牌, 可免费抽牌数+1
-					if (num===8&&this.pickCardIdx<100) {
+					if (num===8&&pickIdx<100) {
 						this.$emit("modifyDraw", 1)
 					}
+					// 交换x2 是否进行第2次
+					if (num==10&&mode!=2) {
+						let ft = actIdx<100 ? "na" : "sp", idx = actIdx<100 ? actIdx : actIdx-100
+						let actCard = this.$sta._gameInfo.curFts[ft][idx] // 获得已激活的交换x2卡片
+						payload = {actCard, actIdx}
+					}
+					this.$store.commit("actEffect", {skIdx: num, pickIdx, actIdx})
 				}
-				this.$emit("closeSkill")
+				this.$emit("closeSkill", payload)
 			},
 			pickCard (idx) {this.pickCardIdx=idx},
 		},

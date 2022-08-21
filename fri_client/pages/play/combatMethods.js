@@ -13,16 +13,30 @@ export default function () {
 			this.isSkillShow = true
 			this.actSk = actSk
 		},
-		// skill-box, 技能确定使用
-		useSkill: mode => {
-			if (mode) {
-				this.$store.commit("useSkill", {actIdx: this.actCardIdx, state: 1})
-			} else this.isSkillShow = false
-		},
 		// 取消/确定, 关闭skill-box遮罩
-		closeSkill: () => {
+		closeSkill: payload => {
 			this.isSkillShow = false
 			this.actCardIdx = -1
+			// 交换x2 第2次使用时触发
+			if (payload) {
+				uni.showModal({
+					content: "还可以进行1次交换，是否继续？",
+					cancelText: "否",
+					confirmText: "是",
+					success: res=>{
+						if (res.confirm) {
+							this.swapAgain(payload)
+						}
+					}
+				})
+			}
 		},
+		// 技能交换x2第二次交换
+		swapAgain: ({actCard, actIdx}) => {
+			let ft = actIdx<100 ? this.naFts : this.spFts, k = actIdx<100? 0:1
+			this.actCardIdx = ft.indexOf(actCard) + 100*k // 获得交换x2卡片在发生第1次交换后的新索引位置
+			this.isSkillShow = true
+			this.actSk = {num:10, mode:2}
+		}
 	}
 }

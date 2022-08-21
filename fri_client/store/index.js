@@ -113,7 +113,6 @@ const store = new Vuex.Store({
 		},
 		/* 派发1张战斗牌 */
 		drawFtCard ({_gameInfo, _cards}, isFree=1) {
-			console.log("2step")
 			let {ftDeck} = _cards
 			let drawCard = ftDeck.shift()
 			if (isFree) {
@@ -172,6 +171,7 @@ const store = new Vuex.Store({
 		},
 		/* 效果生效 */
 		actEffect ({_gameInfo, _cards}, {skIdx, pickIdx, actIdx}) {
+			console.log("affect---", pickIdx, actIdx)
 			let {na, sp} = _gameInfo.curFts
 			let ft = pickIdx<100 ? na : sp, idx = pickIdx<100 ? pickIdx : pickIdx-100
 			console.log("actEffect")
@@ -195,6 +195,10 @@ const store = new Vuex.Store({
 				case 9: //交换x1
 					_gameInfo.disFt.unshift(ft.splice(idx,1)[0])
 					// *********bug可能抽空************
+					this.commit("drawFtCard", 0)
+					break
+				case 10: //交换x2
+					_gameInfo.disFt.unshift(ft.splice(idx,1)[0])
 					this.commit("drawFtCard", 0)
 					break
 			}

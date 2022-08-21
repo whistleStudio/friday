@@ -27,7 +27,6 @@
 				chs,skill,
 				isMaskShow: false,
 				imgUrl: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/scene/scene",
-				// isWork: true,
 			};
 		},
 		computed: {
@@ -40,25 +39,12 @@
 			isFree: Boolean,
 			cardIdx: Number,
 			actCardIdx: {type: Number, default: -1},
-			// isSkillUsed: {type: Boolean, default: false},
 			cbtCardMode: {type: Number, default: 0}
 		},
 		methods: {
 			showSkill () {this.$emit("showSkill", {num:this.skNum, mode:0})},
 		},
-		watch: {
-			// isSkillUsed (newV) {
-			// 	if (newV) {
-			// 		// console.log("watch isSkillUsed", this.cardIdx, this.actCardIdx)
-			// 		// 校验发动效果卡牌 是否为 当前卡牌
-			// 		if (this.cardIdx === this.actCardIdx) {
-			// 			this.isWork = false
-			// 			// 父isSkillUsed重置为false
-			// 			this.$emit("resetSkillUsed")
-			// 		}
-			// 	}
-			// }
-		}
+
 	}
 </script>
 

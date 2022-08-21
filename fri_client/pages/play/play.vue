@@ -42,7 +42,7 @@
 		</u-overlay>
 		<!-- 卡牌效果页 -->
 		<u-overlay :show="isSkillShow" opacity="0.6">
-			<skill-box :actSk="actSk" :actCardIdx="actCardIdx" 
+			<skill-box :actSk="actSk" :actCardIdx="actCardIdx" @swapAgain="swapAgain"
 			@closeSkill="closeSkill" @modifyDraw="modifyDraw"></skill-box>
 		</u-overlay>
 		<!-- 弃牌区 -->
@@ -125,9 +125,10 @@
 			draw1Card () {actionMethods.call(this).draw1Card()},
 			
 			/* -----------战斗区------------------- */ 
-			tapCbtCard (idx) {combatMethods.call(this).tapCbtCard(idx)}, //点击战斗牌,显示发动效果遮罩
-			showSkill (actSk) {combatMethods.call(this).showSkill(actSk)}, //点击发动效果, skill-box遮罩显示
-			closeSkill () {combatMethods.call(this).closeSkill()}, // 取消/确定, 关闭skill-box遮罩
+			tapCbtCard () {combatMethods.call(this).tapCbtCard(...arguments)}, //点击战斗牌,显示发动效果遮罩
+			showSkill () {combatMethods.call(this).showSkill(...arguments)}, //点击发动效果, skill-box遮罩显示
+			closeSkill () {combatMethods.call(this).closeSkill(...arguments)}, // 取消/确定, 关闭skill-box遮罩
+			swapAgain () {combatMethods.call(this).swapAgain(...arguments)}, // 技能交换x2第二次交换 
 			
 			/* ------------其他---------------------- */
 			// 关闭移除卡牌窗口

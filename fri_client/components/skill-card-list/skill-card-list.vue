@@ -38,7 +38,7 @@
 			} 
 		},
 		created () {
-			console.log(this.curFts)
+			// console.log(this.curFts)
 		}
 	}
 </script>

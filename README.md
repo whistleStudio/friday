@@ -213,3 +213,15 @@ skill<=5 && !mode [需要修改]
 4 play页 useSkill无用, 现直接让skill-box触发useSkill -> commit store改变技能使用状态, 之前useSkill参数mode取消, 调用后emit closeSkill 关闭skill-box遮罩重置actCardIdx
 
 5 store - actEffect方法 置底,交换x1逻辑
+
+### [08212036]
+
+- client
+
+1 closeSkill 增加参数payload, 用于关闭遮罩后再触发某些事件;现用于交换x2技能, 第二次使用时,再次打开skill-box 
+
+交换x2逻辑: 第一次交换时,记录下actCard -> 带参emit closeSkill -> 关闭遮罩后, 显示是否用第二次模态框 -> 是触发swapAgain -> 检索actCard在第一次使用交换后在ft里的新位置, 改变actCardIdx, 改变actSk.mode =2 , 打开skillbox -> 进行选择,mode==2作为第二次交换标记
+
+[注意: u-overlay :show属性false时, 应该相当于v-if,整个组件都会没有,所以在消失后再emit事件,父级是没有办法接收到的]
+
+2 play页用...arguments形式代替之前的形参
