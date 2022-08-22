@@ -127,7 +127,8 @@
 			tapCbtCard () {combatMethods.call(this).tapCbtCard(...arguments)}, //点击战斗牌,显示发动效果遮罩
 			showSkill () {combatMethods.call(this).showSkill(...arguments)}, //点击发动效果, skill-box遮罩显示
 			closeSkill () {combatMethods.call(this).closeSkill(...arguments)}, // 取消/确定, 关闭skill-box遮罩
-			swapAgain () {combatMethods.call(this).swapAgain(...arguments)}, // 技能交换x2第二次交换 
+			swapAgain () {combatMethods.call(this).swapAgain(...arguments)}, // 技能交换*2二阶段交换 
+			sortCheckCards () {combatMethods.call(this).sortCheckCards()}, // 技能查看*3二阶段排序
 			
 			/* ------------其他---------------------- */
 			// 关闭移除卡牌窗口

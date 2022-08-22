@@ -24,7 +24,7 @@ export default function () {
 						this.swapAgain(payload)
 						break
 					case 11:
-
+						this.sortCheckCards()
 						break
 				}
 

@@ -12,7 +12,7 @@ const store = new Vuex.Store({
 		},
 		_gameInfo: {
 			glvl: 0, hp: 40, decayLvl: 0, curPhase: 0, curAdvIdx: 0, 
-			curFts: {na:[], sp:[]}, curAdvs: [], disAdv: [], disFt: [], rm: [], checkCards: [],
+			curFts: {na:[], sp:[]}, curAdvs: [], disAdv: [], disFt: [], rm: [], checkCards: [], checkCardOrder: [],
 			isInitOk: true, isBoss: false, isAdvsOk: false	
 		},
 		_cards: cards
@@ -165,9 +165,11 @@ const store = new Vuex.Store({
 		},
 		/* 技能使用情况 */
 		useSkill ({_gameInfo}, {actIdx, state}) {
-			let {na, sp} = _gameInfo.curFts
-			let ft = actIdx<100 ? na : sp, idx = actIdx<100 ? actIdx : actIdx-100
-			ft[idx].work = state
+			if (actIdx>=0) {
+				let {na, sp} = _gameInfo.curFts
+				let ft = actIdx<100 ? na : sp, idx = actIdx<100 ? actIdx : actIdx-100
+				ft[idx].work = state
+			}
 		},
 		/* 效果生效  mode-0默认/技能一阶段 | 2技能二阶段 */
 		actEffect ({_gameInfo, _cards}, {skIdx, pickIdx, actIdx, mode=0}) {
@@ -205,6 +207,17 @@ const store = new Vuex.Store({
 					if (mode==0) {
 						pickCard = _gameInfo.checkCards.splice(pickIdx,1)[0]
 						_gameInfo.disFt.unshift(pickCard)
+					} else {
+						console.log("mode2")
+						let {checkCards, checkCardOrder} = _gameInfo
+						let tempArr1 = [], tempArr2 = []
+						checkCardOrder.forEach((v,i) => {
+							if (v<0) {
+								tempArr1.push(checkCards[i])
+							} else tempArr2[v] = checkCards[i]
+						})
+						_gameInfo.checkCards = []; _gameInfo.checkCardOrder = [];
+						_cards.ftDeck.unshift(...tempArr2, ...tempArr1)
 					}
 					break
 			}

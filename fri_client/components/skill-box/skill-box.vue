@@ -2,6 +2,7 @@
 	<view class="skill-box flex-center">
 		<view v-if="actSk.num>5 || (actSk.num==5&&actSk.mode)" class="skill-content flex-col-rowcenter">
 			<text>{{skillMsg[actSk.num]}}</text>
+			<text v-if="actSk.num==11">{{subMsg[`${actSk.num}_${actSk.mode}`]}}</text>
 			<view class="main">
 				<skill-card-list :actCardIdx="actCardIdx" :actSk="actSk" @pickCard="pickCard"></skill-card-list>
 			</view>
@@ -16,13 +17,13 @@
 </template>
 
 <script>
-	import {skillMsg} from "@/style/skillMsg.json"
+	import {skillMsg, subMsg} from "@/style/skillMsg.json"
 	
 	export default {
 		name:"skill-box",
 		data() {
 			return {
-				skillMsg,
+				skillMsg, subMsg,
 				pickCardIdx: -1,
 			};
 		},
@@ -36,17 +37,18 @@
 				//mode-0默认/技能一阶段 | 2技能二阶段
 				let {num,mode} = this.actSk, actIdx = this.actCardIdx, pickIdx = this.pickCardIdx
 				let payload
-				// 除复制以外, 置为已使用状态
+				// (1)除复制以外, 置为已使用状态
 				if (num!=7)	this.$store.commit("useSkill", {actIdx, state: 1})
-				// 查看*3
+				// (2)查看*3
 				if (num==11) {
 					if (mode==0) {
-						this.$store.commit("actEffect", {skIdx: num, pickIdx, actIdx})
+						console.log("pickIdx------", pickIdx)
+						if(pickIdx>=0) this.$store.commit("actEffect", {skIdx: num, pickIdx, actIdx})
 						payload = {skIdx: num}
-					} else {}
+					} else {this.$store.commit("actEffect", {skIdx: num, pickIdx, actIdx, mode})}
 				}
-				// 其他情况
-				if (pickIdx>=0) {
+				// (3)其他情况
+				if (num!=11&&pickIdx>=0) {
 					// 置底的若为免费抽取牌, 可免费抽牌数+1
 					if (num===8&&pickIdx<100) {
 						this.$emit("modifyDraw", 1)
@@ -59,6 +61,7 @@
 					}
 					this.$store.commit("actEffect", {skIdx: num, pickIdx, actIdx})
 				}
+				
 				this.$emit("closeSkill", payload)
 			},
 			pickCard (idx) {this.pickCardIdx=idx},

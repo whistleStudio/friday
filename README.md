@@ -238,3 +238,13 @@ skill<=5 && !mode [需要修改]
 
 4  skill-card-list根据actSK渲染不同dom 技能11 查看*3 一阶段逻辑完成， 二阶段skill-card-list 待调整
 
+### [08222212]
+
+- client
+
+1 技能查看*3 两次确定使用逻辑基本OK, 还差取消逻辑; store 增加了checkCards和checkCardOrder
+
+2 skillMsg.json 增加subMsg字段 用于显示阶段提醒信息 
+
+3 [待解决]skill-box 的 useSkill 方法， 条件分支有些乱
+

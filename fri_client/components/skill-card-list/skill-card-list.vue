@@ -18,8 +18,9 @@
 		<!-- 查看x3 二阶段排序 -->
 		<ul v-if="actSk.mode==2&&actSk.num==11" >
 			<li v-for="(v, i) in checkCards" :key="i" @click="sortCard(i)">
+				<text>ssss</text>
 				<cbt-card :cardInfo="v" :isFree="false" :cbtCardMode="1" :cardIdx="i" />
-				<!-- <image v-if="pickIdx==i" :src="`../../static/play/sk11.png`" class="mark" mode="widthFix"></image> -->
+				<image v-if="imgOrder[i]>=0" :src="`../../static/play/sortoken${imgOrder[i]}.png`" class="mark" mode="widthFix"></image>
 			</li>
 		</ul>
 	</view>
@@ -31,7 +32,9 @@
 		name:"skill-card-list",
 		data() {
 			return {
-				pickIdx: -1
+				pickIdx: -1,
+				imgOrder: [],
+				order: 0,
 			};
 		},
 		computed: {
@@ -49,11 +52,22 @@
 			pickCard (idx) {
 				this.pickIdx = idx
 				this.$emit("pickCard", idx)
-			} 
+			},
+			sortCard (i) {
+				console.log("sortCard---", i)
+				if (this.imgOrder[i]>=0) {
+					this.imgOrder=Array(3).fill(-1)
+					this.order = 0
+				} else {
+					// this.imgOrder[i] = this.order
+					this.$set(this.imgOrder, i, this.order)
+					this.$store.commit("changeObjVal", {k1: "_gameInfo", k2: "checkCardOrder", v: this.imgOrder})
+					this.order ++
+				}
+			}
 		},
 		created () {
-			console.log(this.actSk)
-			console.log(this.checkCards)
+			this.imgOrder = Array(this.checkCards.length).fill(-1)
 		}
 	}
 </script>
