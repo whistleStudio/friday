@@ -3,8 +3,7 @@
 		<view v-if="actSk.num>5 || (actSk.num==5&&actSk.mode)" class="skill-content flex-col-rowcenter">
 			<text>{{skillMsg[actSk.num]}}</text>
 			<view class="main">
-				<skill-card-list :actCardIdx="actCardIdx" :actSk="actSk"
-				@pickCard="pickCard"></skill-card-list>
+				<skill-card-list :actCardIdx="actCardIdx" :actSk="actSk" @pickCard="pickCard"></skill-card-list>
 			</view>
 			<view class="btn-group">
 				<button class="btn200x60" @click="closeSkill" 
@@ -34,10 +33,19 @@
 		methods: {
 			closeSkill () {this.$emit("closeSkill")},
 			useSkill () {
+				//mode-0默认/技能一阶段 | 2技能二阶段
 				let {num,mode} = this.actSk, actIdx = this.actCardIdx, pickIdx = this.pickCardIdx
 				let payload
 				// 除复制以外, 置为已使用状态
 				if (num!=7)	this.$store.commit("useSkill", {actIdx, state: 1})
+				// 查看*3
+				if (num==11) {
+					if (mode==0) {
+						this.$store.commit("actEffect", {skIdx: num, pickIdx, actIdx})
+						payload = {skIdx: num}
+					} else {}
+				}
+				// 其他情况
 				if (pickIdx>=0) {
 					// 置底的若为免费抽取牌, 可免费抽牌数+1
 					if (num===8&&pickIdx<100) {
@@ -47,7 +55,7 @@
 					if (num==10&&mode!=2) {
 						let ft = actIdx<100 ? "na" : "sp", idx = actIdx<100 ? actIdx : actIdx-100
 						let actCard = this.$sta._gameInfo.curFts[ft][idx] // 获得已激活的交换x2卡片
-						payload = {actCard, actIdx}
+						payload = {skIdx: num, actCard, actIdx}
 					}
 					this.$store.commit("actEffect", {skIdx: num, pickIdx, actIdx})
 				}
@@ -91,6 +99,9 @@
 						this.$emit("closeSkill")
 					},1200)
 				}
+			}
+			if (num==11&&mode==0) {
+				this.$store.commit("genCheckCards")
 			}
 		}
 	}

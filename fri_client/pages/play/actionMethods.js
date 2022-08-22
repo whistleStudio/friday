@@ -5,12 +5,12 @@ export default function () {
 		fight: () => {
 			if (this.advDim<=0) {
 				this.$store.commit("fightCheck", {res:1, card:this.curAdvCard})
-				uni.showToast({title:"挑战成功!", icon:"none"})
+				uni.showToast({title:"挑战成功!", icon:"none", duration:500})
 				this.openAdvBox()
 			} else {
 				let curHp = this.$sta._gameInfo.hp - this.advDim
 				this.$store.commit("changeHp", this.advDim)
-				uni.showToast({title:`挑战失败!\n生命-${this.advDim}`, icon:"none"}) 
+				uni.showToast({title:`挑战失败!\n生命-${this.advDim}`, icon:"none", duration:500}) 
 				setTimeout(()=>{
 					this.isOverlayShow = true
 					this.isAdv2Show = false
@@ -36,12 +36,14 @@ export default function () {
 						}
 					})
 				} else {
+					console.log("oAB---", this)
 					this.giveAdvCard()
 				}
 			},500) 
 		},
 		// 冒险窗口,派牌
-		giveAdvCard () {
+		giveAdvCard: () => {
+			console.log("gAC", this)
 			this.$store.commit("chooseAdvCard")
 			this.isOverlayShow = true
 			this.isAdv2Show = true

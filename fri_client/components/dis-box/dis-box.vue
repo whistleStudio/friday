@@ -49,7 +49,6 @@
 		},
 		created() {
 			let {windowHeight, screenWidth,statusBarHeight} = uni.getWindowInfo()
-			console.log(windowHeight,statusBarHeight)
 			this.scrollH = 750 / screenWidth * windowHeight -230
 		}
 	}

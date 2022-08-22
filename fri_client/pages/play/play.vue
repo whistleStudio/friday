@@ -26,8 +26,7 @@
 			<view class="main">
 				<ul class="mgb-30" v-for="(v,k,i) in curFts" :key="i">
 					<li v-for="(cv,ci) in v" :key="ci" @click="tapCbtCard(100*i+ci)">               
-						<cbt-card :cardInfo="cv" :isFree="!i" 
-						@showSkill="showSkill" 
+						<cbt-card :cardInfo="cv" :isFree="!i" @showSkill="showSkill" 
 						:cardIdx="100*i+ci" :actCardIdx="actCardIdx" ></cbt-card>
 					</li>
 				</ul>
@@ -42,7 +41,7 @@
 		</u-overlay>
 		<!-- 卡牌效果页 -->
 		<u-overlay :show="isSkillShow" opacity="0.6">
-			<skill-box :actSk="actSk" :actCardIdx="actCardIdx" @swapAgain="swapAgain"
+			<skill-box :actSk="actSk" :actCardIdx="actCardIdx" 
 			@closeSkill="closeSkill" @modifyDraw="modifyDraw"></skill-box>
 		</u-overlay>
 		<!-- 弃牌区 -->

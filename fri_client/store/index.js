@@ -1,7 +1,7 @@
 import Vue from "vue"
 import Vuex from "vuex"
 import cards from "@/style/card.json"
-import {shuffle, initShuffle, nextPhase, resetCard, isGameOver} from "./pubMethod"
+import {shuffle, initShuffle, nextPhase, resetCard, isGameOver, validateSkill} from "./pubMethod"
 
 Vue.use(Vuex)
 
@@ -12,7 +12,7 @@ const store = new Vuex.Store({
 		},
 		_gameInfo: {
 			glvl: 0, hp: 40, decayLvl: 0, curPhase: 0, curAdvIdx: 0, 
-			curFts: {na:[], sp:[]}, curAdvs: [], disAdv: [], disFt: [], rm: [],
+			curFts: {na:[], sp:[]}, curAdvs: [], disAdv: [], disFt: [], rm: [], checkCards: [],
 			isInitOk: true, isBoss: false, isAdvsOk: false	
 		},
 		_cards: cards
@@ -118,6 +118,7 @@ const store = new Vuex.Store({
 			if (isFree) {
 				_gameInfo.curFts.na.push(drawCard)
 			} else _gameInfo.curFts.sp.push(drawCard)
+			console.log("draw OK")
 		},
 		/* 添加衰老牌 */
 		addWeakCard ({_gameInfo, _cards}) {
@@ -131,7 +132,6 @@ const store = new Vuex.Store({
 			_cards.ftDeck = weakCard ? [...disFt, weakCard] : [...disFt],
 			_cards.ftDeck  = shuffle(_cards.ftDeck)
 			_gameInfo.disFt = []
-			console.log("1step")
 		},
 		/* 战斗清算 */
 		fightCheck ({_gameInfo}, {res, card}) {
@@ -169,18 +169,19 @@ const store = new Vuex.Store({
 			let ft = actIdx<100 ? na : sp, idx = actIdx<100 ? actIdx : actIdx-100
 			ft[idx].work = state
 		},
-		/* 效果生效 */
-		actEffect ({_gameInfo, _cards}, {skIdx, pickIdx, actIdx}) {
+		/* 效果生效  mode-0默认/技能一阶段 | 2技能二阶段 */
+		actEffect ({_gameInfo, _cards}, {skIdx, pickIdx, actIdx, mode=0}) {
 			console.log("affect---", pickIdx, actIdx)
 			let {na, sp} = _gameInfo.curFts
 			let ft = pickIdx<100 ? na : sp, idx = pickIdx<100 ? pickIdx : pickIdx-100
+			let pickCard
 			console.log("actEffect")
 			switch (skIdx) {
 				case 5:
 					break
 				case 6: //摧毁
-					var discard = ft.splice(idx,1)[0]
-					_gameInfo.rm.push(discard)
+					pickCard = ft.splice(idx,1)[0]
+					_gameInfo.rm.push(pickCard)
 					break
 				case 7: //复制
 					let ft2 = actIdx<100 ? na : sp, idx2 = actIdx<100 ? actIdx : actIdx-100
@@ -188,21 +189,34 @@ const store = new Vuex.Store({
 					ft2[idx2].skill2 = ft[idx].skill
 					break
 				case 8: //置底
-					var botCard = ft.splice(idx,1)[0]
-					botCard.skill2 = ""
-					_cards.ftDeck.push(botCard)
+					pickCard = ft.splice(idx,1)[0]
+					pickCard.skill2 = ""
+					_cards.ftDeck.push(pickCard)
 					break
 				case 9: //交换x1
-					_gameInfo.disFt.unshift(ft.splice(idx,1)[0])
-					// *********bug可能抽空************
-					this.commit("drawFtCard", 0)
-					break
 				case 10: //交换x2
-					_gameInfo.disFt.unshift(ft.splice(idx,1)[0])
-					this.commit("drawFtCard", 0)
+					pickCard = ft.splice(idx,1)[0]
+					validateSkill.call(this, _cards.ftDeck, ()=>{
+						_gameInfo.disFt.unshift(pickCard)
+						this.commit("drawFtCard", 0)
+					})
+					break
+				case 11: // 查看x3
+					if (mode==0) {
+						pickCard = _gameInfo.checkCards.splice(pickIdx,1)[0]
+						_gameInfo.disFt.unshift(pickCard)
+					}
 					break
 			}
 		},
+		/* 查看牌组更新 */
+		genCheckCards ({_gameInfo,_cards}) {
+			for (let i=0; i<3; i++) {
+				validateSkill.call(this, _cards.ftDeck, ()=>{
+					_gameInfo.checkCards.push(_cards.ftDeck.shift()) 
+				})
+			}
+		}
 	},
 	actions: {
 		getUserInfo (context, openid) {
@@ -231,6 +245,8 @@ const store = new Vuex.Store({
 		}
 	}
 })
+
+
 
 
 export default store

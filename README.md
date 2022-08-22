@@ -225,3 +225,16 @@ skill<=5 && !mode [需要修改]
 [注意: u-overlay :show属性false时, 应该相当于v-if,整个组件都会没有,所以在消失后再emit事件,父级是没有办法接收到的]
 
 2 play页用...arguments形式代替之前的形参
+
+### [08221736]
+
+- client
+
+1 避免v-if v-eles 在v-for中重复渲染，用两个并列的v-if
+
+2 closeSkill   根据是否存在 payload 区分是否具有多阶段， 然后根据payload里的skIdx再细分
+
+3 store actEffect方法 新增参数 mode=0, 用于区分部分技能的一二阶段
+
+4  skill-card-list根据actSK渲染不同dom 技能11 查看*3 一阶段逻辑完成， 二阶段skill-card-list 待调整
+

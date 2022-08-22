@@ -1,14 +1,27 @@
 <template>
 	<view class="skill-card-list">
-	  <ul class="mgb-30" v-for="(v,k,i) in curFts" :key="i">
+	  <ul v-if="actSk.num!=11" class="mgb-30" v-for="(v,k,i) in curFts" :key="i">
 	  	<li v-for="(cv,ci) in v" :key="ci" @click="pickCard(100*i+ci)"
 			v-show="(100*i+ci)!==actCardIdx">
-	  		<cbt-card :cardInfo="v[ci]" :isFree="!i" :cbtCardMode="1"  		
-	  		:cardIdx="100*i+ci" ></cbt-card>
+	  		<cbt-card :cardInfo="cv" :isFree="!i" :cbtCardMode="1" :cardIdx="100*i+ci" />
 				<image v-if="pickIdx==(100*i+ci)" :src="`../../static/play/sk${actSk.num}.png`" 
 				class="mark" mode="widthFix"></image>
 	  	</li>
 	  </ul>
+		<!-- 查看x3  一阶段弃牌-->
+		<ul v-if="actSk.mode==0&&actSk.num==11" >
+			<li v-for="(v, i) in checkCards" :key="i" @click="pickCard(i)">
+				<cbt-card :cardInfo="v" :isFree="false" :cbtCardMode="1" :cardIdx="i" />
+				<image v-if="pickIdx==i" :src="`../../static/play/sk11.png`" class="mark" mode="widthFix"></image>
+			</li>
+		</ul>
+		<!-- 查看x3 二阶段排序 -->
+		<ul v-if="actSk.mode==2&&actSk.num==11" >
+			<li v-for="(v, i) in checkCards" :key="i" @click="sortCard(i)">
+				<cbt-card :cardInfo="v" :isFree="false" :cbtCardMode="1" :cardIdx="i" />
+				<!-- <image v-if="pickIdx==i" :src="`../../static/play/sk11.png`" class="mark" mode="widthFix"></image> -->
+			</li>
+		</ul>
 	</view>
 </template>
 
@@ -24,6 +37,7 @@
 		computed: {
 			...mapState({
 				curFts: state => state._gameInfo.curFts,
+				checkCards: state => state._gameInfo.checkCards,
 			})
 		},
 		props: {
@@ -38,7 +52,8 @@
 			} 
 		},
 		created () {
-			// console.log(this.curFts)
+			console.log(this.actSk)
+			console.log(this.checkCards)
 		}
 	}
 </script>

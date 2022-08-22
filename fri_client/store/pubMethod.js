@@ -7,6 +7,7 @@ function shuffle (deck) {
 		let newCard = deck.splice(rdIdx,1)
 		newDeck = [...newDeck, ...newCard]
 	}
+	console.log("shuffle ok")
 	return newDeck
 }
 
@@ -48,6 +49,17 @@ function resetCard(card,mode=1) {
 	}
 }
 
+/* 校验战斗牌库是否抽空，技能是否能正常使用 */
+function validateSkill (ftDeck, fn=()=>{}) {
+	// ************bug所有牌都抽了，弃牌堆也没有******************
+	if (ftDeck.length>0) fn()
+	else {
+		this.commit("addWeakCard")
+		fn()
+	}
+}
+
+
 /* 判断游戏结束 */
 function isGameOver (hp) {
 	if (hp<0) {
@@ -57,4 +69,4 @@ function isGameOver (hp) {
 	}
 }
 
-export {shuffle, initShuffle, nextPhase, resetCard, isGameOver}
+export {shuffle, initShuffle, nextPhase, resetCard, isGameOver, validateSkill}

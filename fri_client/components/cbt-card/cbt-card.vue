@@ -39,7 +39,7 @@
 			isFree: Boolean,
 			cardIdx: Number,
 			actCardIdx: {type: Number, default: -1},
-			cbtCardMode: {type: Number, default: 0}
+			cbtCardMode: {type: Number, default: 0}, //0-点击会显示发动效果按钮
 		},
 		methods: {
 			showSkill () {this.$emit("showSkill", {num:this.skNum, mode:0})},
