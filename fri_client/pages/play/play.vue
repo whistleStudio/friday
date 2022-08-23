@@ -95,6 +95,7 @@
 				isBoss: state => state._gameInfo.isBoss,
 				isInitOk: state => state._gameInfo.isInitOk,
 				curPhase: state => state._gameInfo.curPhase,
+				isStopDraw: state => state._gameInfo.isStopDraw,
 				advs: state => state._cards.advDeck,
 				fts: state => state._cards.ftDeck,
 			}),
@@ -142,6 +143,15 @@
 				this.temp.ph = 0
 			}
 		},
+		watch: {
+			isStopDraw (newV) {
+				if (newV) {
+					let curDraw = this.$sta.isBoss ? this.curAdvCard.draw : this.curAdvCard.ch2+1
+					this.drawCount = curDraw
+				}
+			}
+		},
+		
 		onLoad (q) {
 			setTimeout(()=>{
 				this.$store.commit("chooseAdvCard")

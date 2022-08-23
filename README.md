@@ -265,3 +265,9 @@ skill<=5 && !mode [需要修改]
 6 技能加倍*1 逻辑完成
 
 7 开始写虚弱牌逻辑啦，comeon
+
+### [08232209]
+
+- client 
+
+1 虚弱 -1-2HP 停止 逻辑完成; store 增加isStopDraw, play页监听变化

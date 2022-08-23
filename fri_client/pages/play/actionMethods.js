@@ -3,6 +3,7 @@ export default function () {
 	return {
 		//挑战
 		fight: async () => {
+			await weakReduceHp.call(this)
 			await modifyPhase.call(this) 
 			await modifyDoubleAtk.call(this)
 			if (this.advDim<=0) {
@@ -154,15 +155,16 @@ function chooseDoubleAtk () {
 // 虚弱牌-冒险结束扣血
 function weakReduceHp () {
 	return new Promise ((rsv, rej) => {
-		let sk1 = hasSkill(12), sk2 = hasSkill(13)
-		let reduction = sk1.length + sk2.length
+		let sk1 = hasSkill(12, [this.naFts, this.spFts]), sk2 = hasSkill(13, [this.naFts, this.spFts])
+		let reduction = sk1.length + sk2.length*2
+		console.log("reduction ---",reduction)
 		if (reduction) {
 			this.$store.commit("changeHp", reduction)
 			uni.showToast({
-				title: `虚弱的你又减少了${reduction}点生命值`,
+				title: `[饥饿] 你又减少了${reduction}点生命值`,
 				icon: "none",
 				success () {
-					rsv()
+					setTimeout(()=>{rsv()},1500)
 				}
 			})
 		}

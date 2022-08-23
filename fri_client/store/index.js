@@ -13,7 +13,7 @@ const store = new Vuex.Store({
 		_gameInfo: {
 			glvl: 0, hp: 40, decayLvl: 0, curPhase: 2, curAdvIdx: 0, 
 			curFts: {na:[], sp:[]}, curAdvs: [], disAdv: [], disFt: [], rm: [], checkCards: [], checkCardOrder: [],
-			isInitOk: true, isBoss: false, isAdvsOk: false	
+			isInitOk: true, isBoss: false, isAdvsOk: false, isStopDraw: false,	
 		},
 		_cards: cards
 	},
@@ -88,7 +88,7 @@ const store = new Vuex.Store({
 		/* 派发2张冒险牌 */
 		chooseAdvCard ({_gameInfo, _cards}, isNext=false) {
 			_gameInfo.curAdvs = [];_gameInfo.curFts.na = [];_gameInfo.curFts.sp = [];
-			_gameInfo.curAdvIdx = 0;
+			_gameInfo.curAdvIdx = 0; _gameInfo.isStopDraw = false;
 			let advL = _cards.advDeck.length
 			let pickNum = 2
 			switch (advL) {
@@ -117,6 +117,14 @@ const store = new Vuex.Store({
 			let {ftDeck} = _cards
 			let drawCard = ftDeck.shift()
 			if (isFree) {
+				// 抽到虚弱14-停止
+				if (drawCard.skill==14) {
+					_gameInfo.isStopDraw = true
+					uni.showToast({
+						title: "[停止] 无法免费抽取更多的卡牌了",
+						icon: "none"
+					})
+				}
 				_gameInfo.curFts.na.push(drawCard)
 			} else _gameInfo.curFts.sp.push(drawCard)
 			console.log("draw OK")
