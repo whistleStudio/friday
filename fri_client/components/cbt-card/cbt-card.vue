@@ -1,14 +1,14 @@
 <template>
-	<view class="">
+	<view class="cbt-card">
 		<view class="cbt-content flex-col-rowcenter" :class="{notFree: !isFree}">
 			<view class="cbt-top">
-				<text>{{cardInfo.atk2||cardInfo.atk}}</text>
+				<text :class="{tempColor: cardInfo.atk2}">{{cardInfo.atk2||cardInfo.atk}}</text>
 				<text>{{chs[cardInfo.ch]}}</text>
 				<image :src="`../../static/play/cost${cost}.png`" mode="heightFix"></image>
 			</view>
 			<view class="cbt-mid" :style="{backgroundImage: `url(${imgUrl+cardInfo.ch}.png)`}">	
 			</view>
-			<view class="cbt-bot" :class="{sk2: cardInfo.skill2, work: cardInfo.work}">
+			<view class="cbt-bot" :class="{tempColor: cardInfo.skill2, work: cardInfo.work}">
 				{{skill[cardInfo.skill2] || skill[cardInfo.skill]}}
 			</view>
 		</view>
@@ -49,6 +49,10 @@
 </script>
 
 <style lang="scss">
+.cbt-card {
+	width: 100%;
+	height: 100%;
+}	
 .cbt-content {
 	width: 100%;
 	height: 100%;
@@ -100,7 +104,7 @@
 		background-image: linear-gradient(to bottom right, rgb(220, 201, 115), rgb(157, 109, 54));
 	}
 }
-.sk2 {
+.tempColor {
 	color: rgb(52, 140, 154);
 }
 .notFree {

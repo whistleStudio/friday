@@ -1,2 +1,7 @@
-let a = [1,2,3]
-console.log(a[-1])
+function b () {console.log("im b")}
+async function a () {
+	;(async()=>{
+		await b ()
+	})()
+}
+a()

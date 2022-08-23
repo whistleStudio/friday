@@ -79,7 +79,8 @@
 					mode: -1
 				},
 				temp: {
-					draw: 0
+					draw: 0,
+					ph: 0,
 				}
 			}
 		},
@@ -93,6 +94,7 @@
 				disFt: state => state._gameInfo.disFt,
 				isBoss: state => state._gameInfo.isBoss,
 				isInitOk: state => state._gameInfo.isInitOk,
+				curPhase: state => state._gameInfo.curPhase,
 				advs: state => state._cards.advDeck,
 				fts: state => state._cards.ftDeck,
 			}),
@@ -104,10 +106,9 @@
 				this.$sta._gameInfo.decayLvl
 			]},
 			advDim () {
-				let ph = this.$sta._gameInfo.curPhase
 				let advHarm
 				if (this.isBoss) advHarm = this.curAdvCard ? this.curAdvCard.atk : 99
-				else advHarm = this.curAdvCard ? harm[this.curAdvCard.ch2][ph] : 99
+				else advHarm = this.curAdvCard ? harm[this.curAdvCard.ch2][this.curPhase-this.temp.ph] : 99
 				return advHarm - this.$gts.cbtCount
 			},
 		},
@@ -119,16 +120,12 @@
 			/* -----------行动区--------------- */
 			fight () {actionMethods.call(this).fight()}, //挑战按钮
 			openAdvBox () {actionMethods.call(this).openAdvBox()}, //挑战成功, 打开冒险选择窗口
-			giveAdvCard () {actionMethods.call(this).giveAdvCard()}, //冒险窗口, 派牌
 			draw () {actionMethods.call(this).draw()}, //抽牌按钮
-			draw1Card () {actionMethods.call(this).draw1Card()},
 			
 			/* -----------战斗区------------------- */ 
 			tapCbtCard () {combatMethods.call(this).tapCbtCard(...arguments)}, //点击战斗牌,显示发动效果遮罩
 			showSkill () {combatMethods.call(this).showSkill(...arguments)}, //点击发动效果, skill-box遮罩显示
 			closeSkill () {combatMethods.call(this).closeSkill(...arguments)}, // 取消/确定, 关闭skill-box遮罩
-			swapAgain () {combatMethods.call(this).swapAgain(...arguments)}, // 技能交换*2二阶段交换 
-			sortCheckCards () {combatMethods.call(this).sortCheckCards()}, // 技能查看*3二阶段排序
 			
 			/* ------------其他---------------------- */
 			// 关闭移除卡牌窗口
@@ -142,6 +139,7 @@
 			// 重置temp
 			resetTemp () {
 				this.temp.draw = 0
+				this.temp.ph = 0
 			}
 		},
 		onLoad (q) {

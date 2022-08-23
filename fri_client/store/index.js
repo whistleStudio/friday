@@ -11,7 +11,7 @@ const store = new Vuex.Store({
 			nickname: "temp", avatar: "00", openid: "", lvl: 1
 		},
 		_gameInfo: {
-			glvl: 0, hp: 40, decayLvl: 0, curPhase: 0, curAdvIdx: 0, 
+			glvl: 0, hp: 40, decayLvl: 0, curPhase: 2, curAdvIdx: 0, 
 			curFts: {na:[], sp:[]}, curAdvs: [], disAdv: [], disFt: [], rm: [], checkCards: [], checkCardOrder: [],
 			isInitOk: true, isBoss: false, isAdvsOk: false	
 		},
@@ -97,6 +97,7 @@ const store = new Vuex.Store({
 					break
 				case 1:
 					if (isNext) {
+						console.log("nextPhase")
 						nextPhase(_gameInfo, _cards)
 					}
 					else pickNum = 1
@@ -179,7 +180,8 @@ const store = new Vuex.Store({
 			let pickCard
 			console.log("actEffect")
 			switch (skIdx) {
-				case 5:
+				case 5: // 加倍
+					ft[idx].atk2 = ft[idx].atk*2
 					break
 				case 6: //摧毁
 					pickCard = ft.splice(idx,1)[0]
@@ -216,8 +218,8 @@ const store = new Vuex.Store({
 								tempArr1.push(checkCards[i])
 							} else tempArr2[v] = checkCards[i]
 						})
-						_gameInfo.checkCards = []; _gameInfo.checkCardOrder = [];
-						_cards.ftDeck.unshift(...tempArr2, ...tempArr1)
+						_gameInfo.checkCards = [...tempArr2, ...tempArr1]
+						this.commit("resetCheckCards")
 					}
 					break
 			}
@@ -229,6 +231,12 @@ const store = new Vuex.Store({
 					_gameInfo.checkCards.push(_cards.ftDeck.shift()) 
 				})
 			}
+		},
+		/* 还原临时抽出的查看牌 */
+		resetCheckCards ({_gameInfo, _cards}) {
+			_cards.ftDeck.unshift(..._gameInfo.checkCards)
+			_gameInfo.checkCards = []
+			_gameInfo.checkCardOrder = []
 		}
 	},
 	actions: {

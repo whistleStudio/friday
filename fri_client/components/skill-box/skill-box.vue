@@ -2,7 +2,7 @@
 	<view class="skill-box flex-center">
 		<view v-if="actSk.num>5 || (actSk.num==5&&actSk.mode)" class="skill-content flex-col-rowcenter">
 			<text>{{skillMsg[actSk.num]}}</text>
-			<text v-if="actSk.num==11">{{subMsg[`${actSk.num}_${actSk.mode}`]}}</text>
+			<text v-if="actSk.num==11 || actSk.num==5">{{subMsg[`${actSk.num}_${actSk.mode}`]}}</text>
 			<view class="main">
 				<skill-card-list :actCardIdx="actCardIdx" :actSk="actSk" @pickCard="pickCard"></skill-card-list>
 			</view>
@@ -32,9 +32,12 @@
 			actCardIdx: Number,
 		},
 		methods: {
-			closeSkill () {this.$emit("closeSkill")},
+			closeSkill () {
+				this.$emit("closeSkill")
+				if (this.actSk.num == 11) this.$store.commit("resetCheckCards")
+			},
 			useSkill () {
-				//mode-0默认/技能一阶段 | 2技能二阶段
+				//mode-0默认/技能一阶段 | 2技能二阶段 | 1加倍
 				let {num,mode} = this.actSk, actIdx = this.actCardIdx, pickIdx = this.pickCardIdx
 				let payload
 				// (1)除复制以外, 置为已使用状态
@@ -68,13 +71,14 @@
 		},
 		mounted () {
 			let {num,mode} = this.actSk
-			if (num <= 5) {
+			if (num <= 5&&!mode) {
 				uni.showLoading({
 					title: this.skillMsg[num]
 				})
 				switch (num) {
 					// 阶段-1
 					case 0:
+						setTimeout(()=>{uni.hideLoading();this.$emit("closeSkill");},1000)
 						break
 					// hp+1
 					case 1:
@@ -93,6 +97,7 @@
 						this.$emit("modifyDraw", 2)
 					  break
 					case 5:
+						setTimeout(()=>{uni.hideLoading();this.$emit("closeSkill");},1000)
 						break
 				}
 				if (num&&num<=4) {
@@ -116,7 +121,7 @@
 		height: 100%;
 		.skill-content {
 			background-color: red;
-			height: 900rpx;
+			height: 930rpx;
 			width: 100%;
 			padding: 20rpx;
 			text {

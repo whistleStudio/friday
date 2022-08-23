@@ -70,7 +70,7 @@
 		text {
 			color: whitesmoke;
 		}
-		ul {
+		>ul {
 			padding: 0 22rpx 20rpx ;
 			width: 680rpx;
 			height: 700rpx;
@@ -80,13 +80,14 @@
 			flex-wrap: wrap;
 			box-sizing: border-box;
 			overflow-y: auto;
-			li {
+			>li {
 				margin-top: 20rpx;
 				flex: none;
 				width: 200rpx;
 				height: 300rpx;
 				background-color: rgb(255, 250, 232);
 				border-radius: 10rpx;
+				// box-sizing: border-box;
 				position: relative;
 				&:not(:nth-of-type(3n)) {
 					margin-right: 16rpx;

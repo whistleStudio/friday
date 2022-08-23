@@ -2,7 +2,9 @@
 export default function () {
 	return {
 		//挑战
-		fight: () => {
+		fight: async () => {
+			await modifyPhase.call(this) 
+			await modifyDoubleAtk.call(this)
 			if (this.advDim<=0) {
 				this.$store.commit("fightCheck", {res:1, card:this.curAdvCard})
 				uni.showToast({title:"挑战成功!", icon:"none", duration:500})
@@ -19,6 +21,7 @@ export default function () {
 			this.drawCount = 0
 			this.resetTemp()
 		},
+
 		// 挑战结束, 打开冒险选择窗口 
 		openAdvBox: () => {
 			setTimeout(()=>{
@@ -28,50 +31,161 @@ export default function () {
 						cancelText: "放弃",
 						confirmText: "继续",
 						success: res => {
-							if (res.confirm) this.giveAdvCard()
+							if (res.confirm) giveAdvCard.call(this)
 							else if (res.cancel) {
-								this.$store.commit("changeObjVal", {k1:"_gameInfo", k2:"isNextPhase", v:true})
-								this.giveAdvCard()
+								giveAdvCard.call(this, true)
 							}
 						}
 					})
 				} else {
-					console.log("oAB---", this)
-					this.giveAdvCard()
+					giveAdvCard.call(this)
 				}
 			},500) 
 		},
-		// 冒险窗口,派牌
-		giveAdvCard: () => {
-			console.log("gAC", this)
-			this.$store.commit("chooseAdvCard")
-			this.isOverlayShow = true
-			this.isAdv2Show = true
-		},
+
 		//抽牌
 		draw: () => {
 			if (this.fts.length || this.disFt.length) {
-				this.draw1Card()
-			} else uni.showToast({title:"牌库已空!", icon:"none"})
+				draw1Card.call(this)
+			} else uni.showToast({title:"牌库已空!", icon:"none", duration:500})
 		},
-		draw1Card: () => {
-			if (this.drawCount>=this.curDraw) {
-				uni.showModal({
-					content: "继续抽牌将消耗1生命值\n是否进行?",
-					success: res => {
-						if (res.confirm) {
-							this.$store.commit("changeHp", 1)
-							if (this.fts.length) this.$store.commit("drawFtCard", 0)
-							else {
-								this.$store.dispatch("ftsRunOut")
-								uni.showLoading({title: "岁月不饶人, 你似乎又衰老了些"})
-								setTimeout(()=>{uni.hideLoading()},1500)
-							}
-						}
-					}
-				})
-			}	else {this.$store.commit("drawFtCard"); this.drawCount++}
-		},
-
+		
 	}
+}
+
+/* ---------------------------------------------------------------------- */
+
+// 冒险窗口,派牌
+function giveAdvCard (isNext=false) {
+	this.$store.commit("chooseAdvCard", isNext)
+	this.isOverlayShow = true
+	this.isAdv2Show = true
+}
+
+// 校验战斗牌区是否存在特定技能牌
+function hasSkill (skNum, decks) {
+	let skillArr = []
+	decks.forEach((dv, di) => {
+		dv.forEach((cv, ci) => {
+			if (cv.skill===skNum || cv.skill2===skNum) skillArr.push(ci+di*100)	
+		})
+	})
+	return skillArr
+}
+
+// 战前修正： 阶段
+function modifyPhase () {
+	return new Promise(async (rsv, rej) => {
+		let skillArr = hasSkill(0, [this.naFts, this.spFts])
+		for (let v of skillArr) {
+			if ((this.curPhase-this.temp.ph)>0&&!this.isBoss) {
+				try {
+					 if (await modalPhase.call(this)) this.temp.ph++
+					 else break
+				} catch(e){}
+			}
+		}
+		rsv()
+	})
+}
+function modalPhase () {
+	return new Promise ((rsv, rej) => {
+		uni.showModal({
+			content: "战斗牌效果[阶段-1]是否使用?",
+			confirmText: "发动",
+			cancelText: "放弃",
+			success: res => {
+				if (res.confirm) {
+					setTimeout(()=>{rsv(1)},200)
+				} else if (res.cancel) {
+					rsv(0)
+				}
+			},
+			fail: (e)=>{console.log(e);rej(e)}
+		})
+	})
+}
+
+// 战前修正: 加倍
+function modifyDoubleAtk () {
+	return new Promise (async (rsv, rej)=>{
+		let skillArr = hasSkill(5, [this.naFts, this.spFts])
+		for (let v of skillArr) {
+			if (await modalDoubleAtk.call(this)) {
+				this.actCardIdx = v
+				await chooseDoubleAtk.call(this)
+				console.log("pick ok")
+			} else break
+		}
+		rsv()
+	})
+}
+function modalDoubleAtk () {
+	return new Promise((rsv, rej) => {
+		uni.showModal({
+			content: "战斗牌效果[加倍*1]是否使用?",
+			confirmText: "发动",
+			cancelText: "放弃",
+			success: res => {
+				if (res.confirm) {
+					console.log("modalPhase comfirm")
+					setTimeout(()=>{rsv(1)},200)
+				} else if (res.cancel) {
+					console.log("modalPhase cancel")
+					rsv(0)
+				}
+			},
+			fail: (e)=>{console.log(e);rej(e)}
+		})
+	})
+}
+function chooseDoubleAtk () {
+	return new Promise((rsv, rej) => {
+		this.showSkill({num:5, mode:1})
+		let tim = setInterval(()=>{
+			if (this.actCardIdx===-1) {
+				clearInterval(tim)
+				rsv()
+			}
+		},100)
+	})
+}
+
+// 虚弱牌-冒险结束扣血
+function weakReduceHp () {
+	return new Promise ((rsv, rej) => {
+		let sk1 = hasSkill(12), sk2 = hasSkill(13)
+		let reduction = sk1.length + sk2.length
+		if (reduction) {
+			this.$store.commit("changeHp", reduction)
+			uni.showToast({
+				title: `虚弱的你又减少了${reduction}点生命值`,
+				icon: "none",
+				success () {
+					rsv()
+				}
+			})
+		}
+		
+	})
+}
+
+// 抽1张牌
+function draw1Card () {
+	if (this.drawCount>=this.curDraw) {
+		uni.showModal({
+			content: "继续抽牌将消耗1生命值\n是否进行?",
+			success: res => {
+				if (res.confirm) {
+					this.$store.commit("changeHp", 1)
+					if (this.fts.length) this.$store.commit("drawFtCard", 0)
+					else {
+						this.$store.dispatch("ftsRunOut")
+						uni.showLoading({title: "岁月不饶人, 你似乎又衰老了些"})
+						setTimeout(()=>{uni.hideLoading()},1200)
+					}
+				}
+			}
+		})
+	}	else {this.$store.commit("drawFtCard"); this.drawCount++}
 }

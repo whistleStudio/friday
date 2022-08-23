@@ -21,35 +21,35 @@ export default function () {
 			if (payload) {
 				switch (payload.skIdx) {
 					case 10:
-						this.swapAgain(payload)
+						swapAgain.call(this, payload)
 						break
 					case 11:
-						this.sortCheckCards()
+						sortCheckCards.call(this)
 						break
 				}
-
 			}
 		},
-		// 技能交换*2 二阶段 再次交换
-		swapAgain: ({actCard, actIdx}) => {
-			uni.showModal({
-				content: "还可以进行1次交换，是否继续？",
-				cancelText: "否",
-				confirmText: "是",
-				success: res=>{
-					if (res.confirm) {
-						let ft = actIdx<100 ? this.naFts : this.spFts, k = actIdx<100? 0:1
-						this.actCardIdx = ft.indexOf(actCard) + 100*k // 获得交换x2卡片在发生第1次交换后的新索引位置
-						this.isSkillShow = true
-						this.actSk = {num:10, mode:2}
-					}
-				}
-			})
-		},
-		// 技能查看*3 二阶段 排序
-		sortCheckCards: () => {
-			this.isSkillShow = true
-			this.actSk = {num:11, mode:2}
-		}
 	}
 }
+// 技能交换*2 二阶段 再次交换
+function swapAgain ({actCard, actIdx}) {
+	uni.showModal({
+		content: "还可以进行1次交换，是否继续？",
+		cancelText: "否",
+		confirmText: "是",
+		success: res=>{
+			if (res.confirm) {
+				let ft = actIdx<100 ? this.naFts : this.spFts, k = actIdx<100? 0:1
+				this.actCardIdx = ft.indexOf(actCard) + 100*k // 获得交换x2卡片在发生第1次交换后的新索引位置
+				this.isSkillShow = true
+				this.actSk = {num:10, mode:2}
+			}
+		}
+	})
+}
+// 技能查看*3 二阶段 排序
+function sortCheckCards () {
+	this.isSkillShow = true
+	this.actSk = {num:11, mode:2}
+}
+	

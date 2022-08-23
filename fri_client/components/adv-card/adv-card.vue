@@ -7,7 +7,7 @@
 			<text>{{chs[curAdvCard.ch2]}}</text>
 			<view class="advbox">
 				<ul class="adv-phase">
-					<li v-for="(v,i) in Array(3)" :key="i" :class="{act: curPh==i}"
+					<li v-for="(v,i) in Array(3)" :key="i" :class="{act: (curPh-temp.ph)==i}"
 					:style="{backgroundColor:imgUrl.phColor[i]}">{{harm[curAdvCard.ch2][i]}}</li>
 				</ul>
 				<view class="drawNum"><text>{{curDraw+temp.draw-drawCount}}</text></view>
@@ -46,7 +46,7 @@
 			temp: Object,
 		},
 		mounted () {
-			console.log(this.curAdvCard)
+			// console.log(this.curAdvCard)
 		}
 	}
 </script>
