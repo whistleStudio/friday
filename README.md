@@ -290,3 +290,8 @@ skill<=5 && !mode [需要修改]
 
 6 atk的显示原本未考虑到atk2==0时， atk2||atk， atk2仍然无效情况； 已改为判断`Boolean(atk2+"")`
 
+### [08242310]
+
+- client
+
+1 海盗 52 现用store记录选择的战斗牌

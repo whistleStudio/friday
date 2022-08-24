@@ -13,6 +13,7 @@ const store = new Vuex.Store({
 		_gameInfo: {
 			glvl: 0, hp: 40, decayLvl: 5, curPhase: 2, curAdvIdx: 0, prtHarm: 0,
 			curFts: {na:[], sp:[]}, curAdvs: [], disAdv: [], disFt: [], rm: [], checkCards: [], checkCardOrder: [],
+			fightIdx: {},
 			isInitOk: true, isBoss: true, isAdvsOk: false, isStopDraw: false,	
 		},
 		_cards: cards
@@ -268,6 +269,11 @@ const store = new Vuex.Store({
 			_cards.ftDeck.unshift(..._gameInfo.checkCards)
 			_gameInfo.checkCards = []
 			_gameInfo.checkCardOrder = []
+		},
+		/* 海盗52 砍一半 */
+		setFightIdx ({_gameInfo}, {flag, idx}) {
+			if (flag) Vue.set(_gameInfo.fightIdx, idx, 1)
+			else Vue.delete(_gameInfo.fightIdx, idx)
 		}
 	},
 	actions: {

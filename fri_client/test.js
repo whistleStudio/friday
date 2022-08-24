@@ -1,2 +1,5 @@
-let a = Math.ceil(5/2)
-console.log(a)
+let a = {}
+a[5] = 2
+a[1] = 3
+delete a[1]
+console.log(a[2])

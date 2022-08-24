@@ -7,7 +7,7 @@
 				<skill-card-list :actCardIdx="actCardIdx" :actSk="actSk" @pickCard="pickCard"></skill-card-list>
 			</view>
 			<view class="btn-group">
-				<button class="btn200x60" @click="closeSkill" 
+				<button class="btn200x60" @click="closeSkill" v-if="actSk.skill!==52"
 				size="mini" >取消</button>
 				<button class="btn200x60" @click="useSkill" 
 				size="mini" type="primary">确定</button>

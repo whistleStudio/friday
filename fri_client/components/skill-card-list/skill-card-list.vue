@@ -23,12 +23,12 @@
 			</li>
 		</ul>
 		<!-- 海盗 52 翻开的战斗牌只算一半(必须包含老化牌) -->
-		<view class="hint52" v-if="actSk.num===52">可使用卡牌数:<text>0</text> / {{Math.ceil(ftLength/2)}}</view>
+		<view class="hint52" v-if="actSk.num===52">已选择卡牌数:<text>{{decayL+fightCount}}</text> / {{Math.ceil(ftL/2)}}</view>
 		<ul v-if="actSk.num===52" class="mgb-30" v-for="(v,k,i) in curFts" :key="i">
-			<li v-for="(cv,ci) in v" :key="ci" @click="pickFightCard(100*i+ci)">
+			<li v-for="(cv,ci) in v" :key="ci" @click="pickFightCard(cv, 100*i+ci)">
 				<cbt-card :cardInfo="cv" :isFree="!i" :cbtCardMode="1" :cardIdx="100*i+ci" />
 				<image v-if="cv.type===2" :src="`../../static/play/fight0.png`" class="mark" mode="widthFix" />
-				<image v-if="cv.type===1&&fightIdx[ci]" :src="`../../static/play/fight1.png`" class="mark" mode="widthFix" />
+				<image v-if="cv.type!==2&&fightIdx[ci]" :src="`../../static/play/fight1.png`" class="mark" mode="widthFix" />
 			</li>
 		</ul>
 	</view>
@@ -43,16 +43,26 @@
 				pickIdx: -1,
 				imgOrder: [],
 				order: 0,
-				fightIdx: []
+				fightCount: 0,
 			};
 		},
 		computed: {
 			...mapState({
 				curFts: state => state._gameInfo.curFts,
 				checkCards: state => state._gameInfo.checkCards,
+				fightIdx: state => state._gameInfo.fightIdx,
 			}),
-			ftLength () {
+			ftL () {
 				return this.curFts.na.length + this.curFts.sp.length
+			},
+			decayL () {
+				let count = 0
+				for (let v of Object.values(this.curFts)) {
+					v.forEach((cv, ci) => {
+						if (cv.type === 2) count++
+					})
+				}
+				return count
 			},
 		},
 		props: {
@@ -79,10 +89,13 @@
 					this.order ++
 				}
 			},
-			pickFightCard (idx) {
-				// undefined || 0
-				if (!this.fightIdx[idx]) this.$set(this.fightIdx, idx, 1)
-				else this.$set(this.fightIdx, idx, 0)
+			pickFightCard (card, idx) {
+				if (card.type != 2) {
+					// undefined || 0
+					if (!this.fightIdx[idx]) {
+						if (this.fightCount+this.decayL<Math.ceil(this.ftL/2)){this.$store.commit("setFightIdx", {flag:true, idx}); this.fightCount++;}
+					} else {this.$store.commit("setFightIdx", {flag:false, idx}); this.fightCount--;}
+				}
 			}
 		},
 		created () {
@@ -122,11 +135,9 @@
 		}
 		.hint52 {
 			font: 30rpx/50rpx $fontF;
-			// display: flex;
-			// align-items: center;
+			vertical-align: middle;
 			>text {
-				vertical-align: middle;
-				margin-left: 20rpx;
+				margin: 0 10rpx;
 				display: inline-block;
 				color: white;
 				font: 30rpx/50rpx $fontF !important;
