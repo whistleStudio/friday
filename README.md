@@ -271,3 +271,22 @@ skill<=5 && !mode [需要修改]
 - client 
 
 1 虚弱 -1-2HP 停止 逻辑完成; store 增加isStopDraw, play页监听变化
+
+### [08241738]
+
+- client 
+
+（md 某人上班哼歌真尼玛吵）
+
+1 虚弱 战斗最高0 
+
+2 海盗牌 50 51 52（正在写）
+
+3 adv-card 原computed大多数改为用props, 由play传递；攻击力增加红色削弱样式
+
+4 store - state增加prtHarm, 在抽Boss牌时，触发计算
+
+5 weakDeck增加atk2字段默认"",方便正常显示；
+
+6 atk的显示原本未考虑到atk2==0时， atk2||atk， atk2仍然无效情况； 已改为判断`Boolean(atk2+"")`
+

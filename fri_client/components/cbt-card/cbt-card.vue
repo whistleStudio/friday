@@ -2,7 +2,7 @@
 	<view class="cbt-card">
 		<view class="cbt-content flex-col-rowcenter" :class="{notFree: !isFree}">
 			<view class="cbt-top">
-				<text :class="{tempColor: cardInfo.atk2}">{{cardInfo.atk2||cardInfo.atk}}</text>
+				<text :class="{tempColor: cardInfo.atk2, weakColor: cardInfo.atk2===0}">{{cardInfo.atk2+""||cardInfo.atk}}</text>
 				<text>{{chs[cardInfo.ch]}}</text>
 				<image :src="`../../static/play/cost${cost}.png`" mode="heightFix"></image>
 			</view>
@@ -103,6 +103,9 @@
 		color: white;
 		background-image: linear-gradient(to bottom right, rgb(220, 201, 115), rgb(157, 109, 54));
 	}
+}
+.weakColor {
+	color: rgb(193, 73, 73);
 }
 .tempColor {
 	color: rgb(52, 140, 154);

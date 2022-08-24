@@ -4,8 +4,10 @@ export default function () {
 		//挑战
 		fight: async () => {
 			await weakReduceHp.call(this)
+			await weakTop0.call(this)
 			await modifyPhase.call(this) 
 			await modifyDoubleAtk.call(this)
+			await bossHalfFt.call(this)
 			if (this.advDim<=0) {
 				this.$store.commit("fightCheck", {res:1, card:this.curAdvCard})
 				uni.showToast({title:"挑战成功!", icon:"none", duration:500})
@@ -152,12 +154,12 @@ function chooseDoubleAtk () {
 	})
 }
 
-// 虚弱牌-冒险结束扣血
+// 虚弱牌12 13-冒险结束扣血
 function weakReduceHp () {
 	return new Promise ((rsv, rej) => {
 		let sk1 = hasSkill(12, [this.naFts, this.spFts]), sk2 = hasSkill(13, [this.naFts, this.spFts])
 		let reduction = sk1.length + sk2.length*2
-		console.log("reduction ---",reduction)
+		// console.log("reduction ---",reduction)
 		if (reduction) {
 			this.$store.commit("changeHp", reduction)
 			uni.showToast({
@@ -167,19 +169,75 @@ function weakReduceHp () {
 					setTimeout(()=>{rsv()},1500)
 				}
 			})
-		}
+		} else rsv()
 		
+	})
+}
+// 虚弱牌14-停止（逻辑在store-drawFtCard）
+// 虚弱牌15-最高=0
+function weakTop0 () {
+	return new Promise ((rsv, rej) => {
+		let isChange = false
+		let skArr = hasSkill(15, [this.naFts, this.spFts])
+		for (let v of skArr) {
+			let maxIdx = actTop0([this.naFts, this.spFts])
+			if(maxIdx >= 0) {
+				isChange = true
+				this.$store.commit("actEffect", {skIdx:15, pickIdx: maxIdx, actIdx:-1})
+			}
+		}
+		if (isChange) {
+			uni.showToast({
+				title: "[惊吓] 紧张的你竟丢弃了武器!",
+				icon: "none",
+				success () {
+					setTimeout(()=>{rsv()}, 1500)
+				}
+			})
+		} else rsv()
+	})
+}
+function actTop0 (decks) {
+	let maxAtkCard = null, maxIdx = -1, flag = 0
+	decks.forEach((dv, di) => {
+		dv.forEach((cv, ci) => {
+			if (cv.type === 1 && !cv.atk2) {
+				if (flag === 0) { 
+					maxIdx = ci+di*100 //首次赋值
+					maxAtkCard = cv
+					flag = 1
+				} else {
+					if (maxAtkCard.atk<cv.atk) maxIdx = ci+di*100 //比较
+				}
+			}
+		})
+	})
+	return maxIdx
+}
+
+// 海盗 52 翻开的战斗牌只算一半(必须包含老化牌)
+function bossHalfFt () {
+	return new Promise ((rsv, rej) => {
+		this.actCardIdx = -2
+		this.showSkill({num:52, mode:0})
 	})
 }
 
 // 抽1张牌
 function draw1Card () {
+	let content = "继续抽牌将消耗1生命值\n是否进行?", cost = 1
+	if (this.isBoss) {
+		if (this.curAdvCard.skill===51) {
+			content = "[海盗来袭] 继续抽牌将消耗2生命值\n是否进行?"
+			cost = 2
+		}
+	} 
 	if (this.drawCount>=this.curDraw) {
 		uni.showModal({
-			content: "继续抽牌将消耗1生命值\n是否进行?",
+			content,
 			success: res => {
 				if (res.confirm) {
-					this.$store.commit("changeHp", 1)
+					this.$store.commit("changeHp", cost)
 					if (this.fts.length) this.$store.commit("drawFtCard", 0)
 					else {
 						this.$store.dispatch("ftsRunOut")

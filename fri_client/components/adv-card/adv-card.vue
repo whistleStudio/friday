@@ -7,19 +7,21 @@
 			<text>{{chs[curAdvCard.ch2]}}</text>
 			<view class="advbox">
 				<ul class="adv-phase">
-					<li v-for="(v,i) in Array(3)" :key="i" :class="{act: (curPh-temp.ph)==i}"
+					<li v-for="(v,i) in Array(3)" :key="i" :class="{act: (curPhase-temp.ph)==i}"
 					:style="{backgroundColor:imgUrl.phColor[i]}">{{harm[curAdvCard.ch2][i]}}</li>
 				</ul>
-				<view class="drawNum"><text>{{curDraw+temp.draw-drawCount}}</text></view>
+				<view class="drawNum"><text>{{curDraw-drawCount}}</text></view>
 			</view>
 		</view>
 	</view>
 	<view v-else class="adv-card-boss" :style="{backgroundImage: `url(${imgUrl.pirate+curAdvCard.id}.png)`}">
-		<view class="drawNum"><text>{{curDraw+temp.draw-drawCount}}</text></view>
+		<view class="drawNum"><text>{{curDraw-drawCount}}</text></view>
+		<view v-if="isChangeAtk" class="prtAtk">{{prtHarm}}</view>
 	</view>
 </template>
 
 <script>
+	import {mapState} from "vuex"
 	import {chs,harm} from "@/style/card.json"
 	
 	export default {
@@ -35,18 +37,26 @@
 			};
 		},
 		computed: {
-			curAdvCard () {return this.$gts.curAdvCard},
-			isBoss () {return this.$sta._gameInfo.isBoss},
-			curPh () {return this.$sta._gameInfo.curPhase},
-			curDraw () {return this.$sta.isBoss ? this.curAdvCard.draw : this.curAdvCard.ch2+1},
-			// curPrt () {return this.$gts.curPrt}
+			...mapState({
+				prtHarm: state => state._gameInfo.prtHarm,
+			}),
+			isChangeAtk () {
+				let sk = this.curAdvCard.skill
+				return (sk===50)||(sk===54) ? true : false
+			}
 		},
 		props: {
 			drawCount: Number,
 			temp: Object,
+			curAdvCard: Object,
+			isBoss: Boolean,
+			curPhase: Number,
+			curDraw: Number,
 		},
-		mounted () {
-			// console.log(this.curAdvCard)
+		created () {
+			// if (this.isBoss) {
+				
+			// }
 		}
 	}
 </script>
@@ -127,17 +137,28 @@
 	position: relative;
 	.drawNum {
 		width: 50rpx;
-		height: 60rpx;
+		height: 50rpx;
 		position: absolute;
 		background-color: #FFF6DB;
 		left: 83rpx;
-		top: 26rpx;
+		top: 28rpx;
 		border-radius: 15rpx;
 		text-align: center;
 		text {
-			font: bold 45rpx/60rpx $fontF;
+			font: bold 42rpx/50rpx $fontF;
 			color: $gray100;
 		}
+	}
+	.prtAtk {
+		width: 40rpx;
+		height: 40rpx;
+		background-color: #e95c05;
+		position: absolute;
+		right: 107rpx;
+		top: 70rpx;
+		font: bold 35rpx/40rpx $fontF;
+		text-align: center;
+		color: white;
 	}
 }
 </style>

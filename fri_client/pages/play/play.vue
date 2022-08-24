@@ -6,7 +6,7 @@
 				<text>冒险牌库:{{advs.length}}</text>
 			</view>
 			<view class="main" @touchstart="advTouchStart" @touchend="advTouchEnd">
-				<adv-card :drawCount="drawCount" :temp="temp"></adv-card>
+				<adv-card :drawCount="drawCount" :temp="temp" :curAdvCard="curAdvCard" :isBoss="isBoss" :curPhase="curPhase" :curDraw="curDraw"/>
 			</view>
 		</view>
 		<view class="action flex-center" v-if="curAdvCard">
@@ -100,7 +100,7 @@
 				fts: state => state._cards.ftDeck,
 			}),
 			curAdvCard () {return this.$gts.curAdvCard},
-			curDraw () {return this.$sta.isBoss ? this.curAdvCard.draw+this.temp.draw : this.curAdvCard.ch2+1+this.temp.draw},
+			curDraw () {return this.isBoss ? this.curAdvCard.draw+this.temp.draw : this.curAdvCard.ch2+1+this.temp.draw},
 			cbtBar () {return [
 				this.$sta._gameInfo.hp,
 				this.$gts.cbtCount,

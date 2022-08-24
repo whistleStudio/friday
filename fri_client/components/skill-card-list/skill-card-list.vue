@@ -1,6 +1,6 @@
 <template>
 	<view class="skill-card-list">
-	  <ul v-if="actSk.num!=11" class="mgb-30" v-for="(v,k,i) in curFts" :key="i">
+	  <ul v-if="actSk.num!=11&&actSk.num!=52" class="mgb-30" v-for="(v,k,i) in curFts" :key="i">
 	  	<li v-for="(cv,ci) in v" :key="ci" @click="pickCard(100*i+ci, cv)"
 			v-show="(100*i+ci)!==actCardIdx">
 	  		<cbt-card :cardInfo="cv" :isFree="!i" :cbtCardMode="1" :cardIdx="100*i+ci" />
@@ -22,6 +22,15 @@
 				<image v-if="imgOrder[i]>=0" :src="`../../static/play/sortoken${imgOrder[i]}.png`" class="mark" mode="widthFix"></image>
 			</li>
 		</ul>
+		<!-- 海盗 52 翻开的战斗牌只算一半(必须包含老化牌) -->
+		<view class="hint52" v-if="actSk.num===52">可使用卡牌数:<text>0</text> / {{Math.ceil(ftLength/2)}}</view>
+		<ul v-if="actSk.num===52" class="mgb-30" v-for="(v,k,i) in curFts" :key="i">
+			<li v-for="(cv,ci) in v" :key="ci" @click="pickFightCard(100*i+ci)">
+				<cbt-card :cardInfo="cv" :isFree="!i" :cbtCardMode="1" :cardIdx="100*i+ci" />
+				<image v-if="cv.type===2" :src="`../../static/play/fight0.png`" class="mark" mode="widthFix" />
+				<image v-if="cv.type===1&&fightIdx[ci]" :src="`../../static/play/fight1.png`" class="mark" mode="widthFix" />
+			</li>
+		</ul>
 	</view>
 </template>
 
@@ -34,13 +43,17 @@
 				pickIdx: -1,
 				imgOrder: [],
 				order: 0,
+				fightIdx: []
 			};
 		},
 		computed: {
 			...mapState({
 				curFts: state => state._gameInfo.curFts,
 				checkCards: state => state._gameInfo.checkCards,
-			})
+			}),
+			ftLength () {
+				return this.curFts.na.length + this.curFts.sp.length
+			},
 		},
 		props: {
 			cardList: Array,
@@ -65,6 +78,11 @@
 					this.$store.commit("changeObjVal", {k1: "_gameInfo", k2: "checkCardOrder", v: this.imgOrder})
 					this.order ++
 				}
+			},
+			pickFightCard (idx) {
+				// undefined || 0
+				if (!this.fightIdx[idx]) this.$set(this.fightIdx, idx, 1)
+				else this.$set(this.fightIdx, idx, 0)
 			}
 		},
 		created () {
@@ -101,7 +119,19 @@
 					
 				}
 			}	
-		}		
+		}
+		.hint52 {
+			font: 30rpx/50rpx $fontF;
+			// display: flex;
+			// align-items: center;
+			>text {
+				vertical-align: middle;
+				margin-left: 20rpx;
+				display: inline-block;
+				color: white;
+				font: 30rpx/50rpx $fontF !important;
+			}
+		}
 	}
 
 </style>

@@ -11,9 +11,9 @@ const store = new Vuex.Store({
 			nickname: "temp", avatar: "00", openid: "", lvl: 1
 		},
 		_gameInfo: {
-			glvl: 0, hp: 40, decayLvl: 0, curPhase: 2, curAdvIdx: 0, 
+			glvl: 0, hp: 40, decayLvl: 5, curPhase: 2, curAdvIdx: 0, prtHarm: 0,
 			curFts: {na:[], sp:[]}, curAdvs: [], disAdv: [], disFt: [], rm: [], checkCards: [], checkCardOrder: [],
-			isInitOk: true, isBoss: false, isAdvsOk: false, isStopDraw: false,	
+			isInitOk: true, isBoss: true, isAdvsOk: false, isStopDraw: false,	
 		},
 		_cards: cards
 	},
@@ -22,8 +22,8 @@ const store = new Vuex.Store({
 			let {curFts} = _gameInfo
 			if (!(curFts.na.length||curFts.sp.length)) return 0;
 			let n = 0
-			curFts.na.forEach(e=>{n += (e.atk2 || e.atk)})
-			curFts.sp.forEach(e=>{n += (e.atk2 || e.atk)})
+			curFts.na.forEach(e=>{let v = e.atk2+"" ? e.atk2 : e.atk; n += v})
+			curFts.sp.forEach(e=>{let v = e.atk2+"" ? e.atk2 : e.atk; n += v})
 			return n
 		},
 		curAdvCard ({_gameInfo,_cards}) {
@@ -97,16 +97,35 @@ const store = new Vuex.Store({
 					break
 				case 1:
 					if (isNext) {
-						console.log("nextPhase")
 						nextPhase(_gameInfo, _cards)
 					}
 					else pickNum = 1
 					break
 			}
-			if (_gameInfo.isBoss) pickNum=0
+			if (_gameInfo.isBoss) {
+				pickNum=0
+				this.commit("setPrtHarm")
+			}
 			_gameInfo.curAdvs = _cards.advDeck.splice(0, pickNum)
 		  _gameInfo.isAdvsOk = _gameInfo.isBoss ? false : true
 		  // uni.hideLoading()
+		},
+		/* Boss海盗定伤 */
+		setPrtHarm ({_gameInfo, _cards}) {
+			let prtCard = _cards.prtDeck[0], atk = 0
+			let {decayLvl} = _gameInfo
+			switch (prtCard.skill) {
+				case 50: //每张老化+2
+					atk = decayLvl*2
+					break
+				case 54:
+					break
+				default:
+					atk = prtCard.atk
+					break
+			}
+			_gameInfo.prtHarm = atk
+
 		},
 		/* 弃牌 */
 		discard ({_gameInfo, _cards}, {card, pile}) {
@@ -189,7 +208,7 @@ const store = new Vuex.Store({
 			console.log("actEffect")
 			switch (skIdx) {
 				case 5: // 加倍
-					ft[idx].atk2 = ft[idx].atk*2
+					if (ft[idx].atk2!==0) ft[idx].atk2 = ft[idx].atk*2
 					break
 				case 6: //摧毁
 					pickCard = ft.splice(idx,1)[0]
@@ -229,6 +248,10 @@ const store = new Vuex.Store({
 						_gameInfo.checkCards = [...tempArr2, ...tempArr1]
 						this.commit("resetCheckCards")
 					}
+					break
+				case 15: // 虚弱：最高=0
+					ft[idx].atk2 = 0
+					console.log(ft[idx])
 					break
 			}
 		},
