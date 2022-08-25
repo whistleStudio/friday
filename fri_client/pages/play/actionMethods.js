@@ -220,6 +220,12 @@ function bossHalfFt () {
 	return new Promise ((rsv, rej) => {
 		this.actCardIdx = -2
 		this.showSkill({num:52, mode:0})
+		let tim = setInterval(()=>{
+			if (this.actCardIdx===-1) {
+				clearInterval(tim)
+				rsv()
+			}
+		},100) 
 	})
 }
 

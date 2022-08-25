@@ -7,7 +7,7 @@
 				<skill-card-list :actCardIdx="actCardIdx" :actSk="actSk" @pickCard="pickCard"></skill-card-list>
 			</view>
 			<view class="btn-group">
-				<button class="btn200x60" @click="closeSkill" v-if="actSk.skill!==52"
+				<button class="btn200x60" @click="closeSkill" v-if="actSk.num!==52"
 				size="mini" >取消</button>
 				<button class="btn200x60" @click="useSkill" 
 				size="mini" type="primary">确定</button>
@@ -40,8 +40,8 @@
 				//mode-0默认/技能一阶段 | 2技能二阶段 | 1加倍
 				let {num,mode} = this.actSk, actIdx = this.actCardIdx, pickIdx = this.pickCardIdx
 				let payload
-				// (1)除复制以外, 置为已使用状态
-				if (num!=7)	this.$store.commit("useSkill", {actIdx, state: 1})
+				// (1)除复制 海盗以外, 置为已使用状态
+				if (num!=7&&num!=52)	this.$store.commit("useSkill", {actIdx, state: 1})
 				// (2)查看*3
 				if (num==11) {
 					if (mode==0) {
@@ -50,7 +50,9 @@
 						payload = {skIdx: num}
 					} else {this.$store.commit("actEffect", {skIdx: num, pickIdx, actIdx, mode})}
 				}
-				// (3)其他情况
+				// (3) 海盗52 砍一半
+				if (num==52) this.$store.commit("actPrtEffect", 1)
+				// (4)其他情况
 				if (num!=11&&pickIdx>=0) {
 					// 置底的若为免费抽取牌, 可免费抽牌数+1
 					if (num===8&&pickIdx<100) {

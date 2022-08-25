@@ -295,3 +295,11 @@ skill<=5 && !mode [需要修改]
 - client
 
 1 海盗 52 现用store记录选择的战斗牌
+
+### [08251727]
+
+- client 
+
+1 海盗 52 OK 
+
+2 store setPrtHarm 改为 actPrtEffect, 感觉参数mode 判定行为0定伤 1战斗修正

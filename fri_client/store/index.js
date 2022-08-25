@@ -105,28 +105,49 @@ const store = new Vuex.Store({
 			}
 			if (_gameInfo.isBoss) {
 				pickNum=0
-				this.commit("setPrtHarm")
+				this.commit("actPrtEffect")
 			}
 			_gameInfo.curAdvs = _cards.advDeck.splice(0, pickNum)
 		  _gameInfo.isAdvsOk = _gameInfo.isBoss ? false : true
 		  // uni.hideLoading()
 		},
-		/* Boss海盗定伤 */
-		setPrtHarm ({_gameInfo, _cards}) {
+		/* Boss海盗效果 mode: 0-定伤 / 1-战斗 */
+		actPrtEffect ({_gameInfo, _cards}, mode=0) {
 			let prtCard = _cards.prtDeck[0], atk = 0
 			let {decayLvl} = _gameInfo
-			switch (prtCard.skill) {
-				case 50: //每张老化+2
-					atk = decayLvl*2
-					break
-				case 54:
-					break
-				default:
-					atk = prtCard.atk
-					break
+			if (mode) {
+				switch (prtCard.skill) {
+					case 52: // 砍一半
+						let newCurFts = {na:[], sp:[]}
+						Object.values(_gameInfo.curFts).forEach((dv, di) => {
+							let ft = di ? newCurFts.na : newCurFts.sp
+							dv.forEach((cv, ci) => {
+								if(_gameInfo.fightIdx[ci+100*di]>=0||cv.type===2) {
+									ft.push(cv)
+								}
+							})
+						})
+						_gameInfo.curFts = newCurFts
+						break
+				}
+			} else {
+				switch (prtCard.skill) {
+					case 50: //每张老化+2
+						atk = decayLvl*2
+						break
+					case 54:
+						break
+					default:
+						atk = prtCard.atk
+						break
+				}
+				_gameInfo.prtHarm = atk
 			}
-			_gameInfo.prtHarm = atk
-
+		},
+		/* 海盗52 砍一半 */
+		setFightIdx ({_gameInfo}, {flag, idx}) {
+			if (flag) Vue.set(_gameInfo.fightIdx, idx, 1)
+			else Vue.delete(_gameInfo.fightIdx, idx)
 		},
 		/* 弃牌 */
 		discard ({_gameInfo, _cards}, {card, pile}) {
@@ -270,11 +291,7 @@ const store = new Vuex.Store({
 			_gameInfo.checkCards = []
 			_gameInfo.checkCardOrder = []
 		},
-		/* 海盗52 砍一半 */
-		setFightIdx ({_gameInfo}, {flag, idx}) {
-			if (flag) Vue.set(_gameInfo.fightIdx, idx, 1)
-			else Vue.delete(_gameInfo.fightIdx, idx)
-		}
+
 	},
 	actions: {
 		getUserInfo (context, openid) {
