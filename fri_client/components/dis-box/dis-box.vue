@@ -73,7 +73,6 @@
 		width: 100%;
 		height: 100%;
 		.dis-show {
-			background-color: red;
 			ul {
 			  box-sizing: border-box;
 				padding: 20rpx;

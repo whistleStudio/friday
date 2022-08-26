@@ -11,10 +11,10 @@ const store = new Vuex.Store({
 			nickname: "temp", avatar: "00", openid: "", lvl: 1
 		},
 		_gameInfo: {
-			glvl: 0, hp: 40, decayLvl: 5, curPhase: 2, curAdvIdx: 0, prtHarm: 0,
+			glvl: 0, hp: 20, decayLvl: 0, curPhase: 0, curAdvIdx: 0, prtHarm: 0,
 			curFts: {na:[], sp:[]}, curAdvs: [], disAdv: [], disFt: [], rm: [], checkCards: [], checkCardOrder: [],
 			fightIdx: {},
-			isInitOk: true, isBoss: true, isAdvsOk: false, isStopDraw: false,	
+			isInitOk: true, isBoss: false, isAdvsOk: false, isStopDraw: false,	
 		},
 		_cards: cards
 	},
@@ -86,6 +86,8 @@ const store = new Vuex.Store({
 			console.log("cards shuffled!",_cards)
 			setTimeout(()=>{uni.hideLoading();_gameInfo.isInitOk = true;}, 1000)	
 		},
+		/* 下一个boss */
+		nextBoss ({_cards}) {_cards.prtDeck.shift()},
 		/* 派发2张冒险牌 */
 		chooseAdvCard ({_gameInfo, _cards}, isNext=false) {
 			_gameInfo.curAdvs = [];_gameInfo.curFts.na = [];_gameInfo.curFts.sp = [];
@@ -129,6 +131,14 @@ const store = new Vuex.Store({
 						})
 						_gameInfo.curFts = newCurFts
 						break
+					case 53: // 战斗牌战斗值+1
+						Object.values(_gameInfo.curFts).forEach((dv, di) => {
+							dv.forEach((cv, ci) => {
+								if (cv.atk2+"") cv.atk2++
+								else cv.atk2 = cv.atk+1
+							})
+						})
+						break
 				}
 			} else {
 				switch (prtCard.skill) {
@@ -136,6 +146,10 @@ const store = new Vuex.Store({
 						atk = decayLvl*2
 						break
 					case 54:
+						_cards.advDeck.forEach(e => {
+							prtCard.draw += (e.ch2+1)
+							atk += _cards.harm[e.ch2][2]
+						})
 						break
 					default:
 						atk = prtCard.atk
@@ -184,14 +198,17 @@ const store = new Vuex.Store({
 			_gameInfo.disFt = []
 		},
 		/* 战斗清算 */
-		fightCheck ({_gameInfo}, {res, card}) {
+		fightCheck ({_gameInfo, _cards}, {res, card}) {
 			let {curFts, disFt, disAdv} = _gameInfo
 			curFts.na.forEach(e => disFt.unshift(e))
 			curFts.sp.forEach(e => disFt.unshift(e))
-			if (res) disFt.unshift(card)
+			if (res) {
+				isGameOver(_gameInfo.hp, _cards.prtDeck.length)
+				if (!_gameInfo.isBoss) disFt.unshift(card)
+			} 
 			else {
-				isGameOver(_gameInfo.hp)
-				disAdv.unshift(card)
+				isGameOver(_gameInfo.hp, _cards.prtDeck.length)
+				if (!_gameInfo.isBoss) disAdv.unshift(card)
 			}
 		},
 		/* 一组卡牌移除游戏 */

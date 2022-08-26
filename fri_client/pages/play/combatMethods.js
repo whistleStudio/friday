@@ -2,11 +2,12 @@
 export default function () {
 	return {
 		// 点击战斗牌,显示发动效果遮罩
-		tapCbtCard: idx => {
-			if (this.actCardIdx === idx)
-				this.actCardIdx = -1
-			else this.actCardIdx = idx
-			console.log("tap",this.actCardIdx, idx)
+		tapCbtCard: (idx, card) => {
+			if (card.type !== 2) {
+				if (this.actCardIdx === idx)
+					this.actCardIdx = -1
+				else this.actCardIdx = idx
+			}
 		},
 		// 点击发动效果, skill-box遮罩显示
 		showSkill: actSk => {

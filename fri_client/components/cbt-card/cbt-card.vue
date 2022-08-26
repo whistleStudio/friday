@@ -32,7 +32,7 @@
 		computed: {
 			cost () {return this.cardInfo.type<2? 1 : 2},
 			isShowSkM () {return this.cardIdx==this.actCardIdx&&this.cardInfo.skill!=99&&!this.cardInfo.work},
-			skNum () {return this.cardInfo.skill2 || this.cardInfo.skill}
+			skNum () {return this.cardInfo.skill2 || this.cardInfo.skill},
 		},
 		props: {
 			cardInfo: Object,
@@ -61,6 +61,7 @@
 	padding: 10rpx;
 	background-color: $cardC;
 	border: 1rpx solid rgb(200,200,200);
+	color: $fontC;
 	.cbt-top {
 		width: 100%;
 		display: flex;

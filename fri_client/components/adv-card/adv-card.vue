@@ -17,6 +17,9 @@
 	<view v-else class="adv-card-boss" :style="{backgroundImage: `url(${imgUrl.pirate+curAdvCard.id}.png)`}">
 		<view class="drawNum"><text>{{curDraw-drawCount}}</text></view>
 		<view v-if="isChangeAtk" class="prtAtk">{{prtHarm}}</view>
+		<ul class="prtIcon flex-col-rowcenter">
+			<li v-for="(v, i) in prtL" :key="i" class=""></li>
+		</ul>
 	</view>
 </template>
 
@@ -39,6 +42,7 @@
 		computed: {
 			...mapState({
 				prtHarm: state => state._gameInfo.prtHarm,
+				prtL: state => state._cards.prtDeck.length,
 			}),
 			isChangeAtk () {
 				let sk = this.curAdvCard.skill
@@ -159,6 +163,20 @@
 		font: bold 35rpx/40rpx $fontF;
 		text-align: center;
 		color: white;
+	}
+	.prtIcon {
+		position: absolute;
+		right: 8rpx;
+		transform: translateY(-50%);
+		top: 50%;
+		width: 50rpx;
+		height: 100rpx;
+		justify-content: space-between;
+		li {
+			width: 45rpx;
+			height: 35rpx;
+			background: url("@/static/play/prt.png") center/cover no-repeat;
+		}
 	}
 }
 </style>

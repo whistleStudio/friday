@@ -3,30 +3,44 @@ export default function () {
 	return {
 		//挑战
 		fight: async () => {
-			await weakReduceHp.call(this)
-			await weakTop0.call(this)
-			await modifyPhase.call(this) 
-			await modifyDoubleAtk.call(this)
-			await bossHalfFt.call(this)
-			if (this.advDim<=0) {
-				this.$store.commit("fightCheck", {res:1, card:this.curAdvCard})
-				uni.showToast({title:"挑战成功!", icon:"none", duration:500})
-				this.openAdvBox()
+			// 至少抽一张牌
+			if (this.drawCount) {
+				await weakReduceHp.call(this)
+				await weakTop0.call(this)
+				await modifyPhase.call(this) 
+				await modifyDoubleAtk.call(this)
+				await bossHalfFt.call(this)
+				await bossAtkUp.call(this)
+				console.log(this.advDim)
+				if (this.advDim<=0) {
+					this.$store.commit("fightCheck", {res:1, card:this.curAdvCard})
+					uni.showToast({title:"挑战成功!", icon:"none", duration:500})
+					this.openAdvBox()
+				} else {
+					let curHp = this.$sta._gameInfo.hp - this.advDim
+					this.$store.commit("changeHp", this.advDim)
+					uni.showToast({title:`挑战失败!\n生命-${this.advDim}`, icon:"none", duration:800}) 
+					setTimeout(()=>{
+						this.isOverlayShow = true
+						this.isAdv2Show = false
+					},500)
+				}
+				this.drawCount = 0
+				this.resetTemp()
 			} else {
-				let curHp = this.$sta._gameInfo.hp - this.advDim
-				this.$store.commit("changeHp", this.advDim)
-				uni.showToast({title:`挑战失败!\n生命-${this.advDim}`, icon:"none", duration:500}) 
-				setTimeout(()=>{
-					this.isOverlayShow = true
-					this.isAdv2Show = false
-				},500)
+				uni.showToast({
+					title: "手无寸铁, 至少抽一张牌",
+					icon: "none",
+					duration: 1000
+				})
 			}
-			this.drawCount = 0
-			this.resetTemp()
 		},
 
 		// 挑战结束, 打开冒险选择窗口 
 		openAdvBox: () => {
+			if (this.isBoss) {
+				this.$store.commit("nextBoss")
+			}
 			setTimeout(()=>{
 				if (this.advs.length===1) {
 					uni.showModal({
@@ -61,8 +75,12 @@ export default function () {
 // 冒险窗口,派牌
 function giveAdvCard (isNext=false) {
 	this.$store.commit("chooseAdvCard", isNext)
-	this.isOverlayShow = true
-	this.isAdv2Show = true
+	if (this.isBoss) {
+		this.isOverlayShow = false
+	} else {
+		this.isOverlayShow = true
+		this.isAdv2Show = true
+	}
 }
 
 // 校验战斗牌区是否存在特定技能牌
@@ -217,16 +235,33 @@ function actTop0 (decks) {
 
 // 海盗 52 翻开的战斗牌只算一半(必须包含老化牌)
 function bossHalfFt () {
-	return new Promise ((rsv, rej) => {
-		this.actCardIdx = -2
-		this.showSkill({num:52, mode:0})
-		let tim = setInterval(()=>{
-			if (this.actCardIdx===-1) {
-				clearInterval(tim)
-				rsv()
-			}
-		},100) 
-	})
+	if (this.curAdvCard?.skill==52) {
+		return new Promise ((rsv, rej) => {
+			this.actCardIdx = -2
+			this.showSkill({num:52, mode:0})
+			let tim = setInterval(()=>{
+				if (this.actCardIdx===-1) {
+					clearInterval(tim)
+					rsv()
+				}
+			},100) 
+		})
+	}
+}
+// 海盗 53 翻开的战斗牌+1战斗值
+function bossAtkUp () {
+	if (this.curAdvCard?.skill==53) {
+		return new Promise ((rsv, rej) => {
+			this.$store.commit("actPrtEffect", 1)
+			uni.showToast({
+				title: "[海盗来袭] 愈战愈勇, 所有战斗牌+1攻击",
+				icon: "none",
+				success () {
+					setTimeout(()=>rsv(), 2000)
+				}
+			})
+		})
+	}
 }
 
 // 抽1张牌

@@ -122,7 +122,6 @@
 		width: 100%;
 		height: 100%;
 		.skill-content {
-			background-color: red;
 			height: 930rpx;
 			width: 100%;
 			padding: 20rpx;
@@ -134,6 +133,9 @@
 			}
 		}
 		.btn-group {
+			button:not(:last-of-type) {
+				margin-right: 20rpx;
+			}
 		}
 	}
 </style>

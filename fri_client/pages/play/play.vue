@@ -16,7 +16,7 @@
 		<view class="combat">
 			<view class="headbar">
 				<ul>
-					<li v-for="(v,i) in Array(3)" :key="i">
+					<li v-for="(v,i) in Array(3)" :key="i" v-show="i!==1||drawCount">
 						<image :src="imgUrl.combatIcon+i+'.png'" mode="heightFix"></image>
 						<text>{{cbtBar[i]}}</text>
 					</li>
@@ -25,7 +25,7 @@
 			</view>
 			<view class="main">
 				<ul class="mgb-30" v-for="(v,k,i) in curFts" :key="i">
-					<li v-for="(cv,ci) in v" :key="ci" @click="tapCbtCard(100*i+ci)">               
+					<li v-for="(cv,ci) in v" :key="ci" @click="tapCbtCard(100*i+ci, cv)">               
 						<cbt-card :cardInfo="cv" :isFree="!i" @showSkill="showSkill" 
 						:cardIdx="100*i+ci" :actCardIdx="actCardIdx" ></cbt-card>
 					</li>
@@ -34,7 +34,7 @@
 			</view>
 		</view>
     <!-- 冒险牌选择 -->
-		<u-overlay :show="isOverlayShow&&!isBoss" :z-index ="999" opacity="0.6"
+		<u-overlay :show="isOverlayShow" :z-index ="999" opacity="0.6"
 		@click="show = false" class="flex-col-rowcenter">
 			<choose-adv v-if="isAdv2Show" @closeOverlay="isOverlayShow=false"></choose-adv>
 			<rm-box v-else :disCount="advDim" @closeRm="closeRmBox"></rm-box>
@@ -96,6 +96,7 @@
 				isInitOk: state => state._gameInfo.isInitOk,
 				curPhase: state => state._gameInfo.curPhase,
 				isStopDraw: state => state._gameInfo.isStopDraw,
+				prtHarm: state => state._gameInfo.prtHarm,
 				advs: state => state._cards.advDeck,
 				fts: state => state._cards.ftDeck,
 			}),
@@ -108,7 +109,7 @@
 			]},
 			advDim () {
 				let advHarm
-				if (this.isBoss) advHarm = this.curAdvCard ? this.curAdvCard.atk : 99
+				if (this.isBoss) {advHarm = this.curAdvCard ? this.prtHarm : 99}
 				else advHarm = this.curAdvCard ? harm[this.curAdvCard.ch2][this.curPhase-this.temp.ph] : 99
 				return advHarm - this.$gts.cbtCount
 			},
@@ -153,6 +154,7 @@
 		},
 		
 		onLoad (q) {
+			if (this.isBoss) this.isOverlayShow = false
 			setTimeout(()=>{
 				this.$store.commit("chooseAdvCard")
 			},500)

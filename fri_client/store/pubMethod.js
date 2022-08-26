@@ -61,10 +61,14 @@ function validateSkill (ftDeck, fn=()=>{}) {
 
 
 /* 判断游戏结束 */
-function isGameOver (hp) {
+function isGameOver (hp, bossLeft) {
 	if (hp<0) {
 		uni.navigateTo({
-			url: "/pages/end/end"
+			url: "/pages/end/end?win=0"
+		})
+	} else if (bossLeft===1) {
+		uni.navigateTo({
+			url: "/pages/end/end?win=1"
 		})
 	}
 }

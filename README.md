@@ -303,3 +303,17 @@ skill<=5 && !mode [需要修改]
 1 海盗 52 OK 
 
 2 store setPrtHarm 改为 actPrtEffect, 感觉参数mode 判定行为0定伤 1战斗修正
+
+### [08261728]
+
+- client
+
+1 海盗 53 54
+
+2 adv-card 海盗icon
+
+3 store fightCheck isGameOver  修正
+
+4 play advDim 修正 海盗harm
+
+5 修复 至少抽一张牌才能发起挑战

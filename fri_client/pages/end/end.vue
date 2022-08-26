@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<h1>gameover</h1>
+		<h1>{{gameRes}}</h1>
 	</view>
 </template>
 
@@ -8,11 +8,15 @@
 	export default {
 		data() {
 			return {
-				
+				gameRes: "defeat"
 			}
 		},
 		methods: {
 			
+		},
+		onLoad (p) {
+			console.log(typeof p.win, p.win)
+			if (p.win==1) this.gameRes = "victory"
 		}
 	}
 </script>
