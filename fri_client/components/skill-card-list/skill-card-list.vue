@@ -1,9 +1,8 @@
 <template>
 	<view class="skill-card-list">
-	  <ul v-if="actSk.num!=11&&actSk.num!=52" class="mgb-30" v-for="(v,k,i) in curFts" :key="i">
-	  	<li v-for="(cv,ci) in v" :key="ci" @click="pickCard(100*i+ci, cv)"
-			v-show="(100*i+ci)!==actCardIdx">
-	  		<cbt-card :cardInfo="cv" :isFree="!i" :cbtCardMode="1" :cardIdx="100*i+ci" />
+	  <ul v-if="actSk.num!=11&&actSk.num!=52" class="mgb-30" v-for="(v,i) in Object.values(curFts)" :key="i">
+	  	<li v-for="(cv,ci) in v" :key="ci" @click="pickCard(100*i+ci, cv)">
+	  		<cbt-card :cardInfo="cv" :isFree="!i" :cbtCardMode="1" :cardIdx="100*i+ci" :disabled="(100*i+ci)==actCardIdx"/>
 				<image v-if="pickIdx==(100*i+ci)" :src="`../../static/play/sk${actSk.num}.png`" 
 				class="mark" mode="widthFix"></image>
 	  	</li>
@@ -24,7 +23,7 @@
 		</ul>
 		<!-- 海盗 52 翻开的战斗牌只算一半(必须包含老化牌) -->
 		<view class="hint52" v-if="actSk.num===52">已选择卡牌数:<text>{{decayL+fightCount}}</text> / {{Math.ceil(ftL/2)}}</view>
-		<ul v-if="actSk.num===52" class="mgb-30" v-for="(v,k,i) in curFts" :key="i">
+		<ul v-if="actSk.num===52" class="mgb-30" v-for="(v,i) in Object.values(curFts)" :key="i">
 			<li v-for="(cv,ci) in v" :key="ci" @click="pickFightCard(cv, 100*i+ci)">
 				<cbt-card :cardInfo="cv" :isFree="!i" :cbtCardMode="1" :cardIdx="100*i+ci" />
 				<image v-if="cv.type===2" :src="`../../static/play/fight0.png`" class="mark" mode="widthFix" />
@@ -72,10 +71,12 @@
 		},
 		methods: {
 			pickCard (idx, v) {
-				if (this.pickIdx !== idx&&v.atk2<=v.atk) {
-					this.pickIdx = idx
-				} else this.pickIdx = -1
-				this.$emit("pickCard", idx)
+				if (idx !== this.actCardIdx) {
+					if (this.pickIdx !== idx&&v.atk2<=v.atk) {
+						this.pickIdx = idx
+					} else this.pickIdx = -1
+					this.$emit("pickCard", idx)
+				}
 			},
 			sortCard (i) {
 				console.log("sortCard---", i)
@@ -110,28 +111,29 @@
 		height: 100%;
 		overflow: auto;
 		box-sizing: border-box;
-		padding: 20rpx;
+		// padding: 20rpx;
 		ul {
 			display: flex;
 			flex-wrap: wrap;
-			li {
+			background-color: red;
+			>li {
 				margin-bottom: 20rpx;
 				flex: none;
 				width: 200rpx;
 				height: 300rpx;
 				border-radius: 10rpx;
 				position: relative;
-				&:not(:nth-of-type(3n)) {
-					margin-right: 16rpx;
-				}
+			&:not(:nth-of-type(3n+1)) {
+				margin-left: 16rpx;
+			}	
 				.mark {
 					position: absolute;
 					right: 10rpx;
 					bottom: 10rpx;
 					width: 150rpx;
-					
 				}
-			}	
+			}
+
 		}
 		.hint52 {
 			font: 30rpx/50rpx $fontF;

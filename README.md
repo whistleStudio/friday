@@ -317,3 +317,21 @@ skill<=5 && !mode [需要修改]
 4 play advDim 修正 海盗harm
 
 5 修复 至少抽一张牌才能发起挑战
+
+### [08271312]
+
+- client
+
+1 小程序 image src 动态拼接可能会出现 页面已经渲染但路径中变量还未获取报错现象，虽然后期还是能够重新渲染出来，但控制台还是会报一次红；解决办法：对于问题变量加个v-if 判断下有没有获取到
+
+2 小程序不支持v-for 遍历对象的第三个参数；解决办法： 用Object.values() 或 Object.keys()遍历数组
+
+3 【修复】skill-card-list卡牌阵列因v-show名存实亡导致的排列不整齐问题，删除v-show，cbt-card增加disabled蒙版及props(默认不显示), skill-card-list激活卡牌显示disabled且点击事件无效
+
+4 【修复】play 小程序数据刷新速度较慢，首次获取undefined 用||、？给默认值规避
+
+```javascript
+//curAdvCard之前会首次加载undefined
+curDraw () {return this.isBoss ? this.curAdvCard.draw+this.temp.draw : (this.curAdvCard?.ch2||0)+1+this.temp.draw}
+```
+

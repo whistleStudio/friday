@@ -3,10 +3,18 @@ export default function () {
 	return {
 		// 点击战斗牌,显示发动效果遮罩
 		tapCbtCard: (idx, card) => {
+			console.log("e1")
 			if (card.type !== 2) {
+				console.log("e2")
 				if (this.actCardIdx === idx)
-					this.actCardIdx = -1
-				else this.actCardIdx = idx
+					{
+						console.log("e3")
+						this.actCardIdx = -1
+					}
+				else {
+					console.log("e4")
+					this.actCardIdx = idx
+				}
 			}
 		},
 		// 点击发动效果, skill-box遮罩显示

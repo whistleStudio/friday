@@ -1,8 +1,8 @@
 <template>
 	<view class="skill-box flex-center">
 		<view v-if="actSk.num>5 || (actSk.num==5&&actSk.mode)" class="skill-content flex-col-rowcenter">
-			<text>{{skillMsg[actSk.num]}}</text>
-			<text v-if="actSk.num==11 || actSk.num==5">{{subMsg[`${actSk.num}_${actSk.mode}`]}}</text>
+			<text class="skMsg">{{skillMsg[actSk.num]}}</text>
+			<text class="skSubMsg" v-if="isShowSubMsg">{{subMsg[`${actSk.num}_${actSk.mode}`]}}</text>
 			<view class="main">
 				<skill-card-list :actCardIdx="actCardIdx" :actSk="actSk" @pickCard="pickCard"></skill-card-list>
 			</view>
@@ -26,6 +26,9 @@
 				skillMsg, subMsg,
 				pickCardIdx: -1,
 			};
+		},
+		computed: {
+			isShowSubMsg () {let {num} = this.actSk; return num==5 || num==10 || num==11}
 		},
 		props: {
 			actSk: Object,
@@ -122,14 +125,21 @@
 		width: 100%;
 		height: 100%;
 		.skill-content {
-			height: 930rpx;
+			height: 990rpx;
 			width: 100%;
-			padding: 20rpx;
-			text {
-				color: whitesmoke;
+			padding: 25rpx;
+			background-color: rgb(249, 234, 221);
+			.skMsg {
+				color: $gray50;
+				font: bold 31rpx/40rpx $fontF;
+			}
+			.skSubMsg {
+				margin-top: 20rpx;
+				font: 28rpx/40rpx $fontF
 			}
 			.main {
 				height: 700rpx;
+				width: 632rpx;
 			}
 		}
 		.btn-group {

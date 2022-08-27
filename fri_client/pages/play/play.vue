@@ -24,7 +24,7 @@
 				<text>战斗牌库:{{fts.length}}</text>
 			</view>
 			<view class="main">
-				<ul class="mgb-30" v-for="(v,k,i) in curFts" :key="i">
+				<ul class="mgb-30" v-for="(v,i) in Object.values(curFts)" :key="i">
 					<li v-for="(cv,ci) in v" :key="ci" @click="tapCbtCard(100*i+ci, cv)">               
 						<cbt-card :cardInfo="cv" :isFree="!i" @showSkill="showSkill" 
 						:cardIdx="100*i+ci" :actCardIdx="actCardIdx" ></cbt-card>
@@ -101,7 +101,7 @@
 				fts: state => state._cards.ftDeck,
 			}),
 			curAdvCard () {return this.$gts.curAdvCard},
-			curDraw () {return this.isBoss ? this.curAdvCard.draw+this.temp.draw : this.curAdvCard.ch2+1+this.temp.draw},
+			curDraw () {return this.isBoss ? this.curAdvCard.draw+this.temp.draw : (this.curAdvCard?.ch2||0)+1+this.temp.draw},
 			cbtBar () {return [
 				this.$sta._gameInfo.hp,
 				this.$gts.cbtCount,
@@ -125,7 +125,9 @@
 			draw () {actionMethods.call(this).draw()}, //抽牌按钮
 			
 			/* -----------战斗区------------------- */ 
-			tapCbtCard () {combatMethods.call(this).tapCbtCard(...arguments)}, //点击战斗牌,显示发动效果遮罩
+			tapCbtCard () {
+				combatMethods.call(this).tapCbtCard(...arguments)
+			}, //点击战斗牌,显示发动效果遮罩
 			showSkill () {combatMethods.call(this).showSkill(...arguments)}, //点击发动效果, skill-box遮罩显示
 			closeSkill () {combatMethods.call(this).closeSkill(...arguments)}, // 取消/确定, 关闭skill-box遮罩
 			

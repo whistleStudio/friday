@@ -1,5 +1,5 @@
 <template>
-	<view class="cbt-card">
+	<view class="cbt-card" v-if="cost">
 		<view class="cbt-content flex-col-rowcenter" :class="{notFree: !isFree}">
 			<view class="cbt-top">
 				<text :class="{tempColor: cardInfo.atk2, weakColor: cardInfo.atk2===0}">{{cardInfo.atk2+""||cardInfo.atk}}</text>
@@ -15,6 +15,7 @@
 		<view class="skill-mask flex-center" v-if="isShowSkM && !cbtCardMode">
 			<button size="mini" @click.stop="showSkill">发动效果</button>
 		</view>
+		<view :class="{disabled: disabled}"></view>
 	</view>
 </template>
 
@@ -38,6 +39,7 @@
 			cardInfo: Object,
 			isFree: Boolean,
 			cardIdx: Number,
+			disabled: {type: Boolean, default: false},
 			actCardIdx: {type: Number, default: -1},
 			cbtCardMode: {type: Number, default: 0}, //0-点击会显示发动效果按钮
 		},
@@ -52,6 +54,7 @@
 .cbt-card {
 	width: 100%;
 	height: 100%;
+	position: relative;
 }	
 .cbt-content {
 	width: 100%;
@@ -116,5 +119,16 @@
 }
 .text-mini {
 	font-size: 25rpx !important;
+}
+.disabled {
+	width: 200rpx;
+	height: 300rpx;
+	background-color: gray;
+	opacity: 0.7;
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 3;
+	border-radius: 10rpx;
 }
 </style>
