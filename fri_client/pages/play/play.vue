@@ -34,15 +34,17 @@
 			</view>
 		</view>
     <!-- 冒险牌选择 -->
-		<u-overlay :show="isOverlayShow" :z-index ="999" opacity="0.6"
-		@click="show = false" class="flex-col-rowcenter">
-			<choose-adv v-if="isAdv2Show" @closeOverlay="isOverlayShow=false"></choose-adv>
-			<rm-box v-else :disCount="advDim" @closeRm="closeRmBox"></rm-box>
+		<u-overlay :show="isOverlayShow" :z-index ="999" opacity="0.6" @click="show = false" class="flex-col-rowcenter">
+			<view class="wrap">
+				<choose-adv v-if="isAdv2Show" @closeOverlay="isOverlayShow=false"></choose-adv>
+				<rm-box v-else :disCount="advDim" @closeRm="closeRmBox"></rm-box>
+			</view>
 		</u-overlay>
 		<!-- 卡牌效果页 -->
 		<u-overlay :show="isSkillShow" opacity="0.6">
-			<skill-box :actSk="actSk" :actCardIdx="actCardIdx" 
-			@closeSkill="closeSkill" @modifyDraw="modifyDraw"></skill-box>
+			<view class="wrap" v-if="isSkillShow">
+				<skill-box :actSk="actSk" :actCardIdx="actCardIdx" @closeSkill="closeSkill" @modifyDraw="modifyDraw"></skill-box>
+			</view>
 		</u-overlay>
 		<!-- 弃牌区 -->
 		<u-popup :show="isPopShow" mode="left">
@@ -134,7 +136,7 @@
 			/* ------------其他---------------------- */
 			// 关闭移除卡牌窗口
 			closeRmBox (disCardNum) {
-				if (disCardNum) uni.showToast({title:`共移除${disCardNum}张卡牌`,icon:"none"})
+				if (disCardNum) uni.showToast({title:`共移除${disCardNum}张卡牌`, icon:"none", duration:500})
 				this.$store.commit("fightCheck", {res:0, card:this.curAdvCard})
 				this.openAdvBox()
 			},

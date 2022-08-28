@@ -1,5 +1,5 @@
 <template>
-	<view class="rm-box flex-col-rowcenter">
+	<view class="rm-box flex-col-rowcenter" v-show="isBoxShow">
 		<text class="mgb-30">选择移除游戏的卡牌: {{disNum}} / {{disCount}}</text>
 		<ul class="mgb-50">
 			<li v-for="(v,i) in naFts" :key="'na'+i" @click="swapSta(0,i)">
@@ -24,6 +24,8 @@
 				curFtLis: {na:[],sp:[]},
 				disNum: 0,
 				disCardNum: 0,
+				//解决小程序因执行速度慢导致 关闭前画面停留
+				isBoxShow: true,
 			};
 		},
 		computed: {
@@ -46,6 +48,7 @@
 				} else uni.showToast({title: "无法移除更多的卡牌",icon:"none"})
 			},
 			rmCard () {
+				this.isBoxShow = false
 				if(this.disCardNum) {
 					let rmCardList = {na:[], sp:[]}
 					this.curFtLis.na.forEach((v, i) => {if(v) rmCardList.na.push(this.naFts[i])})

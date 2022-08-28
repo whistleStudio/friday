@@ -1,7 +1,7 @@
 <template>
 	<view class="skill-card-list">
-	  <ul v-if="actSk.num!=11&&actSk.num!=52" class="mgb-30" v-for="(v,i) in Object.values(curFts)" :key="i">
-	  	<li v-for="(cv,ci) in v" :key="ci" @click="pickCard(100*i+ci, cv)">
+	  <ul class="scl-ul mgb-30" v-if="actSk.num!=11&&actSk.num!=52" v-for="(v,i) in Object.values(curFts)" :key="i">
+	  	<li class="scl-li" v-for="(cv,ci) in v" :key="ci" @click="pickCard(100*i+ci, cv)">
 	  		<cbt-card :cardInfo="cv" :isFree="!i" :cbtCardMode="1" :cardIdx="100*i+ci" :disabled="(100*i+ci)==actCardIdx"/>
 				<image v-if="pickIdx==(100*i+ci)" :src="`../../static/play/sk${actSk.num}.png`" 
 				class="mark" mode="widthFix"></image>
@@ -72,7 +72,8 @@
 		methods: {
 			pickCard (idx, v) {
 				if (idx !== this.actCardIdx) {
-					if (this.pickIdx !== idx&&v.atk2<=v.atk) {
+					if (this.pickIdx !== idx&&v.atk2==="") {
+						// if (this.actSk())
 						this.pickIdx = idx
 					} else this.pickIdx = -1
 					this.$emit("pickCard", idx)
@@ -112,11 +113,10 @@
 		overflow: auto;
 		box-sizing: border-box;
 		// padding: 20rpx;
-		ul {
+		.scl-ul {
 			display: flex;
 			flex-wrap: wrap;
-			background-color: red;
-			>li {
+			>.scl-li {
 				margin-bottom: 20rpx;
 				flex: none;
 				width: 200rpx;

@@ -330,10 +330,10 @@ const store = new Vuex.Store({
 				}
 			})
 		},
-		ftsRunOut ({commit}) {
+		ftsRunOut ({commit}, mode) {
 			console.log("runout")
 			commit("addWeakCard")
-			commit("drawFtCard", 0)
+			commit("drawFtCard", mode)
 		}
 	}
 })

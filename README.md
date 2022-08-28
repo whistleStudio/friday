@@ -335,3 +335,21 @@ skill<=5 && !mode [需要修改]
 curDraw () {return this.isBoss ? this.curAdvCard.draw+this.temp.draw : (this.curAdvCard?.ch2||0)+1+this.temp.draw}
 ```
 
+### [08281300]
+
+- client
+
+1 【修复】卡牌atk为负数时，skill-card-list无法选中
+
+2 【调整】蒙版中box不居中，u-overlay子节点用一个容器view，再包装业务逻辑的盒子
+
+3 【修复】战斗牌库抽空无法再抽，actionMethods 抽离drawFtCard方法用于判断战斗牌库是否为空
+
+4 【调整】蒙版box增加v-show判断，在点击发动技能后，第一时间消失，避免因数据变化，页面产生渲染造成的错误信息停留
+
+5 【调整】抽牌后，actCardIdx置-1，避免未发动技能但选中后，进行调整，新一轮的样式继承
+
+6 【修复】小程序 u-overlay属性show背后机制应该是v-show,   所以会导致组件加载后部分生命周期函数无效,   遮罩里子节点容器用v-if控制（H5不存在，其show属性对应是v-if）
+
+7 【待解决】 drawCount 为0时手无寸铁提示 和交换有些冲突
+

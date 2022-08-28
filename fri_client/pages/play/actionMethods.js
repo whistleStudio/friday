@@ -64,7 +64,7 @@ export default function () {
 		draw: () => {
 			if (this.fts.length || this.disFt.length) {
 				draw1Card.call(this)
-			} else uni.showToast({title:"牌库已空!", icon:"none", duration:500})
+			} else uni.showToast({title:"战斗牌库已空!", icon:"none", duration:500})
 		},
 		
 	}
@@ -75,6 +75,7 @@ export default function () {
 // 冒险窗口,派牌
 function giveAdvCard (isNext=false) {
 	this.$store.commit("chooseAdvCard", isNext)
+	this.actCardIdx = -1
 	if (this.isBoss) {
 		this.isOverlayShow = false
 	} else {
@@ -279,14 +280,25 @@ function draw1Card () {
 			success: res => {
 				if (res.confirm) {
 					this.$store.commit("changeHp", cost)
-					if (this.fts.length) this.$store.commit("drawFtCard", 0)
-					else {
-						this.$store.dispatch("ftsRunOut")
-						uni.showLoading({title: "岁月不饶人, 你似乎又衰老了些"})
-						setTimeout(()=>{uni.hideLoading()},1200)
-					}
+					drawFtCard.call(this, 0)
 				}
 			}
 		})
-	}	else {this.$store.commit("drawFtCard"); this.drawCount++}
+	}	else {
+		// this.$store.commit("drawFtCard"); 
+		drawFtCard.call(this, 1)
+		this.drawCount++
+	}
+}
+//mode 0特殊1免费抽牌
+function drawFtCard (mode) {
+	if (this.fts.length) this.$store.commit("drawFtCard", mode)
+	else {
+		this.$store.dispatch("ftsRunOut", mode)
+		uni.showToast({
+			title: "岁月不饶人, 你似乎又衰老了些",
+			icon: "none",
+			duration: 1200
+		})
+	}
 }

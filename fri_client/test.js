@@ -1,3 +1,2 @@
-let a = ""
-++a
-console.log(Boolean({}))
+
+console.log("">=-1)

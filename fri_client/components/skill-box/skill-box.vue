@@ -1,5 +1,5 @@
 <template>
-	<view class="skill-box flex-center">
+	<view class="skill-box flex-center" v-show="isBoxShow">
 		<view v-if="actSk.num>5 || (actSk.num==5&&actSk.mode)" class="skill-content flex-col-rowcenter">
 			<text class="skMsg">{{skillMsg[actSk.num]}}</text>
 			<text class="skSubMsg" v-if="isShowSubMsg">{{subMsg[`${actSk.num}_${actSk.mode}`]}}</text>
@@ -7,10 +7,8 @@
 				<skill-card-list :actCardIdx="actCardIdx" :actSk="actSk" @pickCard="pickCard"></skill-card-list>
 			</view>
 			<view class="btn-group">
-				<button class="btn200x60" @click="closeSkill" v-if="actSk.num!==52"
-				size="mini" >取消</button>
-				<button class="btn200x60" @click="useSkill" 
-				size="mini" type="primary">确定</button>
+				<button class="btn200x60" @click="closeSkill" v-if="actSk.num!==52" size="mini" >取消</button>
+				<button class="btn200x60" @click="useSkill" size="mini" type="primary">确定</button>
 			</view>			
 		</view>
 	</view>
@@ -25,6 +23,8 @@
 			return {
 				skillMsg, subMsg,
 				pickCardIdx: -1,
+				//解决小程序因执行速度慢导致 关闭前画面停留
+				isBoxShow: true,
 			};
 		},
 		computed: {
@@ -40,6 +40,7 @@
 				if (this.actSk.num == 11) this.$store.commit("resetCheckCards")
 			},
 			useSkill () {
+				this.isBoxShow = false
 				//mode-0默认/技能一阶段 | 2技能二阶段 | 1加倍
 				let {num,mode} = this.actSk, actIdx = this.actCardIdx, pickIdx = this.pickCardIdx
 				let payload
@@ -76,14 +77,17 @@
 		},
 		mounted () {
 			let {num,mode} = this.actSk
+			console.log("mounted actsk", this.actSk)
 			if (num <= 5&&!mode) {
-				uni.showLoading({
-					title: this.skillMsg[num]
+				uni.showModal({
+					title: this.skillMsg[num],
+					icon: "none",
+					duration:1000
 				})
 				switch (num) {
 					// 阶段-1
 					case 0:
-						setTimeout(()=>{uni.hideLoading();this.$emit("closeSkill");},1000)
+						setTimeout(()=>{this.$emit("closeSkill")},1200)
 						break
 					// hp+1
 					case 1:
@@ -99,16 +103,16 @@
 						break
 					// draw+2
 					case 4:
+						console.log("modifyDraw 2")
 						this.$emit("modifyDraw", 2)
 					  break
 					case 5:
-						setTimeout(()=>{uni.hideLoading();this.$emit("closeSkill");},1000)
+						setTimeout(()=>{this.$emit("closeSkill")},1200)
 						break
 				}
 				if (num&&num<=4) {
 					setTimeout(()=>{
 						this.$store.commit("useSkill", {actIdx: this.actCardIdx, state: 1})
-						uni.hideLoading()
 						this.$emit("closeSkill")
 					},1200)
 				}
@@ -140,6 +144,7 @@
 			.main {
 				height: 700rpx;
 				width: 632rpx;
+				margin-top: 20rpx;
 			}
 		}
 		.btn-group {
