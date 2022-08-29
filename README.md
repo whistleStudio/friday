@@ -347,9 +347,22 @@ curDraw () {return this.isBoss ? this.curAdvCard.draw+this.temp.draw : (this.cur
 
 4 【调整】蒙版box增加v-show判断，在点击发动技能后，第一时间消失，避免因数据变化，页面产生渲染造成的错误信息停留
 
-5 【调整】抽牌后，actCardIdx置-1，避免未发动技能但选中后，进行调整，新一轮的样式继承
+5 【修复】抽牌后，actCardIdx置-1，避免未发动技能但选中后，进行调整，新一轮的样式继承
 
 6 【修复】小程序 u-overlay属性show背后机制应该是v-show,   所以会导致组件加载后部分生命周期函数无效,   遮罩里子节点容器用v-if控制（H5不存在，其show属性对应是v-if）
 
 7 【待解决】 drawCount 为0时手无寸铁提示 和交换有些冲突
 
+### [08291645]
+
+- client
+
+1 【调整】dis-box 样式列对齐
+
+2 【修复】sill-card-list 部分技能样式错乱
+
+3 【修复】查看*3 技能一阶段执行完 二阶段无效，isSillShow变化太快，DOM还没来及变化，数据就已经实现了从true->false->true，因而不会重新渲染，解决用nextTick确保在上次渲染结束后再赋新值
+
+4 【调整】 skillbox mounted 应是showToast
+
+5 【修复】card.work 洗牌后还原0

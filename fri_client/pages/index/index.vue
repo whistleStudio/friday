@@ -15,7 +15,7 @@
       <view class="popup flex-center">  
 				<!-- #ifdef MP-WEIXIN -->
 				<text class="mgb-50">昵称</text>
-				<input v-model.trim="newnickname" type="nickname" class="weui-input mgb-50" placeholder="我是弗莱德, 该怎么称呼您呢？"/>
+				<input v-model.trim="newnickname" type="nickname" class="weui-input mgb-50" placeholder="我是野人弗莱德, 该怎么称呼你呢？"/>
 				<view class="btn-group flex-center">
 					<button size="mini" @click="isShow=false">取消</button>
 					<button size="mini" type="primary" @click="confirmClick">确定</button>
@@ -27,8 +27,6 @@
 </template>
 
 <script>
-  import io from '@hyoga/uni-socket.io';
-	
 	export default {
 		data() {
 			return {

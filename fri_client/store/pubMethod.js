@@ -40,12 +40,12 @@ function nextPhase (_gameInfo,_cards) {
 function resetCard(card,mode=1) {
 	if (mode) {
 		card.forEach(e=>{
-			if(e.atk2+"") e.atk2=""
-			if(e.skill2+"") e.skill2=""
+			e.atk2="";e.skill2="";
+			if(e.work) e.work = 0
 		})
 	} else {
-		if(card.atk2+"") card.atk2=""
-		if(card.skill2+"") card.skill2=""
+		card.atk2="";card.skill2="";
+		if(card.work) card.work = 0
 	}
 }
 

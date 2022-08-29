@@ -3,16 +3,12 @@ export default function () {
 	return {
 		// 点击战斗牌,显示发动效果遮罩
 		tapCbtCard: (idx, card) => {
-			console.log("e1")
 			if (card.type !== 2) {
-				console.log("e2")
 				if (this.actCardIdx === idx)
 					{
-						console.log("e3")
 						this.actCardIdx = -1
 					}
 				else {
-					console.log("e4")
 					this.actCardIdx = idx
 				}
 			}
@@ -58,7 +54,7 @@ function swapAgain ({actCard, actIdx}) {
 }
 // 技能查看*3 二阶段 排序
 function sortCheckCards () {
-	this.isSkillShow = true
 	this.actSk = {num:11, mode:2}
+	this.$nextTick(()=>this.isSkillShow = true)
 }
 	

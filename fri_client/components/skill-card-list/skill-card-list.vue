@@ -8,23 +8,23 @@
 	  	</li>
 	  </ul>
 		<!-- 查看x3  一阶段弃牌-->
-		<ul v-if="actSk.mode==0&&actSk.num==11" >
-			<li v-for="(v, i) in checkCards" :key="i" @click="pickCard(i)">
+		<ul class="scl-ul" v-if="actSk.mode==0&&actSk.num==11" >
+			<li class="scl-li" v-for="(v, i) in checkCards" :key="i" @click="pickCard(i, v)">
 				<cbt-card :cardInfo="v" :isFree="false" :cbtCardMode="1" :cardIdx="i" />
 				<image v-if="pickIdx==i" :src="`../../static/play/sk11.png`" class="mark" mode="widthFix"></image>
 			</li>
 		</ul>
 		<!-- 查看x3 二阶段排序 -->
-		<ul v-if="actSk.mode==2&&actSk.num==11" >
-			<li v-for="(v, i) in checkCards" :key="i" @click="sortCard(i)">
+		<ul class="scl-ul" v-if="actSk.mode==2&&actSk.num==11" >
+			<li class="scl-li" v-for="(v, i) in checkCards" :key="i" @click="sortCard(i)">
 				<cbt-card :cardInfo="v" :isFree="false" :cbtCardMode="1" :cardIdx="i" />
 				<image v-if="imgOrder[i]>=0" :src="`../../static/play/sortoken${imgOrder[i]}.png`" class="mark" mode="widthFix"></image>
 			</li>
 		</ul>
 		<!-- 海盗 52 翻开的战斗牌只算一半(必须包含老化牌) -->
 		<view class="hint52" v-if="actSk.num===52">已选择卡牌数:<text>{{decayL+fightCount}}</text> / {{Math.ceil(ftL/2)}}</view>
-		<ul v-if="actSk.num===52" class="mgb-30" v-for="(v,i) in Object.values(curFts)" :key="i">
-			<li v-for="(cv,ci) in v" :key="ci" @click="pickFightCard(cv, 100*i+ci)">
+		<ul class="scl-ul mgb-30" v-if="actSk.num===52" v-for="(v,i) in Object.values(curFts)" :key="i">
+			<li class="scl-li" v-for="(cv,ci) in v" :key="ci" @click="pickFightCard(cv, 100*i+ci)">
 				<cbt-card :cardInfo="cv" :isFree="!i" :cbtCardMode="1" :cardIdx="100*i+ci" />
 				<image v-if="cv.type===2" :src="`../../static/play/fight0.png`" class="mark" mode="widthFix" />
 				<image v-if="cv.type!==2&&fightIdx[ci]" :src="`../../static/play/fight1.png`" class="mark" mode="widthFix" />

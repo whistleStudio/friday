@@ -2,11 +2,11 @@
 	<view class="rm-box flex-col-rowcenter" v-show="isBoxShow">
 		<text class="mgb-30">选择移除游戏的卡牌: {{disNum}} / {{disCount}}</text>
 		<ul class="mgb-50">
-			<li v-for="(v,i) in naFts" :key="'na'+i" @click="swapSta(0,i)">
+			<li v-for="(v,i) in naFts" :key="i" @click="swapSta(0,i)">
 				<cbt-card :cardInfo="naFts[i]"></cbt-card>
 				<image v-show="curFtLis.na[i]" src="@/static/play/sk6.png" mode="widthFix"></image>
 			</li>
-			<li v-for="(v,i) in spFts" :key="'sp'+i"  @click="swapSta(1, i)">
+			<li v-for="(v,i) in spFts" :key="100+i"  @click="swapSta(1, i)">
 				<cbt-card :cardInfo="spFts[i]"></cbt-card>
 				<image v-show="curFtLis.sp[i]" src="@/static/play/sk6.png" mode="widthFix"></image>
 			</li>

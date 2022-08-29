@@ -79,7 +79,7 @@
 			let {num,mode} = this.actSk
 			console.log("mounted actsk", this.actSk)
 			if (num <= 5&&!mode) {
-				uni.showModal({
+				uni.showToast({
 					title: this.skillMsg[num],
 					icon: "none",
 					duration:1000
@@ -87,7 +87,7 @@
 				switch (num) {
 					// 阶段-1
 					case 0:
-						setTimeout(()=>{this.$emit("closeSkill")},1200)
+						setTimeout(()=>{this.$emit("closeSkill")},1000)
 						break
 					// hp+1
 					case 1:
@@ -107,14 +107,14 @@
 						this.$emit("modifyDraw", 2)
 					  break
 					case 5:
-						setTimeout(()=>{this.$emit("closeSkill")},1200)
+						setTimeout(()=>{this.$emit("closeSkill")},1000)
 						break
 				}
 				if (num&&num<=4) {
 					setTimeout(()=>{
 						this.$store.commit("useSkill", {actIdx: this.actCardIdx, state: 1})
 						this.$emit("closeSkill")
-					},1200)
+					},1000)
 				}
 			}
 			if (num==11&&mode==0) {

@@ -8,7 +8,13 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
 	state: {
 		_userInfo: {
-			nickname: "temp", avatar: "00", openid: "", lvl: 1
+			//#ifdef H5
+			nickname: "temp",
+			//#endif
+			//#ifndef H5
+			nickname: "",
+			//#endif
+			avatar: "00", openid: "", lvl: 1
 		},
 		_gameInfo: {
 			glvl: 0, hp: 20, decayLvl: 0, curPhase: 0, curAdvIdx: 0, prtHarm: 0,
@@ -66,6 +72,7 @@ const store = new Vuex.Store({
 					var randWeakCard = _cards.weakDeck.splice(rdIdx,1)
 					_cards.advDeck.push(...randWeakCard)
 					initShuffle(_cards)
+					_gameInfo.decayLvl = 1
 					break
 				case 2:
 					// 残酷 - 继承上一难度，加入老年痴呆, 战斗牌混入1张普通老化
@@ -73,6 +80,7 @@ const store = new Vuex.Store({
 					var randWeakCard = _cards.weakDeck.splice(rdIdx,1)
 					_cards.advDeck.push(...randWeakCard)
 					initShuffle(_cards)
+					_gameInfo.decayLvl = 1
 					break
 				case 3:
 					// 梦魇 - 继承上一难度，初始HP18
@@ -81,6 +89,7 @@ const store = new Vuex.Store({
 					var randWeakCard = _cards.weakDeck.splice(rdIdx,1)
 					_cards.advDeck.push(...randWeakCard)
 					initShuffle(_cards)
+					_gameInfo.decayLvl = 1
 					break	
 			}
 			console.log("cards shuffled!",_cards)
@@ -244,7 +253,6 @@ const store = new Vuex.Store({
 			let {na, sp} = _gameInfo.curFts
 			let ft = pickIdx<100 ? na : sp, idx = pickIdx<100 ? pickIdx : pickIdx-100
 			let pickCard
-			console.log("actEffect")
 			switch (skIdx) {
 				case 5: // 加倍
 					if (ft[idx].atk2!==0) ft[idx].atk2 = ft[idx].atk*2
