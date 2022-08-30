@@ -64,11 +64,11 @@ function validateSkill (ftDeck, fn=()=>{}) {
 function isGameOver (hp, bossLeft) {
 	if (hp<0) {
 		uni.navigateTo({
-			url: "/pages/end/end?win=0"
+			url: "/pages/end/end?res=0"
 		})
 	} else if (bossLeft===1) {
 		uni.navigateTo({
-			url: "/pages/end/end?win=1"
+			url: "/pages/end/end?res=1"
 		})
 	}
 }

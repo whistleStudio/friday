@@ -366,3 +366,14 @@ curDraw () {return this.isBoss ? this.curAdvCard.draw+this.temp.draw : (this.cur
 4 【调整】 skillbox mounted 应是showToast
 
 5 【修复】card.work 洗牌后还原0
+
+### [08301727]
+
+- client 
+
+1 `this.$refs.end.$el.style.height`  要配合$el获取样式
+
+2 【待解决】图片统一为像素风
+
+3 end页样式布局基本OK
+
