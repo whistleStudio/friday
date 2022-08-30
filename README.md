@@ -377,3 +377,8 @@ curDraw () {return this.isBoss ? this.curAdvCard.draw+this.temp.draw : (this.cur
 
 3 end页样式布局基本OK
 
+### [08302139]
+
+- client
+
+1 end 计分规则table
