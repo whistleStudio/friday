@@ -4,17 +4,22 @@ const User = require("../db/model/User")
 const Rank = require("../db/model/Rank")
 
 rt.get("/setNewScore", (req, res) => {
-  const {openid, score} = req.query
+  const {openid, score, nickname} = req.query
   ;(async () => {
     try {
-      let q = User.find({openid}, "nickname score")
+      let q = User.find({openid}, "score")
       if (q) {
         if (score > q.score) User.updateOne({openid}, {score})
-        let rankList = Rank.find({}).sort("rank")
+        /* ---------------------- */
+        let rankList = Rank.find({}).sort({score: -1, regDate: 1})
         rankList.forEach(e => {
-          // if (score>)
+          if (score > e.score) {
+            User.create({nickname, score, regDate: new Date()})
+            // User.deleteOne
+          }
+          
         })
-
+        /* ---------------------- */
       } else res.json({err:1})
     } catch(e){console.log(e)}
   })()

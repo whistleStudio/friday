@@ -9,7 +9,7 @@ async function main() {
   await mongoose.connect(`mongodb://wsh:19930304wsh@localhost:${PORT}/${DbName}`);
   console.log(`db:${DbName} connected on port:${PORT}`)
   for(let i=0; i<10; i++) {
-    await Rank.create({rank: i})
+    await Rank.create({})
   }
   console.log("create OK")
 }
