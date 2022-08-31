@@ -19,6 +19,7 @@ rt.get("/getUserInfo", (req, res) => {
     try {
       let doc = await User.findOne({openid}, "nickname avatar lvl")
       if (doc) {
+        User.updateOne({openid}, {logDate: new Date()})
         let {nickname, avatar, lvl} = doc
         res.json({err:0, nickname, avatar, lvl})
       } else res.json({err:1})

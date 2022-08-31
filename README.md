@@ -382,3 +382,20 @@ curDraw () {return this.isBoss ? this.curAdvCard.draw+this.temp.draw : (this.cur
 - client
 
 1 end 计分规则table
+
+### [08311726]
+
+- client
+
+1 【修复】 置底技能发动后，目标卡牌重置
+
+2 【修复】困难难度 洗牌错误
+
+3  排行榜样式
+
+4  计分逻辑
+
+- server
+
+1 增加ranks集合
+

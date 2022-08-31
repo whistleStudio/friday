@@ -63,14 +63,19 @@ function validateSkill (ftDeck, fn=()=>{}) {
 /* 判断游戏结束 */
 function isGameOver (hp, bossLeft) {
 	if (hp<0) {
+		this.commit("calcScore")
 		uni.navigateTo({
 			url: "/pages/end/end?res=0"
 		})
+		
 	} else if (bossLeft===1) {
+		this.commit("nextBoss")
+		this.commit("calcScore")
 		uni.navigateTo({
 			url: "/pages/end/end?res=1"
 		})
 	}
 }
+
 
 export {shuffle, initShuffle, nextPhase, resetCard, isGameOver, validateSkill}

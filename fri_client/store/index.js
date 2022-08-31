@@ -14,10 +14,10 @@ const store = new Vuex.Store({
 			//#ifndef H5
 			nickname: "",
 			//#endif
-			avatar: "00", openid: "", lvl: 1
+			avatar: "00", openid: "", lvl: 1,
 		},
 		_gameInfo: {
-			glvl: 0, hp: 20, decayLvl: 0, curPhase: 0, curAdvIdx: 0, prtHarm: 0,
+			glvl: 0, hp: 5, decayLvl: 0, curPhase: 0, curAdvIdx: 0, prtHarm: 0, score: [],
 			curFts: {na:[], sp:[]}, curAdvs: [], disAdv: [], disFt: [], rm: [], checkCards: [], checkCardOrder: [],
 			fightIdx: {},
 			isInitOk: true, isBoss: false, isAdvsOk: false, isStopDraw: false,	
@@ -46,9 +46,9 @@ const store = new Vuex.Store({
 		changeObjVal (state, {k1,k2,v}) {
 			state[k1][k2] = v
 		},
-		changeHp ({_gameInfo}, v) {
+		changeHp ({_gameInfo, _cards}, v) {
 			_gameInfo.hp -= v
-			isGameOver(_gameInfo.hp)
+			isGameOver.call(this, _gameInfo.hp, _cards.prtDeck.length)
 		},
 		/* 初始各牌组 */
 		initDeck (state) {
@@ -70,7 +70,7 @@ const store = new Vuex.Store({
 					_gameInfo.rm.push(...rmOldCard)
 					var rdIdx = parseInt(Math.random()*7)
 					var randWeakCard = _cards.weakDeck.splice(rdIdx,1)
-					_cards.advDeck.push(...randWeakCard)
+					_cards.ftDeck.push(...randWeakCard)
 					initShuffle(_cards)
 					_gameInfo.decayLvl = 1
 					break
@@ -212,11 +212,11 @@ const store = new Vuex.Store({
 			curFts.na.forEach(e => disFt.unshift(e))
 			curFts.sp.forEach(e => disFt.unshift(e))
 			if (res) {
-				isGameOver(_gameInfo.hp, _cards.prtDeck.length)
+				isGameOver.call(this, _gameInfo.hp, _cards.prtDeck.length)
 				if (!_gameInfo.isBoss) disFt.unshift(card)
 			} 
 			else {
-				isGameOver(_gameInfo.hp, _cards.prtDeck.length)
+				isGameOver.call(this, _gameInfo.hp, _cards.prtDeck.length)
 				if (!_gameInfo.isBoss) disAdv.unshift(card)
 			}
 		},
@@ -269,6 +269,7 @@ const store = new Vuex.Store({
 				case 8: //置底
 					pickCard = ft.splice(idx,1)[0]
 					pickCard.skill2 = ""
+					pickCard.work = 0
 					_cards.ftDeck.push(pickCard)
 					break
 				case 9: //交换x1
@@ -316,7 +317,41 @@ const store = new Vuex.Store({
 			_gameInfo.checkCards = []
 			_gameInfo.checkCardOrder = []
 		},
-
+		/* 计分 */
+		calcScore ({_userInfo, _gameInfo, _cards}) {
+			const {curFts, disAdv, disFt, hp, glvl} = _gameInfo, {prtDeck, ftDeck, advDeck} = _cards
+			let score = 0
+			let weakCount = 0
+			//战斗卡(含弃牌堆) - [战斗值]分/张
+			ftDeck.forEach(e => {score += e.atk; if(e.type===2) weakCount++;})
+			disFt.forEach(e => {score += e.atk; if(e.type===2) weakCount++;})
+			Object.values(curFts).forEach(d => {
+				d.forEach(c => {score += c.atk; if(c.type===2) weakCount++;})
+			})
+			_gameInfo.score.push(score)
+			score = 0
+			//挑战者牌组衰老卡(含弃牌堆) - -3分/张
+			score -= weakCount*3
+			_gameInfo.score.push(score)
+			score = 0
+			// 击败的海盗 - 15分/张
+			score += (2-prtDeck.length)*15
+			_gameInfo.score.push(score)
+			score = 0
+			// 剩余生命值 - 5分/点生命值
+			if (hp>0) score += hp*5
+			_gameInfo.score.push(score)
+			score = 0
+			// 未通过的冒险卡 - -1分/张
+			score -= disAdv.length+advDeck.length
+			if (!_gameInfo.isBoss) score--
+			_gameInfo.score.push(score)
+			score = 0
+			// 挑战难度 - 普通x1.0|困难x1.2|灾难x1.5|梦魇x2.0
+			_gameInfo.score.forEach(e => score += e)
+			const k = [1, 1.2, 1.5, 2]
+			_gameInfo.score.push(Math.round(score*k[glvl]))
+		}
 	},
 	actions: {
 		getUserInfo (context, openid) {
