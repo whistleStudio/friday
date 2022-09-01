@@ -29,7 +29,8 @@
 								<image v-if="i<3" :src="`../../static/end/medal${i}.png`" mode="heightFix"></image>
 								<text class="rank-num" v-else>{{i+1}}</text>
 							</td>
-							<td v-for="(cv, ci) in 2" :key="ci"></td>
+							<td>{{ol.rankList[i].nickname}}</td>
+							<td>{{ol.rankList[i].score<=-999 ? "-" : ol.rankList[i].score}}</td>
 						</tr>
 					</table>
 				</view>
@@ -65,7 +66,8 @@
 						["项目", "战斗卡(含弃牌堆)", "挑战者牌组衰老卡(含弃牌堆)", "击败的海盗", "剩余生命值", "未通过的冒险卡", "挑战难度", ],
 						["分值", "[战斗值]分/张", "-3分/张", "15分/张", "5分/点生命值", "-1分/张", "普通x1.0|困难x1.2|灾难x1.5|梦魇x2.0"]
 					],
-					rankTh: ["排名", "用户名", "分数"]
+					rankTh: ["排名", "用户名", "分数"],
+					rankList: Array(10).fill({nickname: "-", score: "-"})
 				},
 				endInfo:[
 					{
@@ -82,6 +84,8 @@
 		computed: {
 			...mapState({
 				score: state => state._gameInfo.score,
+				openid: state => state._userInfo.openid,
+				nickname: state => state._userInfo.nickname
 			})
 		},
 		methods: {
@@ -99,6 +103,29 @@
 			})
 			if (p.res==1) {
 				this.gameRes = p.res
+			}
+			if (typeof this.score[this.score.length-1] !== "number") {
+				uni.showToast({
+					title: "糟糕, 计分出错了",
+					icon: "none",
+					duration: 800
+				})
+			} else {
+				/* 请求排行榜列表 */
+				this.$reqGet({
+					url: `${this.$baseUrl}/data/setNewScore`,
+					query: {
+						openid: this.openid,
+						nickname: this.nickname,
+						score: this.score[this.score.length-1]
+					},
+					rsv: data => {
+						if (!data.err) {
+							console.log(data.rankList)
+							this.ol.rankList = data.rankList
+						} else {console.log("setNewScore err:", data.err)}
+					}
+				})
 			}
 		},
 		onReady () {

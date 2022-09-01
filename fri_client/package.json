@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@hyoga/uni-socket.io": "^3.0.4",
     "uview-ui": "^2.0.31"
   }
 }

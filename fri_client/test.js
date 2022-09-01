@@ -1,2 +1,2 @@
 
-;(() => {console.log(1)})()
+console.log(typeof typeof 1)

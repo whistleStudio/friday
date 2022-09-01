@@ -9,15 +9,17 @@ const store = new Vuex.Store({
 	state: {
 		_userInfo: {
 			//#ifdef H5
+			openid: "oTMev4m8xpYvVOweeZgXHs7hNsbg",
 			nickname: "temp",
 			//#endif
 			//#ifndef H5
+			openid: "",
 			nickname: "",
 			//#endif
-			avatar: "00", openid: "", lvl: 1,
+			avatar: "00", lvl: 1
 		},
 		_gameInfo: {
-			glvl: 0, hp: 5, decayLvl: 0, curPhase: 0, curAdvIdx: 0, prtHarm: 0, score: [],
+			glvl: 0, hp: 5, decayLvl: 0, curPhase: 0, curAdvIdx: 0, prtHarm: 0, score: [0, 0, 0, 0, 0, 0],
 			curFts: {na:[], sp:[]}, curAdvs: [], disAdv: [], disFt: [], rm: [], checkCards: [], checkCardOrder: [],
 			fightIdx: {},
 			isInitOk: true, isBoss: false, isAdvsOk: false, isStopDraw: false,	
@@ -328,29 +330,29 @@ const store = new Vuex.Store({
 			Object.values(curFts).forEach(d => {
 				d.forEach(c => {score += c.atk; if(c.type===2) weakCount++;})
 			})
-			_gameInfo.score.push(score)
+			Vue.set(_gameInfo.score, 0, score)
 			score = 0
 			//挑战者牌组衰老卡(含弃牌堆) - -3分/张
 			score -= weakCount*3
-			_gameInfo.score.push(score)
+			Vue.set(_gameInfo.score, 1, score)
 			score = 0
 			// 击败的海盗 - 15分/张
 			score += (2-prtDeck.length)*15
-			_gameInfo.score.push(score)
+			Vue.set(_gameInfo.score, 2, score)
 			score = 0
 			// 剩余生命值 - 5分/点生命值
 			if (hp>0) score += hp*5
-			_gameInfo.score.push(score)
+			Vue.set(_gameInfo.score, 3, score)
 			score = 0
 			// 未通过的冒险卡 - -1分/张
 			score -= disAdv.length+advDeck.length
 			if (!_gameInfo.isBoss) score--
-			_gameInfo.score.push(score)
+			Vue.set(_gameInfo.score, 4, score)
 			score = 0
 			// 挑战难度 - 普通x1.0|困难x1.2|灾难x1.5|梦魇x2.0
 			_gameInfo.score.forEach(e => score += e)
 			const k = [1, 1.2, 1.5, 2]
-			_gameInfo.score.push(Math.round(score*k[glvl]))
+			Vue.set(_gameInfo.score, 5, Math.round(score*k[glvl]))
 		}
 	},
 	actions: {

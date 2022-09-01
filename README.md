@@ -399,3 +399,16 @@ curDraw () {return this.isBoss ? this.curAdvCard.draw+this.temp.draw : (this.cur
 
 1 增加ranks集合
 
+### [09012359]
+
+- client
+
+1 store score给初始值, 相应的计分函数改Vue.set
+
+2 end onLoad 请求rankList, 页面渲染, score<=-999 --> "-"
+
+- server
+
+1 api -  /data/setNewScore 用户最高分更新; 排行榜更新;
+
+返回 nickname, score组成的伪数组
