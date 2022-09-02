@@ -1,2 +1,3 @@
 
-console.log(typeof typeof 1)
+let a = "sfadfaaf"
+console.log(a.length, a[3])

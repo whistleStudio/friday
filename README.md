@@ -412,3 +412,9 @@ curDraw () {return this.isBoss ? this.curAdvCard.draw+this.temp.draw : (this.cur
 1 api -  /data/setNewScore 用户最高分更新; 排行榜更新;
 
 返回 nickname, score组成的伪数组
+
+### [09021735]
+
+- client
+
+1 loop页  样式结构  打字机效果

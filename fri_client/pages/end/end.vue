@@ -57,7 +57,7 @@
 	export default {
 		data() {
 			return {
-				gameRes: 0,
+				gameRes: 1,
 				wH: 0,
 				ol: {
 					show: false,
@@ -123,7 +123,7 @@
 						if (!data.err) {
 							console.log(data.rankList)
 							this.ol.rankList = data.rankList
-						} else {console.log("setNewScore err:", data.err)}
+						} else {console.log("setNewScore err:", data.err);uni.showToast({title:data.msg, icon:"error", duration:800})}
 					}
 				})
 			}

@@ -25,9 +25,9 @@ rt.get("/setNewScore", (req, res) => {
           }
           rankList = await Rank.find({}, "nickname score").sort("-score regDate")
           res.json({err:0, rankList})
-        } else res.json({err:2, msg:"数据库错误"})
-      } else res.json({err:1, msg:"用户不存在"})
-    } catch(e){console.log(e); res.json({err: 5})}
+        } else res.json({err:2, msg:"数据请求错误"})
+      } else res.json({err:1, msg:"数据请求错误"})
+    } catch(e){console.log(e); res.json({err: 5, msg:"数据请求错误"})}
   })()
 })
 
