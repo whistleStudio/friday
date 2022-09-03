@@ -16,7 +16,7 @@ const store = new Vuex.Store({
 			openid: "",
 			nickname: "",
 			//#endif
-			avatar: "00", lvl: 1
+			avatar: "00", lvl: 1, lastGameRes:-1
 		},
 		_gameInfo: {
 			glvl: 0, hp: 5, decayLvl: 0, curPhase: 0, curAdvIdx: 0, prtHarm: 0, score: [0, 0, 0, 0, 0, 0],
@@ -366,6 +366,7 @@ const store = new Vuex.Store({
 							context.commit("changeObjVal", {k1:"_userInfo", k2:"nickname", v:res.data.nickname})
 							context.commit("changeObjVal", {k1:"_userInfo", k2:"avatar", v:res.data.avatar})
 							context.commit("changeObjVal", {k1:"_userInfo", k2:"lvl", v:res.data.lvl})
+							context.commit("changeObjVal", {k1:"_usetInfo", k2:"lastGameRes", v:res.data.lastGameRes})
 							console.log(context.state._userInfo)
 						}
 					} else uni.showToast({title:"网络出错啦",icon:"error"})

@@ -1,3 +1,13 @@
+function a () {
+	return new Promise((rsv, rej)=>{
+		setTimeout(()=>{
+			console.log("a ok")
+			rsv()
+		},2000)
+	})
+}
 
-let a = "sfadfaaf"
-console.log(a.length, a[3])
+;(async () => {
+	await a ()
+	console.log("dfdfdfd")
+})()

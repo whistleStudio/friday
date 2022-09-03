@@ -418,3 +418,19 @@ curDraw () {return this.isBoss ? this.curAdvCard.draw+this.temp.draw : (this.cur
 - client
 
 1 loop页  样式结构  打字机效果
+
+### [09032303]
+
+- client 
+
+1 loop页完成
+
+2 end next按钮跳转
+
+3 store 增加lastGameRes用于记录临近的比赛结果
+
+- server
+
+1 user模型增加lastGameRes字段
+
+2 【待解决】mongoose 不知道咋回事，updateOne异步没用 必须加上await 数据库才会变

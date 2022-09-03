@@ -5,7 +5,7 @@
 			<view class="score flex-center">
 				<text>{{score[score.length-1]}}分</text>
 			</view>
-			<view class="next">
+			<view class="next" @click="toLoop">
 				next
 			</view>
 		</view>
@@ -57,7 +57,7 @@
 	export default {
 		data() {
 			return {
-				gameRes: 1,
+				gameRes: 0,
 				wH: 0,
 				ol: {
 					show: false,
@@ -92,6 +92,11 @@
 			topInfoClick (mode) {
 				this.ol.show = true
 				this.ol.mode = mode
+			},
+			toLoop () {
+				uni.navigateTo({
+					url: `/pages/loop/loop?res=${this.gameRes}`
+				})
 			}
 		},
 		onLoad (p) {
@@ -101,9 +106,11 @@
 					this.wH = info.windowHeight
 				}
 			})
-			if (p.res==1) {
+			if (p.res!=undefined) {
 				this.gameRes = p.res
+				this.$store.commit("changeObjVal", {k1: "_userInfo", k2: "lastGameRes", v:p.res})
 			}
+			/* 上传新分数，请求排行榜列表 */
 			if (typeof this.score[this.score.length-1] !== "number") {
 				uni.showToast({
 					title: "糟糕, 计分出错了",
@@ -111,13 +118,13 @@
 					duration: 800
 				})
 			} else {
-				/* 请求排行榜列表 */
 				this.$reqGet({
 					url: `${this.$baseUrl}/data/setNewScore`,
 					query: {
 						openid: this.openid,
 						nickname: this.nickname,
-						score: this.score[this.score.length-1]
+						score: this.score[this.score.length-1],
+						lastGameRes: this.gameRes
 					},
 					rsv: data => {
 						if (!data.err) {

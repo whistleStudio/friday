@@ -4,13 +4,16 @@ const User = require("../db/model/User")
 const Rank = require("../db/model/Rank")
 
 rt.get("/setNewScore", (req, res) => {
-  const {openid, score, nickname} = req.query
+  let {openid, score, nickname, lastGameRes} = req.query
+  score = Number(score); lastGameRes = Number(lastGameRes)
   console.log(req.query)
   ;(async () => {
     try {
       let q = await User.findOne({openid}, "score")
+      console.log(q)
       if (q) {
-        if (score > q.score) User.updateOne({openid}, {score})
+        if (score > q.score) {await User.updateOne({openid}, {score, lastGameRes})}
+        else await User.updateOne({openid}, {lastGameRes})
         let rankList = await Rank.find({}).sort("score -regDate")
         if (rankList.length) {
           try {
