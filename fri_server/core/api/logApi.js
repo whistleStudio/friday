@@ -2,7 +2,7 @@ const express = require('express')
 const rt = express.Router()
 const User = require("../db/model/User")
 const APPID = "wx9aa61faf9cdefdf8", APPSECRET = "3b480d6c25f9acb8152333459b1d072f"
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+//const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 rt.get("/getOpenid", (req, res) => {
   let {code} = req.query

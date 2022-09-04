@@ -15,7 +15,7 @@
 						url: `${this.$baseUrl}/login/getOpenid`,
 						query: {code},
 						rsv: data => {
-							console.log(data)
+							console.log("getOpenid----", data)
 							this.$store.commit("changeObjVal", {k1:"_userInfo", k2:"openid", v:data.openid})	
 							this.$store.dispatch("getUserInfo", data.openid)
 						}

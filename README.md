@@ -447,3 +447,14 @@ curDraw () {return this.isBoss ? this.curAdvCard.draw+this.temp.draw : (this.cur
 
 1 api log返回数据新增lastGameRes
 
+### [09042226]
+
+- client 
+
+1 改了个血量 和 请求地址
+
+- server
+
+1 升级node 现支持fetch
+
+2 改db connect localhost=》127.0.0.1
