@@ -12,6 +12,8 @@
 </template>
 
 <script>
+	import typeWritter from "@/utils/typeWritter.js"
+	
 	export default {
 		data() {
 			return {
@@ -25,7 +27,7 @@
 					"https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/goodloop.jpg"
 				],
 				story: {
-					win: ["你击败海盗，缴获了他们的船只和货物。天色渐晚，你和弗莱德决定明日离岛",  "想着凭这整船货物以后也能过上不错的生活，你很快便进入了梦乡", "...巨大的海浪声惊醒了你", "！！！海盗船已经远离，弗莱德也没了踪影","荒岛的日子还在继续...", "有时你甚至一时想不起自己的姓名，但那个男人的名字你却永远地记了下来..."],
+					win: ["你击败海盗，缴获了他们的船只和货物。天色渐晚，你和弗莱德决定明日离岛",  "想着凭这整船货物以后也能过上不错的生活，你很快便进入了梦乡", "...巨大的海浪声惊醒了你", "！！！海盗船已经远离，弗莱德也没了踪影","荒岛的日子还在继续...", "有时你甚至一时想不起自己的姓名，但那个男人的名字却永远地记了下来..."],
 					fail:["你感到一阵眩晕，昏睡了过去...", "醒来的时候，已经是天亮", "弗莱德： 嘿，老伙计，你总算醒了", "弗莱德： 就差一点了，我们一定会离开这的", "阳光洒在了弗莱德的身上...我想会的..."],
 				}
 			}
@@ -34,7 +36,7 @@
 			toIndex () {
 				if (this.isShowNext) {
 					uni.navigateTo({
-						url: "/pages/index/index"
+						url: `/pages/index/index`
 					})
 				}
 			}
@@ -70,24 +72,6 @@
 		}
 	}
 	
-	function typeWritter (txt, {p=0, retain=0}={}) {
-		let tim = 0
-		return new Promise((rsv, rej) => {
-			this.showText=txt.slice(0, p)
-			tim = setInterval(()=>{
-				if (p<txt.length) {
-					this.showText += txt[p]
-					p++
-				} else {
-					clearInterval(tim)
-					if (retain) rsv()
-					else {
-						setTimeout(()=>{this.showText="";rsv()},800)
-					}
-				}
-			},140)
-		})
-	}
 </script>
 
 <style lang="scss">

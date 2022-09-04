@@ -434,3 +434,16 @@ curDraw () {return this.isBoss ? this.curAdvCard.draw+this.temp.draw : (this.cur
 1 user模型增加lastGameRes字段
 
 2 【待解决】mongoose 不知道咋回事，updateOne异步没用 必须加上await 数据库才会变
+
+### [09041319]
+
+0.0.0beta 提交
+
+- client 
+
+1 index 页根据上次游戏结果的对话框
+
+- server
+
+1 api log返回数据新增lastGameRes
+

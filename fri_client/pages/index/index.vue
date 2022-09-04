@@ -1,5 +1,5 @@
 <template>
-	<view class="content flex-center" :style="{backgroundImage: `url(${imgUrl.bg})`}">
+	<view class="content flex-center" :style="{height: wH+'px', backgroundImage: `url(${imgUrl.bg})`}">
 		<view class="profile flex-center">
 			<view v-if="avatar" class="avatar" :style="{backgroundImage: `url(${imgUrl.av+avatar}.jpg)`}">
 			</view>
@@ -23,14 +23,23 @@
 				<!-- #endif -->
       </view>
 		</u-popup>
+		<view v-if="isShowChat" class="chat-box" @click="closeChat">
+			<text>{{showText}}</text>
+		</view>
 	</view>
 </template>
 
 <script>
+	import {mapState} from "vuex"
+	import typeWritter from "@/utils/typeWritter.js"
+	
 	export default {
 		data() {
 			return {
-				isShow: false,
+				wH:0,
+				isShow: false, isShowChat: false,
+				showText: "",
+				
 				imgUrl: {
 					title: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/frtTitle.png",
 					bg: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/home.jpg",
@@ -40,12 +49,18 @@
 			}
 		},
 		computed: {
-			isLog: function () {return Boolean(this.$sta._userInfo.nickname)},
-			nickname:function () {return this.$sta._userInfo.nickname},
-			avatar: function () {return this.$sta._userInfo.avatar},
-		},
-		onLoad() {
-			// console.log(this.$sta._userInfo.avatar)
+			...mapState({
+				isLog: state => Boolean(state._userInfo.nickname),
+				nickname: state => state._userInfo.nickname,
+				avatar: state => state._userInfo.avatar,
+				lastGameRes: state => state._userInfo.lastGameRes,
+			}),
+			chatText () {
+				return {
+					fail: "弗莱德： 老伙计，能看到你再次恢复斗志，可真好",
+					win: `弗莱德： 新朋友你是叫${this.nickname}吗？这可真是个不错的名字 ...`
+				}
+			}
 		},
 		methods: {
 			startGame () {
@@ -85,14 +100,31 @@
 						icon: "error"
 					})
 				}
-
 			},
-		},
-		watch: {
-			// nickname (newV) {this.newnickname = newV}
+			/* 关闭对话框 */
+			closeChat () {
+				
+			}
 		},
 		onLoad () {
-			// console.log("index", this.avatar, "--",this.$sta._userInfo.nickname)
+			uni.getSystemInfo({
+				success: info => {
+					this.wH = info.windowHeight
+				}
+			})
+			console.log("xxxxxxxx", this.lastGameRes)
+			setTimeout(()=>{
+				if (this.lastGameRes!=-1) {
+					let text = ""
+					this.isShowChat = true
+					if (this.lastGameRes) text = this.chatText.win
+					else text = this.chatText.fail
+					;(async () => {
+						await typeWritter.call(this, text, {p:4, retain:1})
+						setTimeout(()=>{this.isShowChat=false},600)
+					})()
+				}
+			},1200)
 		}
 	}
 </script>
@@ -100,7 +132,6 @@
 <style lang="scss">
 .content {
 	width: 100%;
-	height: 100vh;
 	background: center/cover no-repeat;
 	box-sizing: border-box;
 	position: relative;
@@ -168,6 +199,19 @@
 
 			}
 		}
+	}
+	.chat-box {
+		bottom: 50rpx;
+		width: 90%;
+		height: 150rpx;
+		line-height: 55rpx;
+		background-color: rgba(255,255,255,0.7);
+		border-radius: 10rpx;
+		box-sizing: border-box;
+		padding: 20rpx;
+		position: absolute;
+		z-index: 5;
+		color: $gray50;
 	}
 }
 </style>

@@ -10,7 +10,6 @@ rt.get("/setNewScore", (req, res) => {
   ;(async () => {
     try {
       let q = await User.findOne({openid}, "score")
-      console.log(q)
       if (q) {
         if (score > q.score) {await User.updateOne({openid}, {score, lastGameRes})}
         else await User.updateOne({openid}, {lastGameRes})

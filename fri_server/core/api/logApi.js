@@ -17,11 +17,11 @@ rt.get("/getUserInfo", (req, res) => {
   let {openid} = req.query
   ;(async ()=>{
     try {
-      let doc = await User.findOne({openid}, "nickname avatar lvl")
+      let doc = await User.findOne({openid})
       if (doc) {
         User.updateOne({openid}, {logDate: new Date()})
-        let {nickname, avatar, lvl} = doc
-        res.json({err:0, nickname, avatar, lvl})
+        let {nickname, avatar, lvl, lastGameRes} = doc
+        res.json({err:0, nickname, avatar, lvl, lastGameRes})
       } else res.json({err:1})
     } catch (e){console.log(e);res.json({err:5, msg: "server error"})}
   })()
