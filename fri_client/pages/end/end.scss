@@ -87,19 +87,24 @@
 			.rank-table {
 				margin-top: 20rpx;
 				width: 100%;
-				th {
-					// background-color: lightyellow;
+				.rank-td {
+					text-align: center;
+					&:first-of-type {width:15%;}
+					&:nth-of-type(2) {width: 60%;}
+					&:last-of-type {width: 25%;}
+				}
+				.rank-head {
+					width: 100%;
+					display: flex;
 					font: bold 30rpx/45rpx $fontF;
 					color: $gray150;
-					&:first-of-type {width:15%;}
-					&:nth-of-type(2) {width: 55%;}
-					&:last-of-type {width: 30%;}
+					margin-bottom: 10rpx;
 				}
 				.rank-tr {
-					td {
-						height: 52rpx;
-						font: 35rpx/52rpx $fontF;
-						text-align: center;
+					width: 100%;
+					display: flex;
+					>view {
+						font: 35rpx/58rpx $fontF;
 						image {
 							height: 46rpx;
 							vertical-align: middle;
@@ -112,21 +117,26 @@
 			}
 			.calc-table {
 				margin-top: 20rpx;
-				border-collapse: collapse;
-				tr:first-of-type {
-					th {
+				box-sizing: border-box;
+				.calc-td {
+					&:first-of-type {width:55%;padding-right: 22rpx;}
+					&:last-of-type {width: 45%;}
+				}
+				.calc-head {
+					display: flex;
+					>view {
 						color: $gray50;
 						border-bottom: 2px solid lightgray;
 						line-height: 60rpx;
 					}
 				}
 				.calc-tr {
+					display: flex;
 					&:not(:last-of-type) {border-bottom: 1px solid rgba(200, 200, 200, 0.3);}
-					td {
+					>view {
 						color: $gray100;
-						font: 28rpx/60rpx $fontF;
+						font: 30rpx/62rpx $fontF;
 					}
-					
 				}
 			}
 		}

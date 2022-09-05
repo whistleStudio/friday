@@ -458,3 +458,19 @@ curDraw () {return this.isBoss ? this.curAdvCard.draw+this.temp.draw : (this.cur
 1 升级node 现支持fetch
 
 2 改db connect localhost=》127.0.0.1
+
+### [09052317]
+
+- client
+
+1 【修复】查看技能 第一张卡牌无法选中移除；排序阶段不操作引起的丢牌问题
+
+2 【修复】end页面样式显示问题； 微信小程序不支持$el
+
+3 【修复】end页面table改ul ; 微信小程序不支持table...
+
+4 【修复】play -> end -> loop gameRes判断错误问题
+
+- server
+
+1 删了些没用的socket-io代码

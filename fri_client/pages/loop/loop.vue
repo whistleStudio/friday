@@ -48,9 +48,9 @@
 					this.wH = info.windowHeight
 				}
 			})
-			this.gameRes = p.res
+			this.gameRes = Number(p.res)
 			;(async () => {
-				if (this.gameRes) {
+				if (this.gameRes==1) {
 					await typeWritter.call(this, this.story.win[0])
 					await typeWritter.call(this, this.story.win[1])
 					this.isShowBg = 1

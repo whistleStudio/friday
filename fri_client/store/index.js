@@ -284,10 +284,13 @@ const store = new Vuex.Store({
 					break
 				case 11: // 查看x3
 					if (mode==0) {
-						pickCard = _gameInfo.checkCards.splice(pickIdx,1)[0]
-						_gameInfo.disFt.unshift(pickCard)
+						if (pickIdx>=0) {
+							pickCard = _gameInfo.checkCards.splice(pickIdx,1)[0]
+							_gameInfo.disFt.unshift(pickCard)
+							_gameInfo.checkCardOrder = Array(2).fill(-1)
+						} else _gameInfo.checkCardOrder = Array(3).fill(-1)
 					} else {
-						console.log("mode2")
+						console.log("check mode2")
 						let {checkCards, checkCardOrder} = _gameInfo
 						let tempArr1 = [], tempArr2 = []
 						checkCardOrder.forEach((v,i) => {

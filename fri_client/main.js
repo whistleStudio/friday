@@ -9,8 +9,8 @@ var baseUrl = '/api'
 // #endif
 
 // #ifndef H5
-var baseUrl = "http://localhost:3000" 
-// var baseUrl = "https://friday.whistlestudio.cn" 
+// var baseUrl = "http://localhost:3000" 
+var baseUrl = "https://friday.whistlestudio.cn" 
 // #endif
 Vue.prototype.$baseUrl = baseUrl
 Vue.prototype.$sta = store.state

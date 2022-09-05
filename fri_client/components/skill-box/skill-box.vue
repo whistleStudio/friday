@@ -50,7 +50,7 @@
 				if (num==11) {
 					if (mode==0) {
 						console.log("pickIdx------", pickIdx)
-						if(pickIdx>=0) this.$store.commit("actEffect", {skIdx: num, pickIdx, actIdx})
+						this.$store.commit("actEffect", {skIdx: num, pickIdx, actIdx})
 						payload = {skIdx: num}
 					} else {this.$store.commit("actEffect", {skIdx: num, pickIdx, actIdx, mode})}
 				}

@@ -1,5 +1,5 @@
 <template>
-	<view ref="end" class="end flex-col-rowcenter" :style="{backgroundImage: `url(${endInfo[gameRes].bgUrl})`}">
+	<view ref="end" class="end flex-col-rowcenter" :style="{height: wH+'px', backgroundImage: `url(${endInfo[gameRes].bgUrl})`}">
 		<view class="main flex-col-rowcenter">
 			<h1 class="title">{{endInfo[gameRes].title}}</h1>
 			<view class="score flex-center">
@@ -20,31 +20,31 @@
 				<!-- 排行榜 -->
 				<view v-if="ol.mode" class="ol-main">
 					<text class="rank-title">排行榜</text>
-					<table class="rank-table">
-						<tr>
-							<th v-for="(v, i) in ol.rankTh" :key="i">{{v}}</th>
-						</tr>
-						<tr class="rank-tr" v-for="(v, i) in 10" :key="i">
-							<td>
+					<ul class="rank-table">
+						<li class="rank-head">
+							<view class="rank-td" v-for="(v, i) in ol.rankTh" :key="i">{{v}}</view>
+						</li>
+						<li class="rank-tr" v-for="(v, i) in 10" :key="i">
+							<view class="rank-td">
 								<image v-if="i<3" :src="`../../static/end/medal${i}.png`" mode="heightFix"></image>
 								<text class="rank-num" v-else>{{i+1}}</text>
-							</td>
-							<td>{{ol.rankList[i].nickname}}</td>
-							<td>{{ol.rankList[i].score<=-999 ? "-" : ol.rankList[i].score}}</td>
-						</tr>
-					</table>
+							</view>
+							<view class="rank-td">{{ol.rankList[i].nickname}}</view>
+							<view class="rank-td">{{ol.rankList[i].score<=-999 ? "-" : ol.rankList[i].score}}</view>
+						</li>
+					</ul>
 				</view>
 				<!-- 计分规则 -->
 				<view v-else class="ol-main">
 					<text class="calc-title">计分规则</text>
-					<table class="calc-table">
-						<tr>
-							<th v-for="(v,i) in ol.calcTb" :key="i" align="left">{{v[0]}}</th>
-						</tr>
-						<tr class="calc-tr" v-for="(v,i) in ol.calcTb[0].length-1" :key="i">
-							<td v-for="(cv, ci) in ol.calcTb" :key="ci">{{cv[i+1]}}</td>
-						</tr>
-					</table>
+					<ul class="calc-table">
+						<li class="calc-head">
+							<view class="calc-td" v-for="(v,i) in ol.calcTb" :key="i">{{v[0]}}</view>
+						</li>
+						<li class="calc-tr" v-for="(v,i) in ol.calcTb[0].length-1" :key="i">
+							<view class="calc-td" v-for="(cv, ci) in ol.calcTb" :key="ci">{{cv[i+1]}}</view>
+						</li>
+					</ul>
 				</view>
 			</view>
 		</u-overlay>
@@ -107,7 +107,7 @@
 				}
 			})
 			if (p.res!=undefined) {
-				this.gameRes = p.res
+				this.gameRes = Number(p.res)
 				this.$store.commit("changeObjVal", {k1: "_userInfo", k2: "lastGameRes", v:p.res})
 			}
 			/* 上传新分数，请求排行榜列表 */
@@ -135,9 +135,6 @@
 				})
 			}
 		},
-		onReady () {
-			this.$refs.end.$el.style.height = this.wH + "px"
-		}
  	}
 </script>
 

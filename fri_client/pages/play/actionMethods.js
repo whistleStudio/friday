@@ -267,10 +267,10 @@ function bossAtkUp () {
 
 // 抽1张牌
 function draw1Card () {
-	let content = "继续抽牌将消耗1生命值\n是否进行?", cost = 1
+	let content = "继续抽牌将消耗1生命\n是否进行?", cost = 1
 	if (this.isBoss) {
 		if (this.curAdvCard.skill===51) {
-			content = "[海盗来袭] 继续抽牌将消耗2生命值\n是否进行?"
+			content = "[海盗来袭] 继续抽牌将消耗2生命\n是否进行?"
 			cost = 2
 		}
 	} 

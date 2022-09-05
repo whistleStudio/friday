@@ -50,6 +50,7 @@
 				curFts: state => state._gameInfo.curFts,
 				checkCards: state => state._gameInfo.checkCards,
 				fightIdx: state => state._gameInfo.fightIdx,
+				checkL: state => state._gameInfo.checkCards.length
 			}),
 			ftL () {
 				return this.curFts.na.length + this.curFts.sp.length
@@ -71,9 +72,8 @@
 		},
 		methods: {
 			pickCard (idx, v) {
-				if (idx !== this.actCardIdx) {
+				if (idx !== this.actCardIdx || this.actSk.num==11) {
 					if (this.pickIdx !== idx&&v.atk2==="") {
-						// if (this.actSk())
 						this.pickIdx = idx
 					} else this.pickIdx = -1
 					this.$emit("pickCard", idx)
@@ -82,7 +82,8 @@
 			sortCard (i) {
 				console.log("sortCard---", i)
 				if (this.imgOrder[i]>=0) {
-					this.imgOrder=Array(3).fill(-1)
+					this.imgOrder=Array(this.checkL).fill(-1)
+					this.$store.commit("changeObjVal", {k1: "_gameInfo", k2: "checkCardOrder", v: this.imgOrder})
 					this.order = 0
 				} else {
 					// this.imgOrder[i] = this.order
