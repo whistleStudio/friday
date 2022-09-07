@@ -33,7 +33,7 @@ rt.get("/setUser", (req, res) => {
   ;(async ()=>{
     try {
       let avatar = 2+parseInt(Math.random()*23)
-      await User.create({nickname, openid, avatar, logDate: new Date()})
+      await User.create({nickname, openid, avatar, createDate: new Date(), logDate: new Date()})
       res.json({err:0, nickname, avatar})
     } catch(e){console.log(e);res.json({err:5, msg: "server error"})}
   })()

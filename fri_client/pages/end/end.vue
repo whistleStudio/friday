@@ -6,7 +6,7 @@
 				<text>{{score[score.length-1]}}分</text>
 			</view>
 			<view class="next" @click="toLoop">
-				next
+				继续挑战
 			</view>
 		</view>
 		<view class="calc topInfo flex-center" @click="topInfoClick(0)">
@@ -71,11 +71,11 @@
 				},
 				endInfo:[
 					{
-						title: "You Lose",
+						title: "失 败",
 						bgUrl: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/defeat.png"
 					},
 					{
-						title: "You Win",
+						title: "成 功",
 						bgUrl: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/victory.jpg"
 					}
 				] 
@@ -97,6 +97,35 @@
 				uni.navigateTo({
 					url: `/pages/loop/loop?res=${this.gameRes}`
 				})
+			},
+			setNewScore () {
+				return new Promise ((resolve, reject) => {
+					this.$reqGet({
+						url: `${this.$baseUrl}/data/setNewScore`,
+						query: {
+							openid: this.openid,
+							nickname: this.nickname,
+							score: this.score[this.score.length-1],
+							lastGameRes: this.gameRes
+						},
+						rsv: data => {
+							if (data.err) uni.showToast({title:data.msg, icon:"error", duration:500})
+							console.log("setns ok")
+							resolve()
+						}
+					})
+				})
+			},
+			getRankList () {
+				this.$reqGet({
+					url: `${this.$baseUrl}/data/getRankList`,
+					rsv: data =>{
+						if (!data.err) {
+							console.log("getRL", data.rankList)
+							this.ol.rankList = data.rankList
+						} else uni.showToast({title:data.msg, icon:"error", duration:500})
+					}
+				})
 			}
 		},
 		onLoad (p) {
@@ -106,34 +135,27 @@
 					this.wH = info.windowHeight
 				}
 			})
+			/* 刷新上次比赛结果 */
 			if (p.res!=undefined) {
 				this.gameRes = Number(p.res)
 				this.$store.commit("changeObjVal", {k1: "_userInfo", k2: "lastGameRes", v:p.res})
 			}
 			/* 上传新分数，请求排行榜列表 */
-			if (typeof this.score[this.score.length-1] !== "number") {
-				uni.showToast({
-					title: "糟糕, 计分出错了",
-					icon: "none",
-					duration: 800
-				})
-			} else {
-				this.$reqGet({
-					url: `${this.$baseUrl}/data/setNewScore`,
-					query: {
-						openid: this.openid,
-						nickname: this.nickname,
-						score: this.score[this.score.length-1],
-						lastGameRes: this.gameRes
-					},
-					rsv: data => {
-						if (!data.err) {
-							console.log(data.rankList)
-							this.ol.rankList = data.rankList
-						} else {console.log("setNewScore err:", data.err);uni.showToast({title:data.msg, icon:"error", duration:800})}
+			;(async () => {
+				try {
+					if (typeof this.score[this.score.length-1] !== "number") {
+						uni.showToast({
+							title: "糟糕, 计分出错了",
+							icon: "none",
+							duration: 800
+						})
+					} else {
+						await this.setNewScore()
+						console.log("----------------")
 					}
-				})
-			}
+					this.getRankList()
+				} catch (e) {console.log(e)}
+			})()
 		},
  	}
 </script>

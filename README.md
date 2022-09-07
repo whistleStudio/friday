@@ -474,3 +474,19 @@ curDraw () {return this.isBoss ? this.curAdvCard.draw+this.temp.draw : (this.cur
 - server
 
 1 删了些没用的socket-io代码
+
+### [09072326]
+
+- client 
+
+1 【新增】index - 弗莱德日记, 用于展示排行榜 以及 游戏规则
+
+2 【调整】更换多处图标，转为像素风
+
+3 【调整】end -  拆分原数据请求逻辑， 设置新分数-请求列表
+
+4 【调整】降低部分图片大小
+
+- server
+
+1 【调整】dataApi - 将原 setNewScore 拆分为 setNewScore和getRankList

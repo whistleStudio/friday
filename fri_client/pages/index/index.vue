@@ -7,10 +7,14 @@
 		</view>
 	  <view class="bg flex-center" >
 			<image :src="imgUrl.title" mode="widthFix"></image>
-			<view class="ip">
-				<button class="mgb-50 start" @click="startGame">START</button>
+			<view class="ip flex-col-rowcenter">
+				<button @click="isShowDiary=true">弗莱德日记</button>
+				<button class="start" @click="startGame">逃离荒岛</button>
+<!-- 				<text @click="viewRule">弗莱德生存法则</text>
+				<text @click="">挑战者排名</text> -->
 			</view>
 	  </view>
+		
 		<u-popup :show="isShow" @close="isShow=false" mode="top">
       <view class="popup flex-center">  
 				<!-- #ifdef MP-WEIXIN -->
@@ -23,7 +27,32 @@
 				<!-- #endif -->
       </view>
 		</u-popup>
-		<view v-if="isShowChat" class="chat-box" @click="closeChat">
+		<u-overlay :show="isShowDiary">
+			<view class="diary-box flex-center">
+				<view class="paper" :style="{backgroundImage: `url(${imgUrl.paper})`}">
+					<view class="rule">
+						<image class="food" src="../../static/index/food.png" mode="heightFix"></image>
+						<text @click="viewRule">荒岛生存指南</text>
+					</view>
+					<text class="dt-1">下 回 轮 到 谁  呢</text>
+					<text class="dt-2">{{today}}</text>
+					<ul class="diary-rank">
+						<li class="dRank-head">
+							<view v-for="(v, i) in 3" :key="i" >
+								<image :src="`../../static/index/rankL${i}.png`" mode="heightFix"></image>
+							</view>
+						</li>
+						<li class="dRank-li" v-for="(v, i) in 10" :key="i">
+							<view>{{i+1}}</view>
+							<view>{{rankList[i].nickname}}</view>
+							<view>{{rankList[i].score}}</view>
+						</li>
+					</ul>
+					<view class="close-paper" @click="isShowDiary=false">x</view>
+				</view>
+			</view>
+		</u-overlay>
+		<view v-if="isShowChat" class="chat-box">
 			<text>{{showText}}</text>
 		</view>
 	</view>
@@ -37,13 +66,15 @@
 		data() {
 			return {
 				wH:0,
-				isShow: false, isShowChat: false,
+				isShow: false, isShowChat: false, isShowDiary: false,
 				showText: "",
-				
+				rankList: Array(10).fill({nickname: "-", score: "-"}),
 				imgUrl: {
 					title: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/frtTitle.png",
 					bg: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/home.jpg",
 					av: "https://cfunweb.oss-cn-hangzhou.aliyuncs.com/img/cfiot/av",
+					paper: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/oldpaper.png",
+					
 				},
 				newnickname: ""
 			}
@@ -60,6 +91,10 @@
 					fail: "弗莱德： 老伙计，能看到你再次恢复斗志，可真好",
 					win: `弗莱德： 新朋友你是叫${this.nickname}吗？这可真是个不错的名字 ...`
 				}
+			},
+			today () {
+				let t = new Date()
+				return `${t.getFullYear()} - ${t.getMonth()+1} - ${t.getDate()}`
 			}
 		},
 		methods: {
@@ -101,9 +136,33 @@
 					})
 				}
 			},
-			/* 关闭对话框 */
-			closeChat () {
-				
+			/* 规则查看 */
+			viewRule () {
+				uni.downloadFile({
+				  url: 'https://example.com/somefile.pdf',
+				  success: function (res) {
+				    var filePath = res.tempFilePath;
+				    uni.openDocument({
+				      filePath: filePath,
+				      showMenu: true,
+				      success: function (res) {
+				        console.log('打开文档成功');
+				      }
+				    });
+				  }
+				});
+			},
+			/* 请求排行榜列表 */
+			getRankList () {
+				this.$reqGet({
+					url: `${this.$baseUrl}/data/getRankList`,
+					rsv: data =>{
+						if (!data.err) {
+							console.log("getRL", data.rankList)
+							this.rankList = data.rankList
+						} else uni.showToast({title:data.msg, icon:"error", duration:500})
+					}
+				})
 			}
 		},
 		onLoad () {
@@ -112,7 +171,6 @@
 					this.wH = info.windowHeight
 				}
 			})
-			console.log("xxxxxxxx", this.lastGameRes)
 			setTimeout(()=>{
 				if (this.lastGameRes!=-1) {
 					let text = ""
@@ -125,93 +183,9 @@
 					})()
 				}
 			},1200)
+			this.getRankList()
 		}
 	}
 </script>
 
-<style lang="scss">
-.content {
-	width: 100%;
-	background: center/cover no-repeat;
-	box-sizing: border-box;
-	position: relative;
-	.profile {
-		flex-direction: column;
-		width: 100rpx;
-		height: 160rpx;
-		position: absolute;
-		top: 60rpx;
-		right: 60rpx;
-		.avatar {
-			width: 95rpx;
-			height: 95rpx;
-			border-radius: 50%;
-			background: center/cover no-repeat;
-			background-color: white;
-		}
-		text {
-			color: ghostwhite;
-			height: 60rpx;
-			font: 35rpx/60rpx $fontF;
-		}
-	}
-	.bg {
-	  width: 100%;
-		height: 50%;
-		flex-direction: column;
-		justify-content: space-between;
-		image {
-			width: 480rpx;
-		}
-		.ip {
-			width: 65%;
-			height: 250rpx;
-			button {
-				width: 65%;
-				box-shadow: 1px 1px 1px 1px rgb(50,50,50);
-				color: ghostwhite;
-				background-color: rgb(201, 168, 88);
-				font: bold 50rpx/80rpx $fontF;
-				border: 1px solid saddlebrown;
-			}				
-		}
-	}
-	.popup {
-		flex-direction: column;
-		width: 100%;
-		height: 350rpx;
-		input {
-			border: 1px solid $gray210;
-			border-radius: 10rpx;
-			box-sizing: border-box;
-		  padding-left: 10rpx;
-			width: 80%;
-			height: 80rpx;
-			font: 30rpx/80rpx $fontF;
-		}
-		.btn-group {
-			width: 80%;
-			justify-content: space-between;
-      button {
-				width: 250rpx;
-				font: 30rpx/65rpx $fontF;
-				margin: 0;
-
-			}
-		}
-	}
-	.chat-box {
-		bottom: 50rpx;
-		width: 90%;
-		height: 150rpx;
-		line-height: 55rpx;
-		background-color: rgba(255,255,255,0.7);
-		border-radius: 10rpx;
-		box-sizing: border-box;
-		padding: 20rpx;
-		position: absolute;
-		z-index: 5;
-		color: $gray50;
-	}
-}
-</style>
+<style src="./index.scss" lang="scss"></style>

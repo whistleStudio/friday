@@ -1,7 +1,7 @@
 <template>
 	<view v-if="!isBoss" class="adv-card">
 		<view v-if="curAdvCard" class="advImg" :style="{backgroundImage: `url(${imgUrl.advScene+curAdvCard.ch2}.png)`}">
-			<image src="@/static/play/info.png" mode="widthFix"></image>
+			<!-- <image src="@/static/play/info.png" mode="widthFix"></image> -->
 		</view>
 		<view class="advInfo">
 			<text>{{chs[curAdvCard.ch2]}}</text>

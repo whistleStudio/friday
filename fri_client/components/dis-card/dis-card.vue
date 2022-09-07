@@ -32,7 +32,7 @@
 				skill,harm,
 				imgUrl: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/scene/scene",
 				advIcon: [
-					"../../static/play/drawcard.png","../../static/play/harm.png"
+					"../../static/play/dcard.png","../../static/play/target.png"
 				],
 				cbtIcon: [
 					"../../static/play/combat.png","../../static/play/skill.png"

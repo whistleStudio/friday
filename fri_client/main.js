@@ -22,7 +22,6 @@ Vue.prototype.$reqPost = function ({url,body,rsv=()=>{},rej=()=>{}}) {
   	method: "POST",
   	header:  {
   		'Content-Type': 'application/json;charset=utf-8',
-			// "authorization": store.state.token || ""
   	},
   	data: body,
   	success (res) {
@@ -36,7 +35,7 @@ Vue.prototype.$reqPost = function ({url,body,rsv=()=>{},rej=()=>{}}) {
   	}
 	})
 }
-Vue.prototype.$reqGet = function ({url,query,rsv=()=>{},rej=()=>{}}) {
+Vue.prototype.$reqGet = function ({url,query={},rsv=()=>{},rej=()=>{}}) {
   uni.request({
   	url,
   	header:  {
