@@ -34,7 +34,7 @@
 						<image class="food" src="../../static/index/food.png" mode="heightFix"></image>
 						<text @click="viewRule">荒岛生存指南</text>
 					</view>
-					<text class="dt-1">下 回 轮 到 谁  呢</text>
+					<text class="dt-1">下 次 轮 到 谁 呢</text>
 					<text class="dt-2">{{today}}</text>
 					<ul class="diary-rank">
 						<li class="dRank-head">
@@ -45,7 +45,7 @@
 						<li class="dRank-li" v-for="(v, i) in 10" :key="i">
 							<view>{{i+1}}</view>
 							<view>{{rankList[i].nickname}}</view>
-							<view>{{rankList[i].score}}</view>
+							<view>{{rankList[i].score<=-999 ? "-" : rankList[i].score}}</view>
 						</li>
 					</ul>
 					<view class="close-paper" @click="isShowDiary=false">x</view>
@@ -69,6 +69,7 @@
 				isShow: false, isShowChat: false, isShowDiary: false,
 				showText: "",
 				rankList: Array(10).fill({nickname: "-", score: "-"}),
+				ruleUrl: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/doc/FridayRulesSCh.pdf",
 				imgUrl: {
 					title: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/frtTitle.png",
 					bg: "https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/img/home.jpg",
@@ -139,7 +140,7 @@
 			/* 规则查看 */
 			viewRule () {
 				uni.downloadFile({
-				  url: 'https://example.com/somefile.pdf',
+				  url: this.ruleUrl,
 				  success: function (res) {
 				    var filePath = res.tempFilePath;
 				    uni.openDocument({
@@ -160,7 +161,7 @@
 						if (!data.err) {
 							console.log("getRL", data.rankList)
 							this.rankList = data.rankList
-						} else uni.showToast({title:data.msg, icon:"error", duration:500})
+						} else {console.log("getRL err");uni.showToast({title:data.msg, icon:"error", duration:500})}
 					}
 				})
 			}

@@ -490,3 +490,11 @@ curDraw () {return this.isBoss ? this.curAdvCard.draw+this.temp.draw : (this.cur
 - server
 
 1 【调整】dataApi - 将原 setNewScore 拆分为 setNewScore和getRankList
+
+### [09080015]
+
+首次提交审核
+
+- client
+
+1 【调整】index-规则pdf链接，排行榜展示，样式微调

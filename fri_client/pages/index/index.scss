@@ -113,17 +113,17 @@
 					vertical-align: text-bottom;
 				}
 				text {
+					opacity: 0.7;
 					display: inline-block;
 					margin-left: 15rpx;
 					font: lighter 40rpx/60rpx $fontF;
-					color: $gray50;
-					border-bottom: 1px solid $gray50;
+					border-bottom: 1px solid black;
 				}
 			}
 			.dt-1 {
 				position: absolute;
 				display: block;
-				opacity: 0.9;
+				opacity: 0.7;
 				transform: rotate(-20deg);
 				bottom: 250rpx;
 				right: 120rpx;
