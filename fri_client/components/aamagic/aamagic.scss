@@ -1,0 +1,136 @@
+$cfColor: #34C2EA;
+$cfColor02: rgba(52, 194, 234, 0.2);
+$cfColor05: rgba(52, 194, 234, 0.5);
+$fontC: #191919;
+$fontF: "Microsoft Yahei", "微软雅黑", "HeiTi", "黑体", "sans-serif";
+
+.draw {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .content {
+    width: 70%;
+    height: 80%;
+    border: 2px solid $cfColor02;
+    border-radius: 20rpx;
+    padding: 40rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+		// background-color: pink;
+    .h3 {
+      color: $fontC;
+      // margin-bottom: 60rpx;
+			font: bold 35rpx/100rpx $fontF ;
+    }
+    .cartoon {
+      right: -160rpx;
+      top: -80rpx;
+      width: calc(1.5 * 250rpx);
+      height: 250rpx;
+      background: url("https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/magic/cfexpress.png") center/contain no-repeat;
+      position: absolute;
+    }
+    .main {
+      width: 100%;
+      height: 700rpx;
+			// background-color: yellow;
+      .main-ul {
+        width: 100%;
+        height: 100%;
+        .main-li:not(:last-of-type) {
+          margin-left: 10rpx;
+          display: flex;
+          height: 110rpx;
+          align-items: center;
+          .icon {
+            width: 50rpx;
+            height: 50rpx;
+            background: url("https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/magic/icon0.png") center/contain no-repeat;
+            margin-right: 20rpx;
+          }
+          .text {
+            background-color: ghostwhite;
+            width: 400rpx;
+            height: 60rpx;
+            border: 1px solid $cfColor05;
+            border-radius: 10rpx;
+            font: 35rpx/60rpx $fontF;
+            padding-left: 30rpx;
+          }
+        }
+        li:last-of-type {
+          height: 320rpx;
+          display: flex;
+          align-items: center;
+          .icon-store {
+            width: 210rpx;
+            height: 90rpx;
+            background: url("https://wxgame-1300400818.cos.ap-nanjing.myqcloud.com/friday/magic/icon1.png") center/contain no-repeat;
+            margin-right: 40rpx;
+          }
+          .detail {
+            height: 100%;
+            width: 500rpx;
+            display: flex;
+            flex-direction: column;
+            >view {
+              width: 100%;  
+              height: 50%;
+              display: flex;
+              align-items: center;
+              box-sizing: border-box;
+              &:first-of-type {
+                border-bottom: 1px solid $cfColor05;
+              }
+              >span {
+                width: 160rpx;
+                font: bold 28rpx $fontF;
+                color: steelblue;
+              }
+              ul {
+                height: 100%;
+                display: flex;
+                align-items: center;
+                li {
+                    margin-right: 30rpx;
+                    width: 110rpx;
+                    height: 140rpx;
+                    background-color: ghostwhite;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    box-sizing: border-box;
+                    border: 1px solid $cfColor05;
+                    border-radius: 5rpx;
+                    .food-img {
+                        width: 80rpx;
+                        height: 80rpx;
+                        background: center/cover no-repeat;
+                    }
+                    >span {
+                        font: 28rpx/40rpx $fontF;
+                    }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    .mbtn {
+			margin-top: 20rpx;
+      height: 80rpx;
+      width: 400rpx;
+      background-color: $cfColor;
+      border-radius: 10rpx;
+      border: none;
+      box-shadow: 1px 1px 1px 1px gray;
+      color: white;
+      font: 40rpx/80rpx $fontF;
+    }
+  }
+}

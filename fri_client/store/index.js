@@ -22,7 +22,7 @@ const store = new Vuex.Store({
 			glvl: 0, hp: 18, decayLvl: 0, curPhase: 0, curAdvIdx: 0, prtHarm: 0, score: [0, 0, 0, 0, 0, 0],
 			curFts: {na:[], sp:[]}, curAdvs: [], disAdv: [], disFt: [], rm: [], checkCards: [], checkCardOrder: [],
 			fightIdx: {},
-			isInitOk: true, isBoss: false, isAdvsOk: false, isStopDraw: false,	
+			isInitOk: true, isBoss: false, isAdvsOk: false, isStopDraw: false, isReleaseEnv: false	
 		},
 		_cards: cards
 	},

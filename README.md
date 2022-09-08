@@ -498,3 +498,7 @@ curDraw () {return this.isBoss ? this.curAdvCard.draw+this.temp.draw : (this.cur
 - client
 
 1 【调整】index-规则pdf链接，排行榜展示，样式微调
+
+### [09082017]
+
+审核未过，根据环境进行更新

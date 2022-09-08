@@ -7,6 +7,11 @@
 		onLaunch: function() {
 			console.log('App Launch')
 			// #ifndef H5		
+			const accountInfo = uni.getAccountInfoSync()
+			console.log(accountInfo.miniProgram.envVersion)
+			if (accountInfo.miniProgram.envVersion === "release") 
+				this.$store.commit("changeObjVal", {k1:"_gameInfo", k2:"isReleaseEnv", v: true})
+			
   		uni.login({
 			  provider: 'weixin',
 				onlyAuthorize:true,

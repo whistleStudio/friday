@@ -1,5 +1,5 @@
 <template>
-	<view class="content flex-center" :style="{height: wH+'px', backgroundImage: `url(${imgUrl.bg})`}">
+	<view v-if="isReleaseEnv" class="content flex-center" :style="{height: wH+'px', backgroundImage: `url(${imgUrl.bg})`}">
 		<view class="profile flex-center">
 			<view v-if="avatar" class="avatar" :style="{backgroundImage: `url(${imgUrl.av+avatar}.jpg)`}">
 			</view>
@@ -56,6 +56,9 @@
 			<text>{{showText}}</text>
 		</view>
 	</view>
+	<view v-else class="magic flex-center" :style="{height: wH+'px'}">
+		<aamagic />
+	</view>
 </template>
 
 <script>
@@ -86,6 +89,7 @@
 				nickname: state => state._userInfo.nickname,
 				avatar: state => state._userInfo.avatar,
 				lastGameRes: state => state._userInfo.lastGameRes,
+				isReleaseEnv: state => state._gameInfo.isReleaseEnv
 			}),
 			chatText () {
 				return {
